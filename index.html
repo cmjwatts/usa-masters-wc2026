@@ -26,6 +26,7 @@
     </a>
     <nav class="nav-links">
       <a href="#schedule">Schedule</a>
+      <a href="#standings">Standings</a>
       <a href="#teams">USA Teams</a>
       <a href="#venues">Venues</a>
       <a href="#kids">Kids Zone</a>
@@ -76,7 +77,7 @@
         <select id="teamSel"></select>
       </div>
       <div class="filter-group">
-        <label>Division</label>
+        <label>Division · pick one or more</label>
         <div class="div-chips" id="divChips">
           <button class="chip" data-div="ALL">All</button>
           <button class="chip active" data-div="W35">W O35</button>
@@ -91,6 +92,21 @@
     </div>
 
     <div id="scheduleList"></div>
+  </section>
+
+  <!-- ============ STANDINGS ============ -->
+  <section class="section section-tinted" id="standings">
+    <div class="section-head">
+      <h2>Pool<br>Standings</h2>
+      <p id="standingsNote"></p>
+    </div>
+    <div class="div-chips stand-chips" id="standDivChips">
+      <button class="chip active" data-div="W35">W O35</button>
+      <button class="chip" data-div="W40">W O40</button>
+      <button class="chip" data-div="M35">M O35</button>
+      <button class="chip" data-div="M40">M O40</button>
+    </div>
+    <div id="standingsTable"></div>
   </section>
 
   <!-- ============ USA TEAMS ============ -->
@@ -133,10 +149,11 @@
       <article class="venue-card">
         <span class="venue-tag">O45 &amp; O50 + WO35 IMC</span>
         <h3>HC Rotterdam</h3>
-        <p class="venue-addr">Hazelaarweg, Rotterdam<br>(north Rotterdam, near Rotterdam The Hague Airport)</p>
+        <p class="venue-addr">Hazelaarweg 2, 3053 PM Rotterdam<br>(north Rotterdam, near Rotterdam The Hague Airport)</p>
         <ul>
           <li>🏑 USA WO35 IMC, WO45, WO50, MO45, MO50</li>
           <li>🚋 Public transport zone 5310</li>
+          <li>📋 Match schedule not published yet — it will land on <a href="https://worldmastershockey.org/wmhevents/2026-wct1-rotterdam/" target="_blank" rel="noopener">the WMH event page</a></li>
         </ul>
         <div class="venue-actions">
           <a class="btn btn-small btn-solid" href="https://maps.google.com/?q=HC+Rotterdam,+Hazelaarweg,+Rotterdam,+Netherlands" target="_blank" rel="noopener">Open in Maps</a>
@@ -172,10 +189,9 @@
         </ul>
         <div class="hero-cta">
           <a class="btn btn-solid" href="https://kicksnsticks.eu/world-cup-masters/" target="_blank" rel="noopener">Register the kids</a>
-          <a class="btn btn-ghost" href="mailto:info@kicksnsticks.eu">Questions? Email the program</a>
         </div>
       </div>
-      <div class="kids-photo"><img src="assets/team-smiles.jpg" alt="Smiling USA players" loading="lazy"></div>
+      <div class="kids-photo"><img src="assets/kids-action.jpg" alt="USA player on the ball" loading="lazy"></div>
     </div>
   </section>
 

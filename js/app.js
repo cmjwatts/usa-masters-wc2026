@@ -2,11 +2,14 @@
 // USA Masters WC2026 hub — rendering & filters
 // ============================================================
 
+const ALL_DIVS = ["W35", "W40", "M35", "M40"];
+
 const state = {
   tz: localStorage.getItem("wc-tz") || "NL", // NL (CEST) or ET (US Eastern, -6h)
   team: "USA",
-  div: "W35",
+  divs: new Set(["W35"]), // multi-select; all four = "All"
   showKO: true,
+  standDiv: "W35",
 };
 
 const $ = (sel) => document.querySelector(sel);
@@ -25,17 +28,23 @@ const DATE_LABELS = {
   "2026-08-01": ["Saturday", "August 1", "FINALS DAY"],
 };
 
-// ---- time helpers ----
+// ---- time helpers (12-hour everywhere — easier for US fans) ----
+function to12h(h, m) {
+  const suffix = h >= 12 ? "PM" : "AM";
+  let h12 = h % 12; if (h12 === 0) h12 = 12;
+  return { main: `${h12}:${String(m).padStart(2, "0")}`, suffix };
+}
 function displayTime(hhmm) {
-  if (state.tz === "NL") return { main: hhmm, sub: "NL" };
   const [h, m] = hhmm.split(":").map(Number);
+  if (state.tz === "NL") {
+    const t = to12h(h, m);
+    return { main: t.main, sub: `${t.suffix} NL` };
+  }
   let eh = h - 6; // CEST -> EDT
-  let suffix = "AM";
   let dayNote = "";
   if (eh < 0) { eh += 24; dayNote = " (-1d)"; }
-  if (eh >= 12) { suffix = "PM"; }
-  let h12 = eh % 12; if (h12 === 0) h12 = 12;
-  return { main: `${h12}:${String(m).padStart(2, "0")}`, sub: `${suffix} ET${dayNote}` };
+  const t = to12h(eh, m);
+  return { main: t.main, sub: `${t.suffix} ET${dayNote}` };
 }
 
 function teamName(code) {
@@ -43,19 +52,36 @@ function teamName(code) {
   return t ? `${t.flag} ${t.name}` : code;
 }
 
-// ---- schedule rendering ----
+// ---- schedule filtering ----
+function poolRow(r) {
+  const [d, t, div, h, a, p, hs, as] = r;
+  return { d, t, div, h, a, p, hs, as, type: "pool" };
+}
+
+function koVisible(row) {
+  if (state.team === "ALL") return true;
+  // matchup already known → only show for those teams
+  if (row.teams && row.teams.length) return row.teams.includes(state.team);
+  // pool rank known → hide games that rank can't reach
+  const rank = FINAL_RANKS[row.div]?.[state.team];
+  if (rank != null) return row.ranks.includes(rank);
+  // nothing known yet → show the full bracket path
+  return true;
+}
+
 function matchesFiltered() {
   const rows = [];
-  for (const [d, t, div, h, a, p] of POOL) {
-    if (state.div !== "ALL" && div !== state.div) continue;
-    if (state.team !== "ALL" && h !== state.team && a !== state.team) continue;
-    rows.push({ d, t, div, h, a, p, type: "pool" });
+  for (const r of POOL) {
+    const m = poolRow(r);
+    if (!state.divs.has(m.div)) continue;
+    if (state.team !== "ALL" && m.h !== state.team && m.a !== state.team) continue;
+    rows.push(m);
   }
   if (state.showKO) {
-    for (const [d, t, div, label, p] of KNOCKOUT) {
-      if (state.div !== "ALL" && div !== state.div) continue;
-      // when a team is selected, knockout opponents are unknown — keep rows for that division as "path to the final"
-      rows.push({ d, t, div, label, p, type: "ko" });
+    for (const k of KNOCKOUT) {
+      if (!state.divs.has(k.div)) continue;
+      if (!koVisible(k)) continue;
+      rows.push({ ...k, type: "ko" });
     }
     for (const ev of EVENTS) {
       rows.push({ d: ev.d, t: ev.t, title: ev.title, note: ev.note, type: "event" });
@@ -84,17 +110,62 @@ function renderSchedule() {
       if (r.type === "event") {
         html += `<div class="match-row is-event">${timeCell}<div class="m-label">${r.title}<span class="m-note">${r.note}</span></div></div>`;
       } else if (r.type === "ko") {
-        const tbd = state.team !== "ALL" ? `<span class="m-note">Bracket game — opponents decided by standings</span>` : "";
-        html += `<div class="match-row is-ko">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-label">${r.label}${tbd}</div><div class="m-pitch">Pitch ${r.p}</div></div>`;
+        const named = r.teams && r.teams.length;
+        const title = named
+          ? `${teamName(r.teams[0])}<span class="vs">vs</span>${teamName(r.teams[1])} <span class="m-note">${r.label}</span>`
+          : `${r.label}${state.team !== "ALL" ? `<span class="m-note">Bracket game — opponents decided by standings</span>` : ""}`;
+        const usa = named && r.teams.includes("USA");
+        html += `<div class="match-row is-ko ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-label">${title}</div><div class="m-pitch">Pitch ${r.p}</div></div>`;
       } else {
         const usa = r.h === "USA" || r.a === "USA";
         const name = (c) => `<span class="${c === "USA" ? "usa-name" : ""}">${teamName(c)}</span>`;
-        html += `<div class="match-row ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-match">${name(r.h)}<span class="vs">vs</span>${name(r.a)}</div><div class="m-pitch">Pitch ${r.p}</div></div>`;
+        const score = r.hs != null ? `<b class="m-score">${r.hs}–${r.as}</b>` : `<span class="vs">vs</span>`;
+        html += `<div class="match-row ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-match">${name(r.h)}${score}${name(r.a)}</div><div class="m-pitch">Pitch ${r.p}</div></div>`;
       }
     }
     html += `</div>`;
   }
   list.innerHTML = html;
+}
+
+// ---- standings (computed from POOL scores; 3-1-0 points) ----
+function computeStandings(div) {
+  const table = {};
+  const ensure = (c) => (table[c] ??= { code: c, P: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, Pts: 0 });
+  for (const [, , d, h, a, , hs, as] of POOL) {
+    if (d !== div) continue;
+    const H = ensure(h), A = ensure(a);
+    if (hs == null || as == null) continue;
+    H.P++; A.P++; H.GF += hs; H.GA += as; A.GF += as; A.GA += hs;
+    if (hs > as) { H.W++; A.L++; H.Pts += 3; }
+    else if (hs < as) { A.W++; H.L++; A.Pts += 3; }
+    else { H.D++; A.D++; H.Pts++; A.Pts++; }
+  }
+  return Object.values(table).sort((x, y) =>
+    y.Pts - x.Pts || (y.GF - y.GA) - (x.GF - x.GA) || y.GF - x.GF ||
+    TEAMS[x.code].name.localeCompare(TEAMS[y.code].name));
+}
+
+function renderStandings() {
+  const rows = computeStandings(state.standDiv);
+  const played = rows.some((r) => r.P > 0);
+  const note = played
+    ? `Unofficial — computed from results entered on this site. Confirm on <a href="https://masters.altiusrt.com/" target="_blank" rel="noopener">AltiusRT</a>.`
+    : `Pool play starts July 23 — the table fills in as results come in. Official live standings will also post on <a href="https://masters.altiusrt.com/" target="_blank" rel="noopener">AltiusRT</a>.`;
+  $("#standingsNote").innerHTML = note;
+  $("#standingsTable").innerHTML = `
+    <table class="stand-table">
+      <thead><tr><th>#</th><th class="st-team">Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead>
+      <tbody>${rows.map((r, i) => `
+        <tr class="${r.code === "USA" ? "st-usa" : ""}">
+          <td>${i + 1}</td>
+          <td class="st-team">${teamName(r.code)}</td>
+          <td>${r.P}</td><td>${r.W}</td><td>${r.D}</td><td>${r.L}</td>
+          <td>${r.GF}</td><td>${r.GA}</td><td>${r.GF - r.GA > 0 ? "+" : ""}${r.GF - r.GA}</td>
+          <td><b>${r.Pts}</b></td>
+        </tr>`).join("")}
+      </tbody>
+    </table>`;
 }
 
 // ---- filters ----
@@ -110,20 +181,43 @@ function buildTeamSelect() {
 }
 
 function syncChips() {
-  document.querySelectorAll("#divChips .chip").forEach((c) => c.classList.toggle("active", c.dataset.div === state.div));
+  const isAll = state.divs.size === ALL_DIVS.length;
+  document.querySelectorAll("#divChips .chip").forEach((c) => {
+    if (c.dataset.div === "ALL") c.classList.toggle("active", isAll);
+    else c.classList.toggle("active", !isAll && state.divs.has(c.dataset.div));
+  });
   document.querySelectorAll("#usaChips .chip").forEach((c) =>
-    c.classList.toggle("active", state.team === "USA" && c.dataset.div === state.div));
+    c.classList.toggle("active", state.team === "USA" && !isAll && state.divs.size === 1 && state.divs.has(c.dataset.div)));
 }
 
 function initFilters() {
   document.querySelectorAll("#divChips .chip").forEach((c) =>
-    c.addEventListener("click", () => { state.div = c.dataset.div; syncChips(); renderSchedule(); }));
+    c.addEventListener("click", () => {
+      const d = c.dataset.div;
+      if (d === "ALL") {
+        state.divs = new Set(ALL_DIVS);
+      } else if (state.divs.size === ALL_DIVS.length) {
+        state.divs = new Set([d]); // narrowing down from "All"
+      } else if (state.divs.has(d)) {
+        state.divs.delete(d);
+        if (!state.divs.size) state.divs = new Set(ALL_DIVS); // none left → All
+      } else {
+        state.divs.add(d);
+      }
+      syncChips(); renderSchedule();
+    }));
   document.querySelectorAll("#usaChips .chip").forEach((c) =>
     c.addEventListener("click", () => {
-      state.team = "USA"; state.div = c.dataset.div;
+      state.team = "USA"; state.divs = new Set([c.dataset.div]);
       $("#teamSel").value = "USA"; syncChips(); renderSchedule();
     }));
   $("#showKO").addEventListener("change", (e) => { state.showKO = e.target.checked; renderSchedule(); });
+  document.querySelectorAll("#standDivChips .chip").forEach((c) =>
+    c.addEventListener("click", () => {
+      state.standDiv = c.dataset.div;
+      document.querySelectorAll("#standDivChips .chip").forEach((x) => x.classList.toggle("active", x === c));
+      renderStandings();
+    }));
 }
 
 // ---- timezone toggle ----
@@ -131,7 +225,7 @@ function initTz() {
   const btn = $("#tzToggle");
   const apply = () => {
     btn.querySelectorAll("span").forEach((s) => s.classList.toggle("on", s.dataset.tz === state.tz));
-    $("#tzLabel").textContent = state.tz === "NL" ? "Netherlands time (CEST)" : "US Eastern time";
+    $("#tzLabel").textContent = state.tz === "NL" ? "Netherlands time" : "US Eastern time";
   };
   btn.addEventListener("click", () => {
     state.tz = state.tz === "NL" ? "ET" : "NL";
@@ -183,7 +277,7 @@ function renderTeams() {
     </div>`).join("");
   grid.querySelectorAll(".team-card[data-div]").forEach((card) =>
     card.addEventListener("click", () => {
-      state.team = "USA"; state.div = card.dataset.div;
+      state.team = "USA"; state.divs = new Set([card.dataset.div]);
       $("#teamSel").value = "USA"; syncChips(); renderSchedule();
       $("#schedule").scrollIntoView({ behavior: "smooth" });
     }));
@@ -203,3 +297,4 @@ renderTeams();
 initTicker();
 syncChips();
 renderSchedule();
+renderStandings();

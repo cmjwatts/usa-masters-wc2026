@@ -2,7 +2,16 @@
 // 2026 WMH World Cup — Schiedam (O35 & O40) match data
 // Source: Official Schedule Version 1.00 (1-Jul-26)
 // All times are LOCAL NETHERLANDS TIME (CEST).
-// To update when V2 drops: edit rows below — nothing else to touch.
+//
+// TOURNAMENT-TIME UPDATES (everything happens in this file):
+// 1. Scores: append home & away goals to a POOL row when final —
+//      ["2026-07-23","09:00","M35","ITA","SCO",1, 2,1]
+//    Standings recompute automatically.
+// 2. Pool ranks: when pool play ends, fill FINAL_RANKS below —
+//    knockout games a team can't reach disappear from their filter.
+// 3. Bracket teams: once a knockout matchup is known, set its
+//    `teams` array (e.g. teams: ["USA","NED"]) — the row then only
+//    shows for those teams.
 // ============================================================
 
 const TEAMS = {
@@ -199,89 +208,99 @@ const POOL = [
   ["2026-07-28","18:10","M40","HKG","USA",5],
 ];
 
-// Knockout & classification — [date, time, division, label, pitch]
+// When pool play ends, record each team's final Pool A rank here
+// (at minimum USA's). Example: FINAL_RANKS.W35.USA = 3;
+// Knockout games that rank can't reach are then hidden for that team.
+const FINAL_RANKS = { W35: {}, W40: {}, M35: {}, M40: {} };
+
+// rank-range helper
+const R = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+
+// Knockout & classification.
+// `ranks` = which Pool A finishing positions can appear in this game.
+// `teams` = fill in (e.g. ["USA","NED"]) once the matchup is known.
 const KNOCKOUT = [
   // ---- Wednesday 29 July: Quarterfinals ----
-  ["2026-07-29","09:00","M40","Quarterfinal 1 · 4th vs 5th of Pool A",1],
-  ["2026-07-29","11:00","M40","Quarterfinal 2 · 3rd vs 6th of Pool A",1],
-  ["2026-07-29","13:00","M40","Quarterfinal 3 · 2nd vs 7th of Pool A",1],
-  ["2026-07-29","15:00","M40","Quarterfinal 4 · 1st vs 8th of Pool A",1],
-  ["2026-07-29","09:00","M35","Quarterfinal 1 · 4th vs 5th of Pool A",2],
-  ["2026-07-29","11:00","M35","Quarterfinal 2 · 3rd vs 6th of Pool A",2],
-  ["2026-07-29","13:00","M35","Quarterfinal 3 · 2nd vs 7th of Pool A",2],
-  ["2026-07-29","15:00","M35","Quarterfinal 4 · 1st vs 8th of Pool A",2],
-  ["2026-07-29","09:00","W40","Quarterfinal 1 · 4th vs 5th of Pool A",3],
-  ["2026-07-29","11:00","W40","Quarterfinal 2 · 3rd vs 6th of Pool A",3],
-  ["2026-07-29","13:00","W40","Quarterfinal 3 · 2nd vs 7th of Pool A",3],
-  ["2026-07-29","15:00","W40","Quarterfinal 4 · 1st vs 8th of Pool A",3],
-  ["2026-07-29","09:00","W35","Quarterfinal 1 · 4th vs 5th of Pool A",5],
-  ["2026-07-29","11:00","W35","Quarterfinal 2 · 3rd vs 6th of Pool A",5],
-  ["2026-07-29","13:00","W35","Quarterfinal 3 · 2nd vs 7th of Pool A",5],
-  ["2026-07-29","15:00","W35","Quarterfinal 4 · 1st vs 8th of Pool A",5],
+  { d:"2026-07-29", t:"09:00", div:"M40", label:"Quarterfinal 1 · 4th vs 5th of Pool A", p:1, ranks:[4,5] },
+  { d:"2026-07-29", t:"11:00", div:"M40", label:"Quarterfinal 2 · 3rd vs 6th of Pool A", p:1, ranks:[3,6] },
+  { d:"2026-07-29", t:"13:00", div:"M40", label:"Quarterfinal 3 · 2nd vs 7th of Pool A", p:1, ranks:[2,7] },
+  { d:"2026-07-29", t:"15:00", div:"M40", label:"Quarterfinal 4 · 1st vs 8th of Pool A", p:1, ranks:[1,8] },
+  { d:"2026-07-29", t:"09:00", div:"M35", label:"Quarterfinal 1 · 4th vs 5th of Pool A", p:2, ranks:[4,5] },
+  { d:"2026-07-29", t:"11:00", div:"M35", label:"Quarterfinal 2 · 3rd vs 6th of Pool A", p:2, ranks:[3,6] },
+  { d:"2026-07-29", t:"13:00", div:"M35", label:"Quarterfinal 3 · 2nd vs 7th of Pool A", p:2, ranks:[2,7] },
+  { d:"2026-07-29", t:"15:00", div:"M35", label:"Quarterfinal 4 · 1st vs 8th of Pool A", p:2, ranks:[1,8] },
+  { d:"2026-07-29", t:"09:00", div:"W40", label:"Quarterfinal 1 · 4th vs 5th of Pool A", p:3, ranks:[4,5] },
+  { d:"2026-07-29", t:"11:00", div:"W40", label:"Quarterfinal 2 · 3rd vs 6th of Pool A", p:3, ranks:[3,6] },
+  { d:"2026-07-29", t:"13:00", div:"W40", label:"Quarterfinal 3 · 2nd vs 7th of Pool A", p:3, ranks:[2,7] },
+  { d:"2026-07-29", t:"15:00", div:"W40", label:"Quarterfinal 4 · 1st vs 8th of Pool A", p:3, ranks:[1,8] },
+  { d:"2026-07-29", t:"09:00", div:"W35", label:"Quarterfinal 1 · 4th vs 5th of Pool A", p:5, ranks:[4,5] },
+  { d:"2026-07-29", t:"11:00", div:"W35", label:"Quarterfinal 2 · 3rd vs 6th of Pool A", p:5, ranks:[3,6] },
+  { d:"2026-07-29", t:"13:00", div:"W35", label:"Quarterfinal 3 · 2nd vs 7th of Pool A", p:5, ranks:[2,7] },
+  { d:"2026-07-29", t:"15:00", div:"W35", label:"Quarterfinal 4 · 1st vs 8th of Pool A", p:5, ranks:[1,8] },
   // ---- Thursday 30 July: Crossovers & classification ----
-  ["2026-07-30","10:00","M40","Crossover · 9th vs 12th of Pool A",1],
-  ["2026-07-30","12:00","M40","Crossover · 10th vs 11th of Pool A",1],
-  ["2026-07-30","14:00","M40","Crossover · 13th vs 16th of Pool A",1],
-  ["2026-07-30","16:00","M40","Crossover · 14th vs 15th of Pool A",1],
-  ["2026-07-30","18:00","M40","Pool B · 18th vs 19th of Pool A",1],
-  ["2026-07-30","10:00","M35","Crossover · 9th vs 12th of Pool A",2],
-  ["2026-07-30","12:00","M35","Crossover · 10th vs 11th of Pool A",2],
-  ["2026-07-30","14:00","M35","Pool B · 14th vs 15th of Pool A",2],
-  ["2026-07-30","16:00","W40","Class 13/14 · 14th vs 13th of Pool A",2],
-  ["2026-07-30","10:00","W40","Crossover · 9th vs 12th of Pool A",3],
-  ["2026-07-30","12:00","W40","Crossover · 10th vs 11th of Pool A",3],
-  ["2026-07-30","14:00","W40","Crossover · 15th vs 18th of Pool A",3],
-  ["2026-07-30","16:00","W40","Crossover · 16th vs 17th of Pool A",3],
-  ["2026-07-30","10:00","W35","Crossover · 9th vs 12th of Pool A",5],
-  ["2026-07-30","12:00","W35","Crossover · 10th vs 11th of Pool A",5],
-  ["2026-07-30","14:00","W35","Class 13/14 · 14th vs 13th of Pool A",5],
-  ["2026-07-30","16:00","W35","Pool B · 16th vs 17th of Pool A",5],
+  { d:"2026-07-30", t:"10:00", div:"M40", label:"Crossover · 9th vs 12th of Pool A", p:1, ranks:[9,12] },
+  { d:"2026-07-30", t:"12:00", div:"M40", label:"Crossover · 10th vs 11th of Pool A", p:1, ranks:[10,11] },
+  { d:"2026-07-30", t:"14:00", div:"M40", label:"Crossover · 13th vs 16th of Pool A", p:1, ranks:[13,16] },
+  { d:"2026-07-30", t:"16:00", div:"M40", label:"Crossover · 14th vs 15th of Pool A", p:1, ranks:[14,15] },
+  { d:"2026-07-30", t:"18:00", div:"M40", label:"Pool B · 18th vs 19th of Pool A", p:1, ranks:[18,19] },
+  { d:"2026-07-30", t:"10:00", div:"M35", label:"Crossover · 9th vs 12th of Pool A", p:2, ranks:[9,12] },
+  { d:"2026-07-30", t:"12:00", div:"M35", label:"Crossover · 10th vs 11th of Pool A", p:2, ranks:[10,11] },
+  { d:"2026-07-30", t:"14:00", div:"M35", label:"Pool B · 14th vs 15th of Pool A", p:2, ranks:[14,15] },
+  { d:"2026-07-30", t:"16:00", div:"W40", label:"Class 13/14 · 14th vs 13th of Pool A", p:2, ranks:[13,14] },
+  { d:"2026-07-30", t:"10:00", div:"W40", label:"Crossover · 9th vs 12th of Pool A", p:3, ranks:[9,12] },
+  { d:"2026-07-30", t:"12:00", div:"W40", label:"Crossover · 10th vs 11th of Pool A", p:3, ranks:[10,11] },
+  { d:"2026-07-30", t:"14:00", div:"W40", label:"Crossover · 15th vs 18th of Pool A", p:3, ranks:[15,18] },
+  { d:"2026-07-30", t:"16:00", div:"W40", label:"Crossover · 16th vs 17th of Pool A", p:3, ranks:[16,17] },
+  { d:"2026-07-30", t:"10:00", div:"W35", label:"Crossover · 9th vs 12th of Pool A", p:5, ranks:[9,12] },
+  { d:"2026-07-30", t:"12:00", div:"W35", label:"Crossover · 10th vs 11th of Pool A", p:5, ranks:[10,11] },
+  { d:"2026-07-30", t:"14:00", div:"W35", label:"Class 13/14 · 14th vs 13th of Pool A", p:5, ranks:[13,14] },
+  { d:"2026-07-30", t:"16:00", div:"W35", label:"Pool B · 16th vs 17th of Pool A", p:5, ranks:[16,17] },
   // ---- Friday 31 July: Semifinals & classification ----
-  ["2026-07-31","08:00","M35","Pool B · 15th vs 13th of Pool A",1],
-  ["2026-07-31","10:00","M40","SEMIFINAL · Winners QF4 vs QF1",1],
-  ["2026-07-31","12:00","M40","SEMIFINAL · Winners QF3 vs QF2",1],
-  ["2026-07-31","14:00","M35","SEMIFINAL · Winners QF4 vs QF1",1],
-  ["2026-07-31","16:00","M35","SEMIFINAL · Winners QF3 vs QF2",1],
-  ["2026-07-31","18:00","M35","Class 9/10 · Crossover winners",1],
-  ["2026-07-31","20:00","M35","Class 11/12 · Crossover losers",1],
-  ["2026-07-31","08:00","W35","Pool B · 17th vs 15th of Pool A",2],
-  ["2026-07-31","10:00","W40","SEMIFINAL · Winners QF4 vs QF1",2],
-  ["2026-07-31","12:00","W40","SEMIFINAL · Winners QF3 vs QF2",2],
-  ["2026-07-31","14:00","W35","SEMIFINAL · Winners QF4 vs QF1",2],
-  ["2026-07-31","16:00","W35","SEMIFINAL · Winners QF3 vs QF2",2],
-  ["2026-07-31","18:00","W40","Class 7/8 · QF runners-up 3 vs 4",2],
-  ["2026-07-31","20:00","W40","Class 9/10 · Crossover winners",2],
-  ["2026-07-31","08:00","M40","Pool B · 19th vs 17th of Pool A",3],
-  ["2026-07-31","10:00","M40","Class 7/8 · QF runners-up 3 vs 4",3],
-  ["2026-07-31","12:00","M40","Class 9/10 · Crossover winners",3],
-  ["2026-07-31","14:00","M40","Class 11/12 · Crossover losers",3],
-  ["2026-07-31","16:00","M40","Class 13/14 · Crossover winners",3],
-  ["2026-07-31","18:00","M40","Class 15/16 · Crossover losers",3],
-  ["2026-07-31","20:00","W40","Class 17/18 · Crossover losers",3],
-  ["2026-07-31","08:00","W35","Class 7/8 · QF runners-up 3 vs 4",5],
-  ["2026-07-31","10:00","W35","Class 9/10 · Crossover winners",5],
-  ["2026-07-31","12:00","W35","Class 11/12 · Crossover losers",5],
-  ["2026-07-31","14:00","W35","Class 13/14 · 13th vs 14th of Pool A",5],
-  ["2026-07-31","16:00","W40","Class 11/12 · Crossover losers",5],
-  ["2026-07-31","18:00","W40","Class 13/14 · 13th vs 14th of Pool A",5],
-  ["2026-07-31","20:00","W40","Class 15/16 · Crossover winners",5],
+  { d:"2026-07-31", t:"08:00", div:"M35", label:"Pool B · 15th vs 13th of Pool A", p:1, ranks:[13,15] },
+  { d:"2026-07-31", t:"10:00", div:"M40", label:"SEMIFINAL · Winners QF4 vs QF1", p:1, ranks:R(1,8) },
+  { d:"2026-07-31", t:"12:00", div:"M40", label:"SEMIFINAL · Winners QF3 vs QF2", p:1, ranks:R(1,8) },
+  { d:"2026-07-31", t:"14:00", div:"M35", label:"SEMIFINAL · Winners QF4 vs QF1", p:1, ranks:R(1,8) },
+  { d:"2026-07-31", t:"16:00", div:"M35", label:"SEMIFINAL · Winners QF3 vs QF2", p:1, ranks:R(1,8) },
+  { d:"2026-07-31", t:"18:00", div:"M35", label:"Class 9/10 · Crossover winners", p:1, ranks:R(9,12) },
+  { d:"2026-07-31", t:"20:00", div:"M35", label:"Class 11/12 · Crossover losers", p:1, ranks:R(9,12) },
+  { d:"2026-07-31", t:"08:00", div:"W35", label:"Pool B · 17th vs 15th of Pool A", p:2, ranks:[15,17] },
+  { d:"2026-07-31", t:"10:00", div:"W40", label:"SEMIFINAL · Winners QF4 vs QF1", p:2, ranks:R(1,8) },
+  { d:"2026-07-31", t:"12:00", div:"W40", label:"SEMIFINAL · Winners QF3 vs QF2", p:2, ranks:R(1,8) },
+  { d:"2026-07-31", t:"14:00", div:"W35", label:"SEMIFINAL · Winners QF4 vs QF1", p:2, ranks:R(1,8) },
+  { d:"2026-07-31", t:"16:00", div:"W35", label:"SEMIFINAL · Winners QF3 vs QF2", p:2, ranks:R(1,8) },
+  { d:"2026-07-31", t:"18:00", div:"W40", label:"Class 7/8 · QF runners-up 3 vs 4", p:2, ranks:R(1,8) },
+  { d:"2026-07-31", t:"20:00", div:"W40", label:"Class 9/10 · Crossover winners", p:2, ranks:R(9,12) },
+  { d:"2026-07-31", t:"08:00", div:"M40", label:"Pool B · 19th vs 17th of Pool A", p:3, ranks:[17,19] },
+  { d:"2026-07-31", t:"10:00", div:"M40", label:"Class 7/8 · QF runners-up 3 vs 4", p:3, ranks:R(1,8) },
+  { d:"2026-07-31", t:"12:00", div:"M40", label:"Class 9/10 · Crossover winners", p:3, ranks:R(9,12) },
+  { d:"2026-07-31", t:"14:00", div:"M40", label:"Class 11/12 · Crossover losers", p:3, ranks:R(9,12) },
+  { d:"2026-07-31", t:"16:00", div:"M40", label:"Class 13/14 · Crossover winners", p:3, ranks:R(13,16) },
+  { d:"2026-07-31", t:"18:00", div:"M40", label:"Class 15/16 · Crossover losers", p:3, ranks:R(13,16) },
+  { d:"2026-07-31", t:"20:00", div:"W40", label:"Class 17/18 · Crossover losers", p:3, ranks:R(15,18) },
+  { d:"2026-07-31", t:"08:00", div:"W35", label:"Class 7/8 · QF runners-up 3 vs 4", p:5, ranks:R(1,8) },
+  { d:"2026-07-31", t:"10:00", div:"W35", label:"Class 9/10 · Crossover winners", p:5, ranks:R(9,12) },
+  { d:"2026-07-31", t:"12:00", div:"W35", label:"Class 11/12 · Crossover losers", p:5, ranks:R(9,12) },
+  { d:"2026-07-31", t:"14:00", div:"W35", label:"Class 13/14 · 13th vs 14th of Pool A", p:5, ranks:[13,14] },
+  { d:"2026-07-31", t:"16:00", div:"W40", label:"Class 11/12 · Crossover losers", p:5, ranks:R(9,12) },
+  { d:"2026-07-31", t:"18:00", div:"W40", label:"Class 13/14 · 13th vs 14th of Pool A", p:5, ranks:[13,14] },
+  { d:"2026-07-31", t:"20:00", div:"W40", label:"Class 15/16 · Crossover winners", p:5, ranks:R(15,18) },
   // ---- Saturday 1 August: Finals ----
-  ["2026-08-01","10:00","W40","🏆 FINAL",1],
-  ["2026-08-01","12:00","M40","🏆 FINAL",1],
-  ["2026-08-01","14:00","W35","🏆 FINAL",1],
-  ["2026-08-01","16:00","M35","🏆 FINAL",1],
-  ["2026-08-01","09:00","W40","Bronze medal · Class 3/4",2],
-  ["2026-08-01","11:00","M40","Bronze medal · Class 3/4",2],
-  ["2026-08-01","13:00","W35","Bronze medal · Class 3/4",2],
-  ["2026-08-01","15:00","M35","Bronze medal · Class 3/4",2],
-  ["2026-08-01","09:00","W40","Class 5/6 · QF runners-up 1 vs 2",3],
-  ["2026-08-01","11:00","M40","Class 5/6 · QF runners-up 1 vs 2",3],
-  ["2026-08-01","13:00","W35","Class 5/6 · QF runners-up 1 vs 2",3],
-  ["2026-08-01","15:00","M35","Class 5/6 · QF runners-up 1 vs 2",3],
-  ["2026-08-01","09:00","M35","Pool B · 13th vs 14th of Pool A",5],
-  ["2026-08-01","11:00","M40","Pool B · 17th vs 18th of Pool A",5],
-  ["2026-08-01","13:00","W35","Pool B · 15th vs 16th of Pool A",5],
-  ["2026-08-01","15:00","M35","Class 7/8 · QF runners-up 3 vs 4",5],
+  { d:"2026-08-01", t:"10:00", div:"W40", label:"🏆 FINAL", p:1, ranks:R(1,8) },
+  { d:"2026-08-01", t:"12:00", div:"M40", label:"🏆 FINAL", p:1, ranks:R(1,8) },
+  { d:"2026-08-01", t:"14:00", div:"W35", label:"🏆 FINAL", p:1, ranks:R(1,8) },
+  { d:"2026-08-01", t:"16:00", div:"M35", label:"🏆 FINAL", p:1, ranks:R(1,8) },
+  { d:"2026-08-01", t:"09:00", div:"W40", label:"Bronze medal · Class 3/4", p:2, ranks:R(1,8) },
+  { d:"2026-08-01", t:"11:00", div:"M40", label:"Bronze medal · Class 3/4", p:2, ranks:R(1,8) },
+  { d:"2026-08-01", t:"13:00", div:"W35", label:"Bronze medal · Class 3/4", p:2, ranks:R(1,8) },
+  { d:"2026-08-01", t:"15:00", div:"M35", label:"Bronze medal · Class 3/4", p:2, ranks:R(1,8) },
+  { d:"2026-08-01", t:"09:00", div:"W40", label:"Class 5/6 · QF runners-up 1 vs 2", p:3, ranks:R(1,8) },
+  { d:"2026-08-01", t:"11:00", div:"M40", label:"Class 5/6 · QF runners-up 1 vs 2", p:3, ranks:R(1,8) },
+  { d:"2026-08-01", t:"13:00", div:"W35", label:"Class 5/6 · QF runners-up 1 vs 2", p:3, ranks:R(1,8) },
+  { d:"2026-08-01", t:"15:00", div:"M35", label:"Class 5/6 · QF runners-up 1 vs 2", p:3, ranks:R(1,8) },
+  { d:"2026-08-01", t:"09:00", div:"M35", label:"Pool B · 13th vs 14th of Pool A", p:5, ranks:[13,14] },
+  { d:"2026-08-01", t:"11:00", div:"M40", label:"Pool B · 17th vs 18th of Pool A", p:5, ranks:[17,18] },
+  { d:"2026-08-01", t:"13:00", div:"W35", label:"Pool B · 15th vs 16th of Pool A", p:5, ranks:[15,16] },
+  { d:"2026-08-01", t:"15:00", div:"M35", label:"Class 7/8 · QF runners-up 3 vs 4", p:5, ranks:R(1,8) },
 ];
 
 // Special events (non-match)

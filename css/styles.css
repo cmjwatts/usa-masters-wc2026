@@ -169,6 +169,26 @@ img { display: block; max-width: 100%; }
 .m-note { font-weight: 400; color: #5c6478; font-size: 0.85rem; display: block; }
 .m-pitch { text-align: right; font-weight: 900; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--navy); }
 .empty-state { text-align: center; padding: 40px; color: #5c6478; font-weight: 600; }
+.m-score { font-family: "Anton"; color: var(--navy); padding: 0 10px; font-size: 1.15rem; }
+
+/* ============ STANDINGS ============ */
+.stand-chips { margin-bottom: 22px; }
+.stand-table { width: 100%; border-collapse: collapse; background: var(--cream); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+.stand-table th, .stand-table td { padding: 10px 8px; text-align: center; font-size: 0.95rem; }
+.stand-table thead th {
+  background: var(--navy); color: #fff; font-family: "Anton"; font-weight: 400;
+  letter-spacing: 0.08em; font-size: 0.8rem; text-transform: uppercase;
+}
+.stand-table tbody tr:nth-child(even) { background: rgba(27, 54, 104, 0.05); }
+.stand-table tbody tr:nth-child(-n+8) td:first-child { color: var(--red); font-weight: 900; }
+.stand-table .st-team { text-align: left; font-weight: 700; padding-left: 14px; }
+.stand-table .st-usa { background: linear-gradient(90deg, #ffe9ec, #fff5f6) !important; border-left: 5px solid var(--red); }
+.stand-table td b { color: var(--navy); }
+@media (max-width: 640px) {
+  .stand-table th, .stand-table td { padding: 8px 4px; font-size: 0.8rem; }
+  .stand-table th:nth-child(7), .stand-table td:nth-child(7),
+  .stand-table th:nth-child(8), .stand-table td:nth-child(8) { display: none; }
+}
 
 /* ============ TEAMS ============ */
 .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 14px; }
