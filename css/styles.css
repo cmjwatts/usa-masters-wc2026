@@ -275,8 +275,8 @@ img { display: block; max-width: 100%; }
 /* ============ RESPONSIVE ============ */
 @media (max-width: 860px) {
   .nav { flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
-  .nav-links { order: 3; width: 100%; justify-content: space-between; margin: 0; }
-  .nav-links a { padding: 6px 7px; font-size: 0.78rem; }
+  .nav-links { order: 3; width: 100%; justify-content: space-between; margin: 0; flex-wrap: nowrap; gap: 0; }
+  .nav-links a { padding: 6px 4px; font-size: 0.72rem; letter-spacing: 0.02em; white-space: nowrap; }
   .tz-toggle { margin-left: auto; }
   .section { padding: 56px 5vw; }
   .section-head { grid-template-columns: 1fr; gap: 12px; }
