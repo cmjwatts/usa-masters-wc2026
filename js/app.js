@@ -342,6 +342,17 @@ function initIcs() {
   });
 }
 
+// ---- hero photo: prefer the team photo when assets/team-hero.jpg exists ----
+function initHeroPhoto() {
+  const probe = new Image();
+  probe.onload = () => {
+    const bg = document.querySelector(".hero-bg");
+    bg.style.backgroundImage = "url('assets/team-hero.jpg')";
+    bg.classList.add("team-photo");
+  };
+  probe.src = "assets/team-hero.jpg";
+}
+
 // ---- ticker ----
 function initTicker() {
   const items = "GO USA 🇺🇸 · SCHIEDAM 2026 · JULY 22 – AUG 1 · WOMEN O35 · WORLD MASTERS HOCKEY · ";
@@ -351,6 +362,7 @@ function initTicker() {
 buildTeamSelect();
 initFilters();
 initIcs();
+initHeroPhoto();
 initTz();
 initCountdown();
 renderTeams();
