@@ -71,14 +71,7 @@ img { display: block; max-width: 100%; }
   position: absolute; inset: 0;
   background:
     linear-gradient(15deg, rgba(14,31,66,0.94) 12%, rgba(27,54,104,0.55) 45%, rgba(227,24,55,0.25) 100%);
-}
-/* Team-photo mode: keep faces clear, anchor the wash to the text corner */
-.hero-bg.team-photo { background-position: center 24%; }
-.hero-bg.team-photo + .hero-wash {
-  background:
-    linear-gradient(10deg, rgba(14,31,66,0.9) 8%, rgba(14,31,66,0.35) 38%, rgba(227,24,55,0.08) 75%, rgba(14,31,66,0) 100%);
-}
-.hero-inner { position: relative; padding: 90px 6vw 60px; max-width: 1200px; }
+}.hero-inner { position: relative; padding: 90px 6vw 60px; max-width: 1200px; }
 .hero-kicker {
   font-weight: 700; text-transform: uppercase; letter-spacing: 0.22em; font-size: 0.85rem;
   color: var(--gold); margin-bottom: 8px;
