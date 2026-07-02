@@ -54,7 +54,12 @@ function teamName(code) {
 
 // ---- schedule filtering ----
 function poolRow(r) {
-  const [d, t, div, h, a, p, hs, as] = r;
+  let [d, t, div, h, a, p, hs, as] = r;
+  // auto-scraped scores (js/results.js) fill in unless hand-entered in data.js
+  if (hs == null && typeof RESULTS !== "undefined") {
+    const auto = RESULTS[`${div}|${h}|${a}`] || RESULTS[`${div}|${a}|${h}`]?.slice().reverse();
+    if (auto) [hs, as] = auto;
+  }
   return { d, t, div, h, a, p, hs, as, type: "pool" };
 }
 
@@ -134,7 +139,8 @@ function renderSchedule() {
 function computeStandings(div) {
   const table = {};
   const ensure = (c) => (table[c] ??= { code: c, P: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, Pts: 0 });
-  for (const [, , d, h, a, , hs, as] of POOL) {
+  for (const r of POOL) {
+    const { div: d, h, a, hs, as } = poolRow(r);
     if (d !== div) continue;
     const H = ensure(h), A = ensure(a);
     if (hs == null || as == null) continue;

@@ -1,0 +1,36 @@
+name: Update tournament results
+
+on:
+  workflow_dispatch: {}        # manual "Run workflow" button
+  schedule:
+    # Every 20 min during the tournament (UTC; games run 6:00-19:00 UTC).
+    - cron: "*/20 6-20 22-31 7 *"   # July 22-31
+    - cron: "*/20 6-20 1-2 8 *"     # August 1-2
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Scrape AltiusRT results
+        run: node scripts/scrape-results.mjs
+
+      - name: Commit & push if results changed
+        run: |
+          if git diff --quiet js/results.js; then
+            echo "No new results."
+          else
+            git config user.name "results-bot"
+            git config user.email "actions@github.com"
+            git add js/results.js
+            git commit -m "Auto-update results from AltiusRT"
+            git push
+          fi
