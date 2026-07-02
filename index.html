@@ -16,13 +16,19 @@
   <!-- ============ NAV ============ -->
   <header class="nav" id="top">
     <a class="nav-brand" href="#top">
-      <svg class="nav-mark" viewBox="0 0 100 100" aria-hidden="true">
-        <circle cx="58" cy="13" r="10" fill="var(--navy)"/>
-        <path d="M64 27 C74 40 66 55 54 64 C46 70 38 76 30 81" fill="none" stroke="var(--navy)" stroke-width="11" stroke-linecap="round"/>
-        <path d="M60 32 C55 54 42 70 22 79 C16 82 10 82 7 79" fill="none" stroke="var(--red)" stroke-width="7" stroke-linecap="round"/>
-        <circle cx="13" cy="90" r="5" fill="var(--navy)"/>
-      </svg>
-      <span class="nav-word"><b>USA</b> MASTERS <em>· WC 2026</em></span>
+      <img id="navLogo" src="assets/logo.png" alt="USA Field Hockey Masters"
+           onerror="this.style.display='none';document.getElementById('navFallback').style.display='flex'">
+      <span id="navFallback" class="nav-fallback" style="display:none">
+        <svg class="nav-mark" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="58" cy="13" r="10" fill="var(--navy)"/>
+          <path d="M64 27 C74 40 66 55 54 64 C46 70 38 76 30 81" fill="none" stroke="var(--navy)" stroke-width="11" stroke-linecap="round"/>
+          <path d="M60 32 C55 54 42 70 22 79 C16 82 10 82 7 79" fill="none" stroke="var(--red)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="13" cy="90" r="5" fill="var(--navy)"/>
+        </svg>
+        <span class="lockup"><b class="lk-usa">USA</b><b class="lk-fh">Field Hockey</b></span>
+        <span class="lk-bar"></span>
+        <b class="lk-masters">MASTERS</b>
+      </span>
     </a>
     <nav class="nav-links">
       <a href="#schedule">Schedule</a>
@@ -48,6 +54,7 @@
       <div class="countdown" id="countdown" aria-live="polite"></div>
       <div class="hero-cta">
         <a class="btn btn-solid" href="#schedule">See the schedule</a>
+        <a class="btn btn-ghost" href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener">📺 Watch live</a>
         <a class="btn btn-ghost" href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener">Follow @usamastersfh</a>
       </div>
     </div>
@@ -89,7 +96,11 @@
       <div class="filter-group filter-knockout">
         <label class="switch-label"><input type="checkbox" id="showKO" checked> Include knockout rounds &amp; events</label>
       </div>
+      <div class="filter-group filter-ics">
+        <button class="btn btn-small btn-solid" id="icsBtn" title="Downloads a calendar file of the games in the current view">📅 Add these games to your calendar</button>
+      </div>
     </div>
+    <p class="stream-note">📺 Games stream on <a href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener">worldmastershockey.tv</a> — per-game watch links will appear next to matches once WMH posts them.</p>
 
     <div id="scheduleList"></div>
   </section>
@@ -202,6 +213,7 @@
       <p>The whole tournament, one tap away.</p>
     </div>
     <div class="link-grid">
+      <a class="link-card" href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener"><span>📺</span><b>Watch Live</b><small>worldmastershockey.tv — official WMH streams (also on <u>YouTube</u>)</small></a>
       <a class="link-card" href="https://drive.google.com/file/d/1k6KtA_rPml7MEPIUOYYGryKm98Pe0hsz/view" target="_blank" rel="noopener"><span>📄</span><b>Official Schedule PDF</b><small>Version 1 · all O35/O40 matches</small></a>
       <a class="link-card" href="https://masters.altiusrt.com/" target="_blank" rel="noopener"><span>📊</span><b>Live Scores &amp; Standings</b><small>Masters AltiusRT — results post here during the event</small></a>
       <a class="link-card" href="https://worldmastershockey.org/" target="_blank" rel="noopener"><span>🌍</span><b>World Masters Hockey</b><small>Official tournament organizer</small></a>

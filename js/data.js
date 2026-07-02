@@ -325,7 +325,15 @@ const USA_TEAMS = [
   { code: "M50", name: "Men O50", venue: "HC Rotterdam", inApp: false },
 ];
 
+// Per-game stream links — key is "date|time|pitch" (NL time), value is the
+// stream URL. Fill these in once WMH posts how games are streamed, e.g.:
+//   "2026-07-23|16:20|3": "https://www.worldmastershockey.tv/...",
+// A ▶ Watch button then appears on that match row.
+const VIDEO = {};
+
 const LINKS = {
+  stream: "https://www.worldmastershockey.tv/",
+  youtube: "https://www.youtube.com/channel/UCk6X0_aIFngcxt3HiX2Hh_w",
   schedulePdf: "https://drive.google.com/file/d/1k6KtA_rPml7MEPIUOYYGryKm98Pe0hsz/view",
   liveResults: "https://masters.altiusrt.com/",
   wmh: "https://worldmastershockey.org/",

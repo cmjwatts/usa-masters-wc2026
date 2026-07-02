@@ -120,7 +120,9 @@ function renderSchedule() {
         const usa = r.h === "USA" || r.a === "USA";
         const name = (c) => `<span class="${c === "USA" ? "usa-name" : ""}">${teamName(c)}</span>`;
         const score = r.hs != null ? `<b class="m-score">${r.hs}–${r.as}</b>` : `<span class="vs">vs</span>`;
-        html += `<div class="match-row ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-match">${name(r.h)}${score}${name(r.a)}</div><div class="m-pitch">Pitch ${r.p}</div></div>`;
+        const vid = VIDEO[`${r.d}|${r.t}|${r.p}`];
+        const watch = vid ? `<a class="m-watch" href="${vid}" target="_blank" rel="noopener">▶ Watch</a>` : "";
+        html += `<div class="match-row ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-match">${name(r.h)}${score}${name(r.a)}</div><div class="m-pitch">Pitch ${r.p}${watch}</div></div>`;
       }
     }
     html += `</div>`;
@@ -283,6 +285,60 @@ function renderTeams() {
     }));
 }
 
+// ---- calendar export (.ics) ----
+// Times are entered in NL time (CEST, UTC+2) and written to the file in UTC,
+// so they land correctly in any calendar app regardless of the user's zone.
+function icsStamp(dateStr, hhmm, addMinutes = 0) {
+  const [y, mo, d] = dateStr.split("-").map(Number);
+  const [h, m] = hhmm.split(":").map(Number);
+  const utc = new Date(Date.UTC(y, mo - 1, d, h - 2, m + addMinutes)); // CEST -> UTC
+  return utc.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+}
+
+function buildICS() {
+  const LOC = "HC Schiedam\\, Olympiaweg 63\\, 3118 JD Schiedam\\, Netherlands";
+  const rows = matchesFiltered().filter((r) => r.type === "pool" || r.type === "event");
+  const events = rows.map((r) => {
+    const title = r.type === "event"
+      ? r.title.replace(/^[^\w]+\s*/, "") // strip emoji
+      : `${DIVISIONS[r.div].label.replace("Women", "W").replace("Men", "M")} ${r.h} vs. ${r.a}`;
+    const desc = r.type === "event"
+      ? r.note
+      : `Pitch ${r.p} · 2026 WMH Masters World Cup · Schiedam`;
+    return [
+      "BEGIN:VEVENT",
+      `UID:wc2026-${r.d}-${r.t.replace(":", "")}-${r.p || "ev"}@usamasters`,
+      `DTSTAMP:${icsStamp("2026-07-01", "12:00")}`,
+      `DTSTART:${icsStamp(r.d, r.t)}`,
+      `DTEND:${icsStamp(r.d, r.t, 90)}`,
+      `SUMMARY:${title}`,
+      `DESCRIPTION:${desc.replace(/,/g, "\\,")}`,
+      `LOCATION:${LOC}`,
+      "END:VEVENT",
+    ].join("\r\n");
+  });
+  return [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//USA Masters WC2026 Hub//EN",
+    "CALSCALE:GREGORIAN",
+    ...events,
+    "END:VCALENDAR",
+  ].join("\r\n");
+}
+
+function initIcs() {
+  $("#icsBtn").addEventListener("click", () => {
+    const blob = new Blob([buildICS()], { type: "text/calendar" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    const who = state.team === "ALL" ? "all-teams" : state.team;
+    a.download = `wc2026-${who}-${[...state.divs].join("-")}.ics`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+}
+
 // ---- ticker ----
 function initTicker() {
   const items = "GO USA 🇺🇸 · SCHIEDAM 2026 · JULY 22 – AUG 1 · WOMEN O35 · WORLD MASTERS HOCKEY · ";
@@ -291,6 +347,7 @@ function initTicker() {
 
 buildTeamSelect();
 initFilters();
+initIcs();
 initTz();
 initCountdown();
 renderTeams();

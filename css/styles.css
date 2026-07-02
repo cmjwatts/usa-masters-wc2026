@@ -37,6 +37,13 @@ img { display: block; max-width: 100%; }
   border-bottom: 3px solid var(--navy);
 }
 .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--navy); }
+#navLogo { height: 46px; width: auto; mix-blend-mode: multiply; }
+.nav-fallback { display: flex; align-items: center; gap: 9px; }
+.lockup { display: flex; flex-direction: column; line-height: 1; }
+.lk-usa { font-family: "Anton"; color: var(--navy); font-size: 1.25rem; letter-spacing: 0.1em; }
+.lk-fh { font-family: "Archivo"; font-weight: 900; color: var(--red); font-size: 0.52rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.lk-bar { width: 3px; height: 30px; background: var(--navy); }
+.lk-masters { font-family: "Anton"; color: var(--red); font-size: 1.55rem; letter-spacing: 0.05em; }
 .nav-mark { width: 34px; height: 34px; }
 .nav-word { font-family: "Anton", sans-serif; font-size: 1.05rem; letter-spacing: 0.04em; white-space: nowrap; }
 .nav-word b { color: var(--navy); }
@@ -168,6 +175,11 @@ img { display: block; max-width: 100%; }
 .m-label { font-weight: 700; font-size: 0.98rem; }
 .m-note { font-weight: 400; color: #5c6478; font-size: 0.85rem; display: block; }
 .m-pitch { text-align: right; font-weight: 900; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--navy); }
+.m-watch { display: block; margin-top: 4px; color: var(--red); text-decoration: none; font-size: 0.78rem; }
+.m-watch:hover { text-decoration: underline; }
+.stream-note { margin: -22px 0 30px; font-size: 0.92rem; color: #5c6478; }
+.filter-ics { margin-left: auto; }
+.filter-ics .btn { border: none; cursor: pointer; font-family: "Anton"; }
 .empty-state { text-align: center; padding: 40px; color: #5c6478; font-weight: 600; }
 .m-score { font-family: "Anton"; color: var(--navy); padding: 0 10px; font-size: 1.15rem; }
 
