@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USA Masters · 2026 World Cup Schiedam — Fan Hub</title>
+  <meta name="description" content="Everything you need to follow USA Masters Field Hockey at the 2026 WMH World Cup in Schiedam, Netherlands — schedules, venues, kids' activities & more.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
+</head>
+<body>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav" id="top">
+    <a class="nav-brand" href="#top">
+      <svg class="nav-mark" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="58" cy="13" r="10" fill="var(--navy)"/>
+        <path d="M64 27 C74 40 66 55 54 64 C46 70 38 76 30 81" fill="none" stroke="var(--navy)" stroke-width="11" stroke-linecap="round"/>
+        <path d="M60 32 C55 54 42 70 22 79 C16 82 10 82 7 79" fill="none" stroke="var(--red)" stroke-width="7" stroke-linecap="round"/>
+        <circle cx="13" cy="90" r="5" fill="var(--navy)"/>
+      </svg>
+      <span class="nav-word"><b>USA</b> MASTERS <em>· WC 2026</em></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#schedule">Schedule</a>
+      <a href="#teams">USA Teams</a>
+      <a href="#venues">Venues</a>
+      <a href="#kids">Kids Zone</a>
+      <a href="#links">Links</a>
+    </nav>
+    <button class="tz-toggle" id="tzToggle" title="Switch time zone">
+      <span data-tz="NL" class="on">🇳🇱 NL</span><span data-tz="ET">🇺🇸 ET</span>
+    </button>
+  </header>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-wash"></div>
+    <div class="hero-inner">
+      <p class="hero-kicker">World Masters Hockey World Cup · Schiedam, Netherlands</p>
+      <h1>GO<br>USA<span class="hero-period">.</span></h1>
+      <p class="hero-sub">July 22 – August 1, 2026 · HC Schiedam<br>Your one-stop hub for schedules, venues &amp; family fun.</p>
+      <div class="countdown" id="countdown" aria-live="polite"></div>
+      <div class="hero-cta">
+        <a class="btn btn-solid" href="#schedule">See the schedule</a>
+        <a class="btn btn-ghost" href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener">Follow @usamastersfh</a>
+      </div>
+    </div>
+    <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
+  </section>
+
+  <!-- ============ SCHEDULE ============ -->
+  <main>
+  <section class="section" id="schedule">
+    <div class="section-head">
+      <h2>Match<br>Schedule</h2>
+      <p>All times shown in <strong id="tzLabel">Netherlands time (CEST)</strong> — flip the toggle up top for US Eastern.
+      Pool play runs July 23–28; every team then plays through quarterfinals, crossovers and finals. Official <a href="https://drive.google.com/file/d/1k6KtA_rPml7MEPIUOYYGryKm98Pe0hsz/view" target="_blank" rel="noopener">Schedule V1 PDF ↗</a></p>
+    </div>
+
+    <div class="usa-chips" id="usaChips">
+      <span class="chips-label">Team USA quick view:</span>
+      <button class="chip chip-usa active" data-div="W35">⭐ Women O35</button>
+      <button class="chip chip-usa" data-div="W40">Women O40</button>
+      <button class="chip chip-usa" data-div="M35">Men O35</button>
+      <button class="chip chip-usa" data-div="M40">Men O40</button>
+    </div>
+
+    <div class="filters">
+      <div class="filter-group">
+        <label for="teamSel">Team</label>
+        <select id="teamSel"></select>
+      </div>
+      <div class="filter-group">
+        <label>Division</label>
+        <div class="div-chips" id="divChips">
+          <button class="chip" data-div="ALL">All</button>
+          <button class="chip active" data-div="W35">W O35</button>
+          <button class="chip" data-div="W40">W O40</button>
+          <button class="chip" data-div="M35">M O35</button>
+          <button class="chip" data-div="M40">M O40</button>
+        </div>
+      </div>
+      <div class="filter-group filter-knockout">
+        <label class="switch-label"><input type="checkbox" id="showKO" checked> Include knockout rounds &amp; events</label>
+      </div>
+    </div>
+
+    <div id="scheduleList"></div>
+  </section>
+
+  <!-- ============ USA TEAMS ============ -->
+  <section class="section section-tinted" id="teams">
+    <div class="section-head">
+      <h2>USA<br>Teams</h2>
+      <p>Nine USA Masters teams compete in the July session across two venues, with more USA squads at the August session in Belgium. Rosters on <a href="https://www.usafieldhockey.com/masters" target="_blank" rel="noopener">USA Field Hockey ↗</a></p>
+    </div>
+    <div class="team-grid" id="teamGrid"></div>
+    <p class="team-note">📋 The Rotterdam schedule (O45/O50 &amp; WO35 IMC) is published separately — check <a href="https://worldmastershockey.org/" target="_blank" rel="noopener">World Masters Hockey</a> or <a href="https://masters.altiusrt.com/" target="_blank" rel="noopener">live results</a> as it posts.</p>
+    <div class="photo-strip">
+      <figure><img src="assets/action-pass.jpg" alt="USA player controlling the ball" loading="lazy"></figure>
+      <figure><img src="assets/action-point.jpg" alt="USA players calling the play" loading="lazy"></figure>
+      <figure><img src="assets/team-smiles.jpg" alt="USA teammates on the pitch" loading="lazy"></figure>
+    </div>
+  </section>
+
+  <!-- ============ VENUES ============ -->
+  <section class="section" id="venues">
+    <div class="section-head">
+      <h2>Venues &amp;<br>Getting There</h2>
+      <p>Two clubs host the July session, about 20 minutes apart. Both are easy to reach by tram from Rotterdam Centraal.</p>
+    </div>
+    <div class="venue-grid">
+      <article class="venue-card venue-primary">
+        <span class="venue-tag">Main venue · O35 &amp; O40</span>
+        <h3>HC Schiedam</h3>
+        <p class="venue-addr">Olympiaweg 63, Park Harga<br>3118 JD Schiedam, Netherlands</p>
+        <ul>
+          <li>🏑 Matches on Pitches 1, 2, 3 &amp; 5</li>
+          <li>🎉 Opening &amp; Closing Ceremonies + Dutch Party</li>
+          <li>👧 Kids' program on site</li>
+          <li>🚋 Public transport zone 5319 — tram from Rotterdam Centraal, ~5 min walk from the stop</li>
+        </ul>
+        <div class="venue-actions">
+          <a class="btn btn-small btn-solid" href="https://maps.google.com/?q=HC+Schiedam,+Olympiaweg+63,+3118+JD+Schiedam,+Netherlands" target="_blank" rel="noopener">Open in Maps</a>
+          <a class="btn btn-small btn-ghost-dark" href="https://www.hcschiedam.nl/world-masters-hockey" target="_blank" rel="noopener">Event site</a>
+        </div>
+      </article>
+      <article class="venue-card">
+        <span class="venue-tag">O45 &amp; O50 + WO35 IMC</span>
+        <h3>HC Rotterdam</h3>
+        <p class="venue-addr">Hazelaarweg, Rotterdam<br>(north Rotterdam, near Rotterdam The Hague Airport)</p>
+        <ul>
+          <li>🏑 USA WO35 IMC, WO45, WO50, MO45, MO50</li>
+          <li>🚋 Public transport zone 5310</li>
+        </ul>
+        <div class="venue-actions">
+          <a class="btn btn-small btn-solid" href="https://maps.google.com/?q=HC+Rotterdam,+Hazelaarweg,+Rotterdam,+Netherlands" target="_blank" rel="noopener">Open in Maps</a>
+        </div>
+      </article>
+      <article class="venue-card">
+        <span class="venue-tag">Team USA practice · July 21</span>
+        <h3>HC Alecto</h3>
+        <p class="venue-addr">Leiderdorp, Netherlands</p>
+        <ul>
+          <li>🏑 Women 3:00–4:30 PM · Men 4:30–6:00 PM</li>
+          <li>🍔 US Delegation BBQ from 6:15 PM</li>
+          <li>✅ Showers, clubhouse, ice bath &amp; gear included</li>
+        </ul>
+        <div class="venue-actions">
+          <a class="btn btn-small btn-solid" href="https://maps.google.com/?q=Hockey+Club+Alecto,+Leiderdorp,+Netherlands" target="_blank" rel="noopener">Open in Maps</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ KIDS ZONE ============ -->
+  <section class="section section-kids" id="kids">
+    <div class="kids-card">
+      <div class="kids-copy">
+        <span class="venue-tag tag-light">Family HQ</span>
+        <h2>Kids Zone 🎒</h2>
+        <p>Bringing the crew? <strong>Kicks N Sticks</strong> runs a supervised children's program right at HC Schiedam during the tournament — outdoor sports, games and play for <strong>ages 4–14</strong>, drop-off style, so the kids have a blast while you watch the hockey.</p>
+        <ul>
+          <li>📍 At &amp; around HC Schiedam</li>
+          <li>🧒 Ages 4–14 · drop-off program</li>
+          <li>⚡ Spots are limited — register ahead (on-site registration only if space remains)</li>
+        </ul>
+        <div class="hero-cta">
+          <a class="btn btn-solid" href="https://kicksnsticks.eu/world-cup-masters/" target="_blank" rel="noopener">Register the kids</a>
+          <a class="btn btn-ghost" href="mailto:info@kicksnsticks.eu">Questions? Email the program</a>
+        </div>
+      </div>
+      <div class="kids-photo"><img src="assets/team-smiles.jpg" alt="Smiling USA players" loading="lazy"></div>
+    </div>
+  </section>
+
+  <!-- ============ LINKS ============ -->
+  <section class="section section-tinted" id="links">
+    <div class="section-head">
+      <h2>Every<br>Link</h2>
+      <p>The whole tournament, one tap away.</p>
+    </div>
+    <div class="link-grid">
+      <a class="link-card" href="https://drive.google.com/file/d/1k6KtA_rPml7MEPIUOYYGryKm98Pe0hsz/view" target="_blank" rel="noopener"><span>📄</span><b>Official Schedule PDF</b><small>Version 1 · all O35/O40 matches</small></a>
+      <a class="link-card" href="https://masters.altiusrt.com/" target="_blank" rel="noopener"><span>📊</span><b>Live Scores &amp; Standings</b><small>Masters AltiusRT — results post here during the event</small></a>
+      <a class="link-card" href="https://worldmastershockey.org/" target="_blank" rel="noopener"><span>🌍</span><b>World Masters Hockey</b><small>Official tournament organizer</small></a>
+      <a class="link-card" href="https://www.hcschiedam.nl/world-masters-hockey" target="_blank" rel="noopener"><span>🏟️</span><b>HC Schiedam Event Page</b><small>Venue news &amp; visitor info</small></a>
+      <a class="link-card" href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener"><span>📸</span><b>@usamastersfh</b><small>USA Masters National Teams on Instagram</small></a>
+      <a class="link-card" href="https://kicksnsticks.eu/world-cup-masters/" target="_blank" rel="noopener"><span>🎒</span><b>Kids' Program</b><small>Kicks N Sticks · ages 4–14 · register early</small></a>
+      <a class="link-card" href="https://www.usafieldhockey.com/masters" target="_blank" rel="noopener"><span>🇺🇸</span><b>USA Field Hockey Masters</b><small>Rosters &amp; program news</small></a>
+      <a class="link-card" href="https://maps.google.com/?q=HC+Schiedam,+Olympiaweg+63,+3118+JD+Schiedam,+Netherlands" target="_blank" rel="noopener"><span>🗺️</span><b>HC Schiedam on Maps</b><small>Olympiaweg 63, Schiedam</small></a>
+    </div>
+  </section>
+  </main>
+
+  <footer class="footer">
+    <p><b>GO USA! 🇺🇸🏑</b></p>
+    <p>An unofficial fan hub made with love by a USA WO35 family. Times from Official Schedule V1 (July 1, 2026) — always confirm against <a href="https://worldmastershockey.org/" target="_blank" rel="noopener">official sources</a>.</p>
+  </footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
