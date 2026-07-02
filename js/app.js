@@ -272,7 +272,6 @@ function renderTeams() {
   const grid = $("#teamGrid");
   grid.innerHTML = USA_TEAMS.map((t) => `
     <div class="team-card ${t.star ? "star" : ""}" ${t.inApp ? `data-div="${t.code}"` : ""}>
-      ${t.star ? `<span class="t-star">⭐</span>` : ""}
       <h3>🇺🇸 ${t.name}</h3>
       <p class="t-venue">${t.venue}</p>
       <p class="t-cta">${t.inApp ? "Tap to see their schedule ↑" : "Schedule posts separately →"}</p>
@@ -297,13 +296,17 @@ function icsStamp(dateStr, hhmm, addMinutes = 0) {
 
 function buildICS() {
   const LOC = "HC Schiedam\\, Olympiaweg 63\\, 3118 JD Schiedam\\, Netherlands";
-  const rows = matchesFiltered().filter((r) => r.type === "pool" || r.type === "event");
+  // Only games we KNOW: pool matches, plus knockout games once their
+  // matchup has been filled in (teams array set in data.js).
+  const rows = matchesFiltered().filter((r) =>
+    r.type === "pool" || (r.type === "ko" && r.teams && r.teams.length));
   const events = rows.map((r) => {
-    const title = r.type === "event"
-      ? r.title.replace(/^[^\w]+\s*/, "") // strip emoji
-      : `${DIVISIONS[r.div].label.replace("Women", "W").replace("Men", "M")} ${r.h} vs. ${r.a}`;
-    const desc = r.type === "event"
-      ? r.note
+    const divShort = DIVISIONS[r.div].label.replace("Women", "W").replace("Men", "M");
+    const title = r.type === "ko"
+      ? `${divShort} ${r.teams[0]} vs. ${r.teams[1]}`
+      : `${divShort} ${r.h} vs. ${r.a}`;
+    const desc = r.type === "ko"
+      ? `Pitch ${r.p} · ${r.label} · 2026 WMH Masters World Cup · Schiedam`
       : `Pitch ${r.p} · 2026 WMH Masters World Cup · Schiedam`;
     return [
       "BEGIN:VEVENT",
