@@ -1,5 +1,46 @@
 [
   {
+    "id": "sample-gameday",
+    "type": "preview",
+    "date": "2026-07-23",
+    "title": "SAMPLE — Game day: USA vs Australia",
+    "caption": "GAME DAY 🇺🇸🏑\n\nUSA WO35 takes on Australia 🇦🇺 — Thursday, July 23.\n\n🕐 16:20 NL / 10:20 AM ET\n📍 Pitch 3 · HC Schiedam\n📺 worldmastershockey.tv\n📊 Live scores & schedule: usamastersfh.com\n\nLet's go USA!\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #WO35 @masterswc2026.schiedam",
+    "created": "2026-07-04T09:00",
+    "images": [
+      "social/img/sample-gameday-1.png",
+      "social/img/sample-gameday-2.png",
+      "social/img/sample-gameday-3.png"
+    ],
+    "sample": true
+  },
+  {
+    "id": "sample-result",
+    "type": "result",
+    "date": "2026-07-23",
+    "title": "SAMPLE — Full time: USA 2–1 AUS",
+    "caption": "USA WIN 🇺🇸\n\nUSA 2–1 Australia 🇦🇺\n\nWhat a way to spend a Thursday in Schiedam. 🇺🇸\n\n📊 Standings & what's next: usamastersfh.com\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #WO35",
+    "created": "2026-07-04T09:00",
+    "images": [
+      "social/img/sample-result-1.png",
+      "social/img/sample-result-2.png",
+      "social/img/sample-result-3.png"
+    ],
+    "sample": true
+  },
+  {
+    "id": "sample-recap",
+    "type": "recap",
+    "date": "2026-07-23",
+    "title": "SAMPLE — Team USA recap — Thursday, July 23",
+    "caption": "🇺🇸 TEAM USA IN SCHIEDAM — Thursday, July 23\n\nWO35: USA 2–1 Australia (W)\nMO35: USA 1–2 New Zealand (L)\nMO40: USA 2–2 South Africa (D)\n\nAll scores & standings: usamastersfh.com\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #WO35",
+    "created": "2026-07-04T09:00",
+    "images": [
+      "social/img/sample-recap-1.png",
+      "social/img/sample-recap-2.png"
+    ],
+    "sample": true
+  },
+  {
     "id": "player-christine-watts",
     "type": "player",
     "date": "2026-07-04",
