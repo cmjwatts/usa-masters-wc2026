@@ -320,7 +320,7 @@ function slidePlayer(pl) {
 <stop offset="0" stop-color="${RED}"/><stop offset="0.55" stop-color="#ff4671"/><stop offset="1" stop-color="${GOLD}"/>
 </linearGradient>
 <linearGradient id="wash" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0.25" stop-color="${NAVY_DEEP}" stop-opacity="0"/><stop offset="0.62" stop-color="${NAVY_DEEP}" stop-opacity="0.92"/><stop offset="1" stop-color="${NAVY_DEEP}"/>
+<stop offset="0.38" stop-color="${NAVY_DEEP}" stop-opacity="0"/><stop offset="0.55" stop-color="${NAVY_DEEP}" stop-opacity="0.9"/><stop offset="0.63" stop-color="${NAVY_DEEP}" stop-opacity="1"/>
 </linearGradient>
 </defs>
 <rect width="1080" height="1350" fill="${NAVY_DEEP}"/>
@@ -329,9 +329,9 @@ function slidePlayer(pl) {
 <rect width="1080" height="16" fill="url(#g)"/>
 <rect x="64" y="56" width="338" height="110" fill="${CREAM}" rx="16"/>
 <image x="88" y="75" width="290" height="73.6" preserveAspectRatio="xMinYMin meet" href="data:image/png;base64,${LOGO64}"/>
-${T(64, 900 - rowsH, 26, GOLD, "MEET THE TEAM · USA WO35", { f: AB, ls: 6 })}
-${headline(1000 - rowsH, pl.name.toUpperCase(), nameSize)}
-${detailRows(1050 - rowsH, rows)}
+${T(64, 1092 - rowsH, 26, GOLD, "MEET THE TEAM · USA WO35", { f: AB, ls: 6 })}
+${headline(1188 - rowsH, pl.name.toUpperCase(), nameSize)}
+${detailRows(1226 - rowsH, rows)}
 <rect x="64" y="1256" width="952" height="4" fill="${RED}"/>
 ${T(64, 1308, 24, "#ffffff", "USAMASTERSFH.COM", { f: AB, ls: 4, op: 0.75 })}
 ${T(1016, 1308, 24, "#ffffff", "@USAMASTERSFH", { f: AB, ls: 4, a: "end", op: 0.75 })}
