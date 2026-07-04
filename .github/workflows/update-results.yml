@@ -1,8 +1,10 @@
-name: Update tournament results
+name: Update results & social content
 
 on:
   workflow_dispatch: {}        # manual "Run workflow" button
   schedule:
+    # Pre-tournament: once a day for countdown posts (UTC).
+    - cron: "0 7 5-21 7 *"          # July 5-21, 07:00 UTC (09:00 NL)
     # Every 20 min during the tournament (UTC; games run 6:00-19:00 UTC).
     - cron: "*/20 6-20 22-31 7 *"   # July 22-31
     - cron: "*/20 6-20 1-2 8 *"     # August 1-2
@@ -11,7 +13,7 @@ permissions:
   contents: write
 
 jobs:
-  scrape:
+  update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,14 +25,20 @@ jobs:
       - name: Scrape AltiusRT results
         run: node scripts/scrape-results.mjs
 
-      - name: Commit & push if results changed
+      - name: Install deps (slide renderer)
+        run: npm ci
+
+      - name: Generate social posts & carousel slides
+        run: node scripts/generate-social.mjs
+
+      - name: Commit & push if anything changed
         run: |
-          if git diff --quiet js/results.js; then
-            echo "No new results."
+          git add js/results.js social/
+          if git diff --cached --quiet; then
+            echo "No new results or social posts."
           else
             git config user.name "results-bot"
             git config user.email "actions@github.com"
-            git add js/results.js
-            git commit -m "Auto-update results from AltiusRT"
+            git commit -m "Auto-update: results + social content"
             git push
           fi

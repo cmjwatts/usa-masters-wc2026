@@ -1,0 +1,13 @@
+{
+  "name": "usa-masters-wc2026",
+  "private": true,
+  "type": "module",
+  "description": "USA Masters WC2026 fan hub — scripts for results scraping and social content generation",
+  "scripts": {
+    "scrape": "node scripts/scrape-results.mjs",
+    "social": "node scripts/generate-social.mjs"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "^2.6.2"
+  }
+}

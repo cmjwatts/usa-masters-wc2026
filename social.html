@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex" />
+<title>Social Kit — USA Masters WC2026</title>
+<link rel="icon" href="assets/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --navy: #1b3668; --navy-deep: #0e1f42; --red: #e31837; --coral: #ff4671;
+    --gold: #ffb25a; --cream: #f7f5f0; --ink: #101a30;
+    --grad: linear-gradient(100deg, var(--red) 0%, var(--coral) 55%, var(--gold) 115%);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Archivo", -apple-system, sans-serif; background: var(--cream); color: var(--ink); padding-bottom: 60px; }
+  header { background: var(--navy-deep); color: #fff; padding: 26px 20px 22px; }
+  header .kicker { color: var(--gold); font-weight: 700; text-transform: uppercase; letter-spacing: 0.18em; font-size: 0.7rem; }
+  header h1 { font-family: "Anton", sans-serif; font-size: 2.2rem; text-transform: uppercase; line-height: 1; margin-top: 4px; }
+  header h1 em { font-style: normal; color: var(--red); }
+  header p { font-size: 0.85rem; opacity: 0.8; margin-top: 8px; max-width: 520px; }
+  main { max-width: 640px; margin: 0 auto; padding: 18px 14px; }
+  .howto {
+    background: #fff; border: 2px solid var(--navy); border-radius: 14px; padding: 14px 16px;
+    font-size: 0.85rem; margin-bottom: 18px; line-height: 1.5;
+  }
+  .howto b { color: var(--navy); }
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .fchip { border: 2px solid var(--navy); background: #fff; color: var(--navy); border-radius: 999px;
+    padding: 6px 14px; font: 700 0.8rem "Archivo"; text-transform: uppercase; cursor: pointer; }
+  .fchip.on { background: var(--navy); color: #fff; }
+  .card { background: #fff; border-radius: 18px; box-shadow: 0 6px 24px rgba(14,31,66,0.10); margin-bottom: 22px; overflow: hidden; }
+  .card.posted { opacity: 0.55; }
+  .card-head { display: flex; align-items: center; gap: 10px; padding: 12px 16px 0; }
+  .badge { font: 900 0.68rem "Archivo"; text-transform: uppercase; letter-spacing: 0.08em;
+    color: #fff; background: var(--navy); border-radius: 7px; padding: 4px 9px; }
+  .badge.result { background: var(--red); }
+  .badge.preview { background: var(--grad); }
+  .badge.countdown, .badge.event { background: var(--gold); color: var(--ink); }
+  .card-head small { color: #5c6478; font-weight: 600; }
+  .card-head .posted-tag { margin-left: auto; color: #2e8b57; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; }
+  .strip { display: flex; gap: 10px; overflow-x: auto; padding: 12px 16px; scroll-snap-type: x mandatory; }
+  .strip img { height: 300px; border-radius: 12px; scroll-snap-align: start; box-shadow: 0 3px 12px rgba(14,31,66,0.18); }
+  .caption { margin: 0 16px; background: var(--cream); border-radius: 12px; padding: 12px 14px;
+    font-size: 0.85rem; white-space: pre-wrap; line-height: 1.45; max-height: 170px; overflow-y: auto; }
+  .actions { display: flex; gap: 8px; padding: 12px 16px 16px; flex-wrap: wrap; }
+  .btn { border: none; cursor: pointer; font: 700 0.85rem "Archivo"; text-transform: uppercase; letter-spacing: 0.05em;
+    border-radius: 999px; padding: 11px 18px; }
+  .btn-share { background: var(--grad); color: #fff; flex: 1; min-width: 150px; }
+  .btn-copy { background: var(--navy); color: #fff; }
+  .btn-done { background: #fff; color: var(--navy); border: 2px solid var(--navy); }
+  .btn:active { transform: scale(0.97); }
+  .empty { text-align: center; color: #5c6478; padding: 50px 20px; font-weight: 600; }
+  .toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+    background: var(--navy-deep); color: #fff; padding: 10px 22px; border-radius: 999px;
+    font-weight: 700; font-size: 0.85rem; opacity: 0; transition: opacity 0.25s; pointer-events: none; z-index: 99; }
+  .toast.show { opacity: 1; }
+  footer { text-align: center; font-size: 0.78rem; color: #5c6478; padding: 20px; }
+  footer a { color: var(--red); }
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">USA Masters × WC2026 · Internal</div>
+  <h1>Social Kit<em>.</em></h1>
+  <p>Auto-generated post suggestions for @usamastersfh. New posts appear here ~20 min after
+     scores land during the tournament. Brand rules: BRAND.md in the repo.</p>
+</header>
+<main>
+  <div class="howto">
+    <b>Post from your phone:</b> tap <b>Share slides</b> → choose Instagram → the images load as a
+    carousel. The caption is copied automatically — just paste it. Then hit <b>Mark posted</b> so
+    you know it's done. (If share fails, long-press each image → Save, and use Copy caption.)
+  </div>
+  <div class="filter-bar" id="filters"></div>
+  <div id="feed"><div class="empty">Loading…</div></div>
+</main>
+<div class="toast" id="toast"></div>
+<footer>USA Masters WC2026 · <a href="index.html">← back to the hub</a></footer>
+<script>
+const TYPE_LABEL = { preview: "Game day", result: "Result", recap: "Recap", countdown: "Countdown", event: "Event" };
+let POSTS = [], FILTER = "all";
+const postedSet = () => new Set(JSON.parse(localStorage.getItem("postedIds") || "[]"));
+const setPosted = (id, on) => {
+  const s = postedSet(); on ? s.add(id) : s.delete(id);
+  localStorage.setItem("postedIds", JSON.stringify([...s]));
+};
+const toast = (msg) => {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
+};
+
+async function copyCaption(post) {
+  try { await navigator.clipboard.writeText(post.caption); toast("Caption copied ✓"); }
+  catch { prompt("Copy the caption:", post.caption); }
+}
+
+async function share(post) {
+  try {
+    const files = await Promise.all(post.images.map(async (src, i) => {
+      const blob = await (await fetch(src)).blob();
+      return new File([blob], src.split("/").pop(), { type: "image/png" });
+    }));
+    try { await navigator.clipboard.writeText(post.caption); } catch {}
+    if (navigator.canShare && navigator.canShare({ files })) {
+      await navigator.share({ files });
+      toast("Caption is on your clipboard — paste it in Instagram");
+    } else {
+      toast("Sharing not supported here — long-press images to save");
+    }
+  } catch (e) {
+    if (e.name !== "AbortError") toast("Share failed — long-press images to save");
+  }
+}
+
+function render() {
+  const feed = document.getElementById("feed");
+  const posted = postedSet();
+  const posts = POSTS.filter((p) => FILTER === "all" || p.type === FILTER);
+  if (!posts.length) {
+    feed.innerHTML = '<div class="empty">Nothing here yet — posts appear automatically as the tournament unfolds. 🇺🇸</div>';
+    return;
+  }
+  feed.innerHTML = "";
+  for (const post of posts) {
+    const isPosted = posted.has(post.id);
+    const card = document.createElement("div");
+    card.className = "card" + (isPosted ? " posted" : "");
+    card.innerHTML = `
+      <div class="card-head">
+        <span class="badge ${post.type}">${TYPE_LABEL[post.type] || post.type}</span>
+        <small>${post.date}</small>
+        ${isPosted ? '<span class="posted-tag">✓ posted</span>' : ""}
+      </div>
+      <div class="strip">${post.images.map((s) => `<img src="${s}" alt="slide" loading="lazy">`).join("")}</div>
+      <div class="caption"></div>
+      <div class="actions">
+        <button class="btn btn-share">📤 Share slides</button>
+        <button class="btn btn-copy">Copy caption</button>
+        <button class="btn btn-done">${isPosted ? "Unmark" : "Mark posted"}</button>
+      </div>`;
+    card.querySelector(".caption").textContent = post.caption;
+    card.querySelector(".btn-share").onclick = () => share(post);
+    card.querySelector(".btn-copy").onclick = () => copyCaption(post);
+    card.querySelector(".btn-done").onclick = () => { setPosted(post.id, !isPosted); render(); };
+    feed.appendChild(card);
+  }
+}
+
+function renderFilters() {
+  const types = ["all", ...new Set(POSTS.map((p) => p.type))];
+  const bar = document.getElementById("filters");
+  bar.innerHTML = "";
+  for (const t of types) {
+    const b = document.createElement("button");
+    b.className = "fchip" + (FILTER === t ? " on" : "");
+    b.textContent = t === "all" ? "All" : (TYPE_LABEL[t] || t);
+    b.onclick = () => { FILTER = t; renderFilters(); render(); };
+    bar.appendChild(b);
+  }
+}
+
+fetch("social/posts.json", { cache: "no-store" })
+  .then((r) => (r.ok ? r.json() : []))
+  .then((data) => {
+    POSTS = data.sort((a, b) => (b.created + b.id).localeCompare(a.created + a.id));
+    renderFilters(); render();
+  })
+  .catch(() => { document.getElementById("feed").innerHTML = '<div class="empty">Couldn\'t load posts.</div>'; });
+</script>
+</body>
+</html>
