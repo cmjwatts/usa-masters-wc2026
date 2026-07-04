@@ -303,6 +303,51 @@ function slideRecap(date, rows) {
   return frame("Team USA in Schiedam", out);
 }
 
+// player intro: full-bleed photo + navy wash + roster details.
+// pl: { name, number?, position?, college?, collegeTeam?, collegeYear?, hometown?, fact?, photo }
+function slidePlayer(pl) {
+  const photo64 = readFileSync(p(pl.photo)).toString("base64");
+  const mime = pl.photo.endsWith(".png") ? "png" : "jpeg";
+  const rows = [];
+  if (pl.position) rows.push(["Position", pl.number ? `#${pl.number} · ${pl.position}` : pl.position]);
+  if (pl.college) rows.push(["College", pl.collegeYear ? `${pl.college} '${pl.collegeYear}` : pl.college]);
+  if (pl.hometown) rows.push(["Hometown", pl.hometown]);
+  const rowsH = rows.length * 108;
+  const nameSize = pl.name.length > 16 ? 92 : 120;
+  return `<svg width="1080" height="1350" viewBox="0 0 1080 1350" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<linearGradient id="g" x1="0" y1="0" x2="1" y2="0.35">
+<stop offset="0" stop-color="${RED}"/><stop offset="0.55" stop-color="#ff4671"/><stop offset="1" stop-color="${GOLD}"/>
+</linearGradient>
+<linearGradient id="wash" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0.25" stop-color="${NAVY_DEEP}" stop-opacity="0"/><stop offset="0.62" stop-color="${NAVY_DEEP}" stop-opacity="0.92"/><stop offset="1" stop-color="${NAVY_DEEP}"/>
+</linearGradient>
+</defs>
+<rect width="1080" height="1350" fill="${NAVY_DEEP}"/>
+<image x="0" y="0" width="1080" height="1350" preserveAspectRatio="xMidYMid slice" href="data:image/${mime};base64,${photo64}"/>
+<rect width="1080" height="1350" fill="url(#wash)"/>
+<rect width="1080" height="16" fill="url(#g)"/>
+<rect x="64" y="56" width="338" height="110" fill="${CREAM}" rx="16"/>
+<image x="88" y="75" width="290" height="73.6" preserveAspectRatio="xMinYMin meet" href="data:image/png;base64,${LOGO64}"/>
+${T(64, 900 - rowsH, 26, GOLD, "MEET THE TEAM · USA WO35", { f: AB, ls: 6 })}
+${headline(1000 - rowsH, pl.name.toUpperCase(), nameSize)}
+${detailRows(1050 - rowsH, rows)}
+<rect x="64" y="1256" width="952" height="4" fill="${RED}"/>
+${T(64, 1308, 24, "#ffffff", "USAMASTERSFH.COM", { f: AB, ls: 4, op: 0.75 })}
+${T(1016, 1308, 24, "#ffffff", "@USAMASTERSFH", { f: AB, ls: 4, a: "end", op: 0.75 })}
+</svg>`;
+}
+
+const capPlayer = (pl) => {
+  const lines = [`MEET THE TEAM 🇺🇸`, ""];
+  lines.push(`${pl.number ? `#${pl.number} ` : ""}${pl.name}${pl.position ? ` — ${pl.position}` : ""}`);
+  if (pl.college) lines.push(`🎓 ${pl.college}${pl.collegeYear ? ` '${pl.collegeYear}` : ""}${pl.collegeTeam ? ` (${pl.collegeTeam})` : ""}`);
+  if (pl.hometown) lines.push(`📍 ${pl.hometown}`);
+  if (pl.fact) lines.push("", pl.fact);
+  lines.push("", `Follow the road to Schiedam: usamastersfh.com`, "", `${TAGS} #MeetTheTeam`);
+  return lines.join("\n");
+};
+
 function slideEvent(ev) {
   const title = ev.title.replace(/^[^\w]+\s*/, "");
   return frame("World Masters Hockey World Cup · Schiedam",
@@ -464,7 +509,24 @@ for (const k of KNOCKOUT.filter((k) => k.div === "W35" && k.teams?.includes("USA
   }
 }
 
-// 6. daily "Team USA in Schiedam" recap once every USA game that day has a score
+// 6. player intro posts — drop entries in social/players.json + headshots in
+// social/players/ and they post one per day (newest roster entry first un-posted)
+const playersPath = p("social/players.json");
+if (existsSync(playersPath)) {
+  const roster = JSON.parse(readFileSync(playersPath, "utf8"));
+  const queue = roster.filter((pl) =>
+    pl.photo && existsSync(p(pl.photo)) &&
+    !existing.some((x) => x.id === `player-${pl.slug}`) &&
+    !fresh.some((x) => x.id === `player-${pl.slug}`));
+  const alreadyToday = existing.some((x) => x.type === "player" && x.created.slice(0, 10) === TODAY);
+  if (queue.length && !alreadyToday) {
+    const pl = queue[0];
+    add(`player-${pl.slug}`, "player", TODAY, `Meet the team: ${pl.name}`,
+      capPlayer(pl), [slidePlayer(pl)]);
+  }
+}
+
+// 7. daily "Team USA in Schiedam" recap once every USA game that day has a score
 const usaDays = [...new Set(POOL.filter(([, , , h, a]) => h === "USA" || a === "USA").map((g) => g[0]))];
 for (const date of usaDays) {
   if (date > TODAY) continue;
