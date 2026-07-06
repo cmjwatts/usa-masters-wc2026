@@ -45,13 +45,26 @@ const TEAMS = {
   USA: { name: "United States", flag: "🇺🇸" },
   WAL: { name: "Wales", flag: "🏴󠁧󠁢󠁷󠁬󠁳󠁿" },
   ZIM: { name: "Zimbabwe", flag: "🇿🇼" },
+  // IMC (International Masters Cup) sides — WO35 IMC pool opponents
+  ALL35: { name: "Alliance O35", flag: "🌐" },
+  ALLP40: { name: "Alliance Purple O40", flag: "🌐" },
+  ALLB40: { name: "Alliance Blue O40", flag: "🌐" },
+  ARGB40: { name: "Argentina B O40", flag: "🇦🇷" },
+  AUSB35: { name: "Australia B O35", flag: "🇦🇺" },
 };
 
+// partial: true → only USA matches are loaded for that division
+// (full Rotterdam grids live in the official Rotterdam PDF)
 const DIVISIONS = {
   W35: { label: "Women O35", short: "WO35" },
   W40: { label: "Women O40", short: "WO40" },
   M35: { label: "Men O35", short: "MO35" },
   M40: { label: "Men O40", short: "MO40" },
+  W45: { label: "Women O45", short: "WO45", partial: true },
+  W50: { label: "Women O50", short: "WO50", partial: true },
+  M45: { label: "Men O45", short: "MO45", partial: true },
+  M50: { label: "Men O50", short: "MO50", partial: true },
+  W35I: { label: "Women O35 IMC", short: "W35 IMC", partial: true },
 };
 
 // Pool matches — [date, time, division, home, away, pitch]
@@ -206,6 +219,37 @@ const POOL = [
   ["2026-07-28","14:30","M40","RSAB","MAS",5],
   ["2026-07-28","16:20","M40","SGP","SCO",5],
   ["2026-07-28","18:10","M40","HKG","USA",5],
+  // ==========================================================
+  // ROTTERDAM TOURNAMENT — USA games only (source: Rotterdam
+  // Schedule V1, 1-Jul-26). Venues: "ROT Pitch n" = HC Rotterdam,
+  // "VIC Pitch X" = HC Victoria. Full grids: official PDF.
+  // ==========================================================
+  // ---- Women O45 (Pool A of 14) ----
+  ["2026-07-24","12:40","W45","BEL","USA","ROT Pitch 1"],
+  ["2026-07-25","12:40","W45","USA","CHI","VIC Pitch B"],
+  ["2026-07-26","09:00","W45","AUS","USA","VIC Pitch A"],
+  ["2026-07-28","09:00","W45","USA","GER","ROT Pitch 2"],
+  // ---- Women O50 (Pool A of 15) ----
+  ["2026-07-24","11:05","W50","USA","ARG","VIC Pitch C"],
+  ["2026-07-25","09:15","W50","WAL","USA","VIC Pitch C"],
+  ["2026-07-26","14:30","W50","USA","ENG","VIC Pitch B"],
+  ["2026-07-28","16:35","W50","BEL","USA","ROT Pitch 3"],
+  // ---- Men O45 (Pool B of 5) ----
+  ["2026-07-24","12:40","M45","USA","RSA","VIC Pitch A"],
+  ["2026-07-25","09:15","M45","BEL","USA","ROT Pitch 3"],
+  ["2026-07-26","18:10","M45","MAS","USA","ROT Pitch 1"],
+  ["2026-07-28","10:50","M45","USA","SGP","VIC Pitch B"],
+  // ---- Men O50 (Pool A of 22) ----
+  ["2026-07-24","14:45","M50","WAL","USA","ROT Pitch 3"],
+  ["2026-07-25","16:20","M50","USA","NED","VIC Pitch A"],
+  ["2026-07-27","09:00","M50","NZL","USA","VIC Pitch B"],
+  ["2026-07-28","18:10","M50","USA","GER","VIC Pitch A"],
+  // ---- Women O35 IMC ("USA B 35" · pool of 6, 5 games) ----
+  ["2026-07-23","16:35","W35I","ALL35","USA","ROT Pitch 3"],
+  ["2026-07-25","09:00","W35I","USA","ALLP40","ROT Pitch 1"],
+  ["2026-07-27","14:30","W35I","ARGB40","USA","VIC Pitch A"],
+  ["2026-07-28","12:40","W35I","USA","AUSB35","VIC Pitch A"],
+  ["2026-07-30","13:00","W35I","USA","ALLB40","ROT Pitch 2"],
 ];
 
 // When pool play ends, record each team's final Pool A rank here
@@ -301,28 +345,65 @@ const KNOCKOUT = [
   { d:"2026-08-01", t:"11:00", div:"M40", label:"Pool B · 17th vs 18th of Pool A", p:5, ranks:[17,18] },
   { d:"2026-08-01", t:"13:00", div:"W35", label:"Pool B · 15th vs 16th of Pool A", p:5, ranks:[15,16] },
   { d:"2026-08-01", t:"15:00", div:"M35", label:"Class 7/8 · QF runners-up 3 vs 4", p:5, ranks:R(1,8) },
+  // ---- ROTTERDAM: key knockout rounds (QFs, semis, medals).
+  //      Classification games: see the official Rotterdam PDF. ----
+  { d:"2026-07-29", t:"09:00", div:"M50", label:"Quarterfinal 1 · 4th vs 5th of Pool A", p:"ROT Pitch 1", ranks:[4,5] },
+  { d:"2026-07-29", t:"11:00", div:"M50", label:"Quarterfinal 2 · 3rd vs 6th of Pool A", p:"ROT Pitch 1", ranks:[3,6] },
+  { d:"2026-07-29", t:"13:00", div:"M50", label:"Quarterfinal 3 · 2nd vs 7th of Pool A", p:"ROT Pitch 1", ranks:[2,7] },
+  { d:"2026-07-29", t:"15:00", div:"M50", label:"Quarterfinal 4 · 1st vs 8th of Pool A", p:"ROT Pitch 1", ranks:[1,8] },
+  { d:"2026-07-29", t:"09:00", div:"W50", label:"Quarterfinal 1 · 4th vs 5th of Pool A", p:"ROT Pitch 2", ranks:[4,5] },
+  { d:"2026-07-29", t:"11:00", div:"W50", label:"Quarterfinal 2 · 3rd vs 6th of Pool A", p:"ROT Pitch 2", ranks:[3,6] },
+  { d:"2026-07-29", t:"13:00", div:"W50", label:"Quarterfinal 3 · 2nd vs 7th of Pool A", p:"ROT Pitch 2", ranks:[2,7] },
+  { d:"2026-07-29", t:"15:00", div:"W50", label:"Quarterfinal 4 · 1st vs 8th of Pool A", p:"ROT Pitch 2", ranks:[1,8] },
+  { d:"2026-07-29", t:"09:00", div:"W45", label:"Quarterfinal 1 · 4th vs 5th of Pool A", p:"VIC Pitch A", ranks:[4,5] },
+  { d:"2026-07-29", t:"11:00", div:"W45", label:"Quarterfinal 2 · 3rd vs 6th of Pool A", p:"VIC Pitch A", ranks:[3,6] },
+  { d:"2026-07-29", t:"13:00", div:"W45", label:"Quarterfinal 3 · 2nd vs 7th of Pool A", p:"VIC Pitch A", ranks:[2,7] },
+  { d:"2026-07-29", t:"15:00", div:"W45", label:"Quarterfinal 4 · 1st vs 8th of Pool A", p:"VIC Pitch A", ranks:[1,8] },
+  { d:"2026-07-29", t:"09:00", div:"M45", label:"Quarterfinal 1 · 2nd Pool D vs 1st Pool C", p:"VIC Pitch B", ranks:R(1,8) },
+  { d:"2026-07-29", t:"11:00", div:"M45", label:"Quarterfinal 2 · 2nd Pool C vs 1st Pool D", p:"VIC Pitch B", ranks:R(1,8) },
+  { d:"2026-07-29", t:"13:00", div:"M45", label:"Quarterfinal 3 · 1st Pool A vs 2nd Pool B", p:"VIC Pitch B", ranks:R(1,8) },
+  { d:"2026-07-29", t:"15:00", div:"M45", label:"Quarterfinal 4 · 1st Pool B vs 2nd Pool A", p:"VIC Pitch B", ranks:R(1,8) },
+  { d:"2026-07-31", t:"09:00", div:"M45", label:"SEMIFINAL · Winners QF4 vs QF1", p:"ROT Pitch 1", ranks:R(1,8) },
+  { d:"2026-07-31", t:"11:00", div:"M45", label:"SEMIFINAL · Winners QF3 vs QF2", p:"ROT Pitch 1", ranks:R(1,8) },
+  { d:"2026-07-31", t:"13:00", div:"W45", label:"SEMIFINAL · Winners QF4 vs QF1", p:"ROT Pitch 1", ranks:R(1,8) },
+  { d:"2026-07-31", t:"15:00", div:"W45", label:"SEMIFINAL · Winners QF3 vs QF2", p:"ROT Pitch 1", ranks:R(1,8) },
+  { d:"2026-07-31", t:"09:00", div:"W50", label:"SEMIFINAL · Winners QF4 vs QF1", p:"VIC Pitch A", ranks:R(1,8) },
+  { d:"2026-07-31", t:"11:00", div:"W50", label:"SEMIFINAL · Winners QF3 vs QF2", p:"VIC Pitch A", ranks:R(1,8) },
+  { d:"2026-07-31", t:"13:00", div:"M50", label:"SEMIFINAL · Winners QF4 vs QF1", p:"VIC Pitch A", ranks:R(1,8) },
+  { d:"2026-07-31", t:"15:00", div:"M50", label:"SEMIFINAL · Winners QF3 vs QF2", p:"VIC Pitch A", ranks:R(1,8) },
+  { d:"2026-08-01", t:"10:00", div:"W50", label:"🏆 FINAL", p:"ROT Pitch 1", ranks:R(1,8) },
+  { d:"2026-08-01", t:"10:00", div:"W50", label:"Bronze medal · Class 3/4", p:"ROT Pitch 2", ranks:R(1,8) },
+  { d:"2026-08-01", t:"12:00", div:"M50", label:"🏆 FINAL", p:"ROT Pitch 1", ranks:R(1,8) },
+  { d:"2026-08-01", t:"12:00", div:"M50", label:"Bronze medal · Class 3/4", p:"ROT Pitch 2", ranks:R(1,8) },
+  { d:"2026-08-01", t:"14:00", div:"W45", label:"🏆 FINAL", p:"ROT Pitch 1", ranks:R(1,8) },
+  { d:"2026-08-01", t:"14:00", div:"W45", label:"Bronze medal · Class 3/4", p:"ROT Pitch 2", ranks:R(1,8) },
+  { d:"2026-08-01", t:"16:00", div:"M45", label:"🏆 FINAL", p:"ROT Pitch 1", ranks:R(1,8) },
+  { d:"2026-08-01", t:"16:00", div:"M45", label:"Bronze medal · Class 3/4", p:"ROT Pitch 2", ranks:R(1,8) },
+  { d:"2026-08-01", t:"14:00", div:"W35I", label:"🏆 IMC FINAL · Top 2 of the O35 teams", p:"VIC Pitch B", ranks:R(1,3) },
 ];
 
 // Special events (non-match)
 const EVENTS = [
-  { d: "2026-07-21", t: "15:00", title: "🇺🇸 Team USA Practice — HC Alecto", note: "Women's teams 3:00–4:30 PM · Men's teams 4:30–6:00 PM · US Delegation BBQ 6:15 PM", venue: "alecto" },
+  { d: "2026-07-20", t: "15:30", title: "🇺🇸 Team USA Practices — Schiedam & Rotterdam", note: "HC Schiedam: MO45 3:30–4:45 PM · MO50 6:00–7:15 PM. HC Rotterdam: WO45 5:00–6:00 PM", venue: "schiedam" },
+  { d: "2026-07-21", t: "15:00", title: "🇺🇸 Team USA Practice — HC Alecto", note: "All women's teams 3:00–4:30 PM · All men's teams 4:30–6:00 PM · US Delegation BBQ 6:15 PM", venue: "alecto" },
   { d: "2026-07-22", t: "09:15", title: "🇺🇸 WO35 & WO40 Practice — Pitch 1", note: "Morning session at HC Schiedam, 9:15–10:30 AM (MO35/MO40 at 2:15 PM)", venue: "schiedam" },
-  { d: "2026-07-22", t: "19:00", title: "🎉 Opening Ceremony", note: "The 2026 World Cup officially begins!", venue: "schiedam" },
+  { d: "2026-07-22", t: "19:00", title: "🎉 Opening Ceremony — Schiedam", note: "The 2026 World Cup officially begins!", venue: "schiedam" },
+  { d: "2026-07-22", t: "20:00", title: "🎉 Opening Ceremony — Rotterdam", note: "The Rotterdam tournament (O45/O50 & IMC) kicks off at HC Rotterdam", venue: "rotterdam" },
   { d: "2026-07-29", t: "18:00", title: "🧡 Dutch Tournament Party", note: "After the quarterfinals — the party everyone stays for", venue: "schiedam" },
-  { d: "2026-08-01", t: "18:00", title: "🏅 Closing Ceremony", note: "Medals, memories, and goodbyes", venue: "schiedam" },
+  { d: "2026-08-01", t: "18:00", title: "🏅 Closing Ceremonies", note: "Medals, memories, and goodbyes — Schiedam & Rotterdam", venue: "schiedam" },
 ];
 
-// USA teams at the July session (Rotterdam schedules publish separately)
+// All nine USA teams at the July session
 const USA_TEAMS = [
   { code: "W35", name: "Women O35", venue: "HC Schiedam", star: true, inApp: true },
   { code: "W40", name: "Women O40", venue: "HC Schiedam", inApp: true },
   { code: "M35", name: "Men O35", venue: "HC Schiedam", inApp: true },
   { code: "M40", name: "Men O40", venue: "HC Schiedam", inApp: true },
-  { code: "W35IMC", name: "Women O35 IMC", venue: "HC Rotterdam", inApp: false },
-  { code: "W45", name: "Women O45", venue: "HC Rotterdam", inApp: false },
-  { code: "W50", name: "Women O50", venue: "HC Rotterdam", inApp: false },
-  { code: "M45", name: "Men O45", venue: "HC Rotterdam", inApp: false },
-  { code: "M50", name: "Men O50", venue: "HC Rotterdam", inApp: false },
+  { code: "W35I", name: "Women O35 IMC", venue: "HC Rotterdam / Victoria", inApp: true },
+  { code: "W45", name: "Women O45", venue: "HC Rotterdam / Victoria", inApp: true },
+  { code: "W50", name: "Women O50", venue: "HC Rotterdam / Victoria", inApp: true },
+  { code: "M45", name: "Men O45", venue: "HC Rotterdam / Victoria", inApp: true },
+  { code: "M50", name: "Men O50", venue: "HC Rotterdam / Victoria", inApp: true },
 ];
 
 // Per-game stream links — key is "date|time|pitch" (NL time), value is the
@@ -335,6 +416,7 @@ const LINKS = {
   stream: "https://www.worldmastershockey.tv/",
   youtube: "https://www.youtube.com/channel/UCk6X0_aIFngcxt3HiX2Hh_w",
   schedulePdf: "https://drive.google.com/file/d/1k6KtA_rPml7MEPIUOYYGryKm98Pe0hsz/view",
+  schedulePdfRotterdam: "https://drive.google.com/file/d/1hqSbJshK46_5mnDQH7mXAU1YFUPz3zf2/view",
   liveResults: "https://masters.altiusrt.com/",
   wmh: "https://worldmastershockey.org/",
   eventSite: "https://www.hcschiedam.nl/world-masters-hockey",

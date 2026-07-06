@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>USA Masters · 2026 World Cup Schiedam — Fan Hub</title>
-  <meta name="description" content="Everything you need to follow USA Masters Field Hockey at the 2026 WMH World Cup in Schiedam, Netherlands — schedules, venues, kids' activities & more.">
+  <title>USA Masters · 2026 World Cup — Fan Hub</title>
+  <meta name="description" content="Everything you need to follow USA Masters Field Hockey at the 2026 WMH World Cup in the Netherlands — schedules, standings, venues & more.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
@@ -47,9 +47,9 @@
     <div class="hero-bg"></div>
     <div class="hero-wash"></div>
     <div class="hero-inner">
-      <p class="hero-kicker">World Masters Hockey World Cup · Schiedam, Netherlands</p>
+      <p class="hero-kicker">World Masters Hockey World Cup · Netherlands</p>
       <h1>GO<br>USA<span class="hero-period">.</span></h1>
-      <p class="hero-sub">July 22 – August 1, 2026 · HC Schiedam<br>Your one-stop hub for schedules, venues &amp; family fun.</p>
+      <p class="hero-sub">July 22 – August 1, 2026 · Schiedam &amp; Rotterdam<br>Your one-stop hub for schedules, venues &amp; family fun.</p>
       <div class="countdown" id="countdown" aria-live="polite"></div>
       <div class="hero-cta">
         <a class="btn btn-solid" href="#schedule">See the schedule</a>
@@ -66,15 +66,20 @@
     <div class="section-head">
       <h2>Match<br>Schedule</h2>
       <p>All times shown in <strong id="tzLabel">Netherlands time (CEST)</strong> — flip the toggle up top for US Eastern.
-      Pool play runs July 23–28; every team then plays through quarterfinals, crossovers and finals. Official <a href="https://drive.google.com/file/d/1k6KtA_rPml7MEPIUOYYGryKm98Pe0hsz/view" target="_blank" rel="noopener">Schedule V1 PDF ↗</a></p>
+      Pool play runs July 23–28; every team then plays through quarterfinals, crossovers and finals. Official PDFs: <a href="https://drive.google.com/file/d/1k6KtA_rPml7MEPIUOYYGryKm98Pe0hsz/view" target="_blank" rel="noopener">Schiedam ↗</a> · <a href="https://drive.google.com/file/d/1hqSbJshK46_5mnDQH7mXAU1YFUPz3zf2/view" target="_blank" rel="noopener">Rotterdam ↗</a></p>
     </div>
 
     <div class="usa-chips" id="usaChips">
       <span class="chips-label">Team USA quick view:</span>
       <button class="chip chip-usa active" data-div="W35">Women O35</button>
+      <button class="chip chip-usa" data-div="W35I">W O35 IMC</button>
       <button class="chip chip-usa" data-div="W40">Women O40</button>
+      <button class="chip chip-usa" data-div="W45">Women O45</button>
+      <button class="chip chip-usa" data-div="W50">Women O50</button>
       <button class="chip chip-usa" data-div="M35">Men O35</button>
       <button class="chip chip-usa" data-div="M40">Men O40</button>
+      <button class="chip chip-usa" data-div="M45">Men O45</button>
+      <button class="chip chip-usa" data-div="M50">Men O50</button>
     </div>
 
     <div class="filters">
@@ -90,6 +95,11 @@
           <button class="chip" data-div="W40">W O40</button>
           <button class="chip" data-div="M35">M O35</button>
           <button class="chip" data-div="M40">M O40</button>
+          <button class="chip" data-div="W45">W O45</button>
+          <button class="chip" data-div="W50">W O50</button>
+          <button class="chip" data-div="M45">M O45</button>
+          <button class="chip" data-div="M50">M O50</button>
+          <button class="chip" data-div="W35I">W35 IMC</button>
         </div>
       </div>
       <div class="filter-group filter-knockout">
@@ -126,7 +136,7 @@
       <p>Nine USA Masters teams compete in the July session across two venues, with more USA squads at the August session in Belgium. Rosters on <a href="https://www.usafieldhockey.com/masters" target="_blank" rel="noopener">USA Field Hockey ↗</a></p>
     </div>
     <div class="team-grid" id="teamGrid"></div>
-    <p class="team-note">📋 The Rotterdam schedule (O45/O50 &amp; WO35 IMC) is published separately — check <a href="https://worldmastershockey.org/" target="_blank" rel="noopener">World Masters Hockey</a> or <a href="https://masters.altiusrt.com/" target="_blank" rel="noopener">live results</a> as it posts.</p>
+    <p class="team-note">📋 Rotterdam teams (O45/O50 &amp; WO35 IMC) show their USA games here — full division grids live in the <a href="https://drive.google.com/file/d/1hqSbJshK46_5mnDQH7mXAU1YFUPz3zf2/view" target="_blank" rel="noopener">official Rotterdam PDF</a>.</p>
     <div class="photo-strip">
       <figure><img src="assets/action-pass.jpg" alt="USA player controlling the ball" loading="lazy"></figure>
       <figure><img src="assets/action-point.jpg" alt="USA players calling the play" loading="lazy"></figure>
@@ -138,7 +148,7 @@
   <section class="section" id="venues">
     <div class="section-head">
       <h2>Venues &amp;<br>Getting There</h2>
-      <p>Two clubs host the July session, about 20 minutes apart. Both are easy to reach by tram from Rotterdam Centraal.</p>
+      <p>Three clubs host the July session — HC Schiedam for O35/O40, with HC Rotterdam and HC Victoria sharing the O45/O50 &amp; IMC tournament. All are an easy tram or short ride from Rotterdam Centraal.</p>
     </div>
     <div class="venue-grid">
       <article class="venue-card venue-primary">
@@ -161,12 +171,25 @@
         <h3>HC Rotterdam</h3>
         <p class="venue-addr">Hazelaarweg 2, 3053 PM Rotterdam<br>(north Rotterdam, near Rotterdam The Hague Airport)</p>
         <ul>
-          <li>🏑 USA WO35 IMC, WO45, WO50, MO45, MO50</li>
+          <li>🏑 "ROT" pitches 1–3 · O45/O50 &amp; IMC games</li>
+          <li>🎉 Rotterdam Opening Ceremony · July 22, 8:00 PM</li>
+          <li>🇺🇸 WO45 practice July 20, 5:00–6:00 PM</li>
           <li>🚋 Public transport zone 5310</li>
-          <li>📋 Match schedule not published yet — it will land on <a href="https://worldmastershockey.org/wmhevents/2026-wct1-rotterdam/" target="_blank" rel="noopener">the WMH event page</a></li>
         </ul>
         <div class="venue-actions">
-          <a class="btn btn-small btn-solid" href="https://maps.google.com/?q=HC+Rotterdam,+Hazelaarweg,+Rotterdam,+Netherlands" target="_blank" rel="noopener">Open in Maps</a>
+          <a class="btn btn-small btn-solid" href="https://maps.google.com/?q=HC+Rotterdam,+Hazelaarweg+2,+Rotterdam,+Netherlands" target="_blank" rel="noopener">Open in Maps</a>
+        </div>
+      </article>
+      <article class="venue-card">
+        <span class="venue-tag">O45 &amp; O50 + IMC · second ground</span>
+        <h3>HC Victoria</h3>
+        <p class="venue-addr">Kralingseweg 226, 3062 CG Rotterdam</p>
+        <ul>
+          <li>🏑 "VIC" pitches A–C · shares the Rotterdam tournament</li>
+          <li>🇺🇸 Many USA O45/O50 &amp; IMC games play here — check the pitch on each match</li>
+        </ul>
+        <div class="venue-actions">
+          <a class="btn btn-small btn-solid" href="https://maps.google.com/?q=Hockey+Club+Victoria,+Kralingseweg+226,+Rotterdam,+Netherlands" target="_blank" rel="noopener">Open in Maps</a>
         </div>
       </article>
       <article class="venue-card">
@@ -213,7 +236,8 @@
     </div>
     <div class="link-grid">
       <a class="link-card" href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener"><span>📺</span><b>Watch Live</b><small>worldmastershockey.tv — official WMH streams (also on <u>YouTube</u>)</small></a>
-      <a class="link-card" href="https://drive.google.com/file/d/1k6KtA_rPml7MEPIUOYYGryKm98Pe0hsz/view" target="_blank" rel="noopener"><span>📄</span><b>Official Schedule PDF</b><small>Version 1 · all O35/O40 matches</small></a>
+      <a class="link-card" href="https://drive.google.com/file/d/1k6KtA_rPml7MEPIUOYYGryKm98Pe0hsz/view" target="_blank" rel="noopener"><span>📄</span><b>Schiedam Schedule PDF</b><small>Version 1 · all O35/O40 matches</small></a>
+      <a class="link-card" href="https://drive.google.com/file/d/1hqSbJshK46_5mnDQH7mXAU1YFUPz3zf2/view" target="_blank" rel="noopener"><span>📄</span><b>Rotterdam Schedule PDF</b><small>Version 1 · O45/O50 &amp; IMC (HC Rotterdam + HC Victoria)</small></a>
       <a class="link-card" href="https://masters.altiusrt.com/" target="_blank" rel="noopener"><span>📊</span><b>Live Scores &amp; Standings</b><small>Masters AltiusRT — results post here during the event</small></a>
       <a class="link-card" href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener"><span>📸</span><b>@usamastersfh</b><small>USA Masters National Teams on Instagram</small></a>
       <a class="link-card" href="https://kicksnsticks.eu/world-cup-masters/" target="_blank" rel="noopener"><span>🎒</span><b>Kids' Program</b><small>Kicks N Sticks · ages 4–14 · register early</small></a>

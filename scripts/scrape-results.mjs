@@ -12,11 +12,18 @@
 import { writeFileSync } from "node:fs";
 
 // division -> AltiusRT competition id (e.g. 512). null = not published yet.
+// Schiedam (O35/O40) + Rotterdam (O45/O50; USA games only are on the site,
+// but scraped scores merge by div|home|away so extras are harmless).
 const COMPETITIONS = {
   W35: null,
   W40: null,
   M35: null,
   M40: null,
+  W45: null,
+  W50: null,
+  M45: null,
+  M50: null,
+  W35I: null, // 35/40W IMC competition
 };
 
 // Team codes used in js/data.js, with names AltiusRT might display.

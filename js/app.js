@@ -2,7 +2,10 @@
 // USA Masters WC2026 hub — rendering & filters
 // ============================================================
 
-const ALL_DIVS = ["W35", "W40", "M35", "M40"];
+const ALL_DIVS = ["W35", "W40", "M35", "M40", "W45", "W50", "M45", "M50", "W35I"];
+
+// pitch cell: Schiedam pitches are numbers; Rotterdam ones carry their venue
+const pitchLabel = (p) => (typeof p === "number" ? `Pitch ${p}` : p);
 
 const state = {
   tz: localStorage.getItem("wc-tz") || "NL", // NL (CEST) or ET (US Eastern, -6h)
@@ -14,6 +17,7 @@ const state = {
 
 const $ = (sel) => document.querySelector(sel);
 const DATE_LABELS = {
+  "2026-07-20": ["Monday", "July 20", "Practice day"],
   "2026-07-21": ["Tuesday", "July 21", "Practice day"],
   "2026-07-22": ["Wednesday", "July 22", "Opening day"],
   "2026-07-23": ["Thursday", "July 23", "Pool play · Day 1"],
@@ -106,6 +110,9 @@ function renderSchedule() {
   const byDay = {};
   rows.forEach((r) => (byDay[r.d] ??= []).push(r));
   let html = "";
+  if ([...state.divs].some((d) => DIVISIONS[d].partial)) {
+    html += `<div class="partial-note">🇺🇸 Rotterdam divisions (O45 · O50 · IMC) show <strong>USA games and key knockout rounds only</strong> — full grids in the <a href="${LINKS.schedulePdfRotterdam}" target="_blank" rel="noopener">official Rotterdam PDF ↗</a></div>`;
+  }
   for (const day of Object.keys(byDay).sort()) {
     const [wd, date, tag] = DATE_LABELS[day] || ["", day, ""];
     html += `<div class="day-block"><div class="day-head"><h3>${wd} ${date}</h3><small>${tag}</small></div>`;
@@ -120,14 +127,14 @@ function renderSchedule() {
           ? `${teamName(r.teams[0])}<span class="vs">vs</span>${teamName(r.teams[1])} <span class="m-note">${r.label}</span>`
           : `${r.label}${state.team !== "ALL" ? `<span class="m-note">Bracket game — opponents decided by standings</span>` : ""}`;
         const usa = named && r.teams.includes("USA");
-        html += `<div class="match-row is-ko ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-label">${title}</div><div class="m-pitch">Pitch ${r.p}</div></div>`;
+        html += `<div class="match-row is-ko ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-label">${title}</div><div class="m-pitch">${pitchLabel(r.p)}</div></div>`;
       } else {
         const usa = r.h === "USA" || r.a === "USA";
         const name = (c) => `<span class="${c === "USA" ? "usa-name" : ""}">${teamName(c)}</span>`;
         const score = r.hs != null ? `<b class="m-score">${r.hs}–${r.as}</b>` : `<span class="vs">vs</span>`;
         const vid = VIDEO[`${r.d}|${r.t}|${r.p}`];
         const watch = vid ? `<a class="m-watch" href="${vid}" target="_blank" rel="noopener">▶ Watch</a>` : "";
-        html += `<div class="match-row ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-match">${name(r.h)}${score}${name(r.a)}</div><div class="m-pitch">Pitch ${r.p}${watch}</div></div>`;
+        html += `<div class="match-row ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-match">${name(r.h)}${score}${name(r.a)}</div><div class="m-pitch">${pitchLabel(r.p)}${watch}</div></div>`;
       }
     }
     html += `</div>`;
@@ -157,9 +164,10 @@ function computeStandings(div) {
 function renderStandings() {
   const rows = computeStandings(state.standDiv);
   const played = rows.some((r) => r.P > 0);
-  const note = played
+  const note = (played
     ? `Unofficial — computed from results entered on this site. Confirm on <a href="https://masters.altiusrt.com/" target="_blank" rel="noopener">AltiusRT</a>.`
-    : `Pool play starts July 23 — the table fills in as results come in. Official live standings will also post on <a href="https://masters.altiusrt.com/" target="_blank" rel="noopener">AltiusRT</a>.`;
+    : `Pool play starts July 23 — the table fills in as results come in. Official live standings will also post on <a href="https://masters.altiusrt.com/" target="_blank" rel="noopener">AltiusRT</a>.`)
+    + ` Rotterdam divisions (O45/O50/IMC): standings on AltiusRT & the <a href="${LINKS.schedulePdfRotterdam}" target="_blank" rel="noopener">official PDF</a>.`;
   $("#standingsNote").innerHTML = note;
   $("#standingsTable").innerHTML = `
     <table class="stand-table">
@@ -180,7 +188,12 @@ function renderStandings() {
 function buildTeamSelect() {
   const sel = $("#teamSel");
   const codes = new Set();
-  POOL.forEach(([, , , h, a]) => { codes.add(h); codes.add(a); });
+  // dropdown only lists teams with complete schedules (Schiedam divisions);
+  // Rotterdam teams are reachable via the USA quick-view chips
+  POOL.forEach(([, , div, h, a]) => {
+    if (DIVISIONS[div].partial) return;
+    codes.add(h); codes.add(a);
+  });
   const sorted = [...codes].sort((a, b) => TEAMS[a].name.localeCompare(TEAMS[b].name));
   sel.innerHTML =
     `<option value="ALL">All teams</option>` +
@@ -300,8 +313,15 @@ function icsStamp(dateStr, hhmm, addMinutes = 0) {
   return utc.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 }
 
+// venue depends on the pitch: ROT/VIC prefixes are the Rotterdam grounds
+function icsLocation(p) {
+  const s = String(p);
+  if (s.startsWith("ROT")) return "HC Rotterdam\\, Hazelaarweg 2\\, 3053 PM Rotterdam\\, Netherlands";
+  if (s.startsWith("VIC")) return "HC Victoria\\, Kralingseweg 226\\, 3062 CG Rotterdam\\, Netherlands";
+  return "HC Schiedam\\, Olympiaweg 63\\, 3118 JD Schiedam\\, Netherlands";
+}
+
 function buildICS() {
-  const LOC = "HC Schiedam\\, Olympiaweg 63\\, 3118 JD Schiedam\\, Netherlands";
   // Only games we KNOW: pool matches, plus knockout games once their
   // matchup has been filled in (teams array set in data.js).
   const rows = matchesFiltered().filter((r) =>
@@ -311,18 +331,19 @@ function buildICS() {
     const title = r.type === "ko"
       ? `${divShort} ${r.teams[0]} vs. ${r.teams[1]}`
       : `${divShort} ${r.h} vs. ${r.a}`;
+    const where = String(r.p).startsWith("ROT") || String(r.p).startsWith("VIC") ? "Rotterdam" : "Schiedam";
     const desc = r.type === "ko"
-      ? `Pitch ${r.p} · ${r.label} · 2026 WMH Masters World Cup · Schiedam`
-      : `Pitch ${r.p} · 2026 WMH Masters World Cup · Schiedam`;
+      ? `${pitchLabel(r.p)} · ${r.label} · 2026 WMH Masters World Cup · ${where}`
+      : `${pitchLabel(r.p)} · 2026 WMH Masters World Cup · ${where}`;
     return [
       "BEGIN:VEVENT",
-      `UID:wc2026-${r.d}-${r.t.replace(":", "")}-${r.p || "ev"}@usamasters`,
+      `UID:wc2026-${r.d}-${r.t.replace(":", "")}-${String(r.p).replace(/\s+/g, "") || "ev"}@usamasters`,
       `DTSTAMP:${icsStamp("2026-07-01", "12:00")}`,
       `DTSTART:${icsStamp(r.d, r.t)}`,
       `DTEND:${icsStamp(r.d, r.t, 90)}`,
       `SUMMARY:${title}`,
       `DESCRIPTION:${desc.replace(/,/g, "\\,")}`,
-      `LOCATION:${LOC}`,
+      `LOCATION:${icsLocation(r.p)}`,
       "END:VEVENT",
     ].join("\r\n");
   });
@@ -350,7 +371,7 @@ function initIcs() {
 
 // ---- ticker ----
 function initTicker() {
-  const items = "GO USA 🇺🇸 · SCHIEDAM 2026 · JULY 22 – AUG 1 · WOMEN O35 · WORLD MASTERS HOCKEY · ";
+  const items = "GO USA 🇺🇸 · NETHERLANDS 2026 · SCHIEDAM + ROTTERDAM · JULY 22 – AUG 1 · WORLD MASTERS HOCKEY · ";
   $("#ticker").textContent = (items + items).repeat(2);
 }
 
