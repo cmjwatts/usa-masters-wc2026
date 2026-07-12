@@ -1,5 +1,17 @@
 [
   {
+    "id": "countdown-10",
+    "type": "countdown",
+    "date": "2026-07-12",
+    "title": "10 days to go",
+    "caption": "10 days. 🇳🇱\n\nThe World Masters Hockey World Cup kicks off July 22 in Schiedam, and USA WO35 opens July 23 vs Australia.\n\nFull schedule, standings & how to watch: usamastersfh.com\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #WO35 @masterswc2026.schiedam",
+    "created": "2026-07-12T11:00",
+    "images": [
+      "social/img/countdown-10-1.png",
+      "social/img/countdown-10-2.png"
+    ]
+  },
+  {
     "id": "countdown-14",
     "type": "countdown",
     "date": "2026-07-08",
