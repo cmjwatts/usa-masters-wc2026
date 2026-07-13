@@ -4,10 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>USA Masters · 2026 World Cup — Fan Hub</title>
-  <meta name="description" content="Everything you need to follow USA Masters Field Hockey at the 2026 WMH World Cup in the Netherlands — schedules, standings, venues & more.">
+  <meta name="description" content="Follow all 15 USA Masters Field Hockey teams at the 2026 WMH World Cup — Netherlands & Belgium, July 22 – August 16. Schedules, live scores, venues & more.">
+  <link rel="canonical" href="https://usamastersfh.com/">
+  <script>
+    // Old deep links (usamastersfh.com/#schedule etc.) now live on the July page.
+    (function () {
+      var moved = { "#schedule": 1, "#standings": 1, "#teams": 1, "#venues": 1, "#watch": 1, "#links": 1 };
+      if (moved[location.hash]) location.replace("july.html" + location.hash);
+    })();
+  </script>
+  <!-- Social share card -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="USA Masters Fan Hub">
+  <meta property="og:title" content="USA Masters · 2026 World Cup — Fan Hub">
+  <meta property="og:description" content="All 15 USA teams, one hub. Netherlands & Belgium, July 22 – Aug 16 — schedules, live scores, venues & how to watch.">
+  <meta property="og:url" content="https://usamastersfh.com/">
+  <meta property="og:image" content="https://usamastersfh.com/assets/hero.jpg">
+  <meta property="og:image:width" content="1600">
+  <meta property="og:image:height" content="1066">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="USA Masters · 2026 World Cup — Fan Hub">
+  <meta name="twitter:description" content="All 15 USA teams, one hub. Netherlands & Belgium, July 22 – Aug 16 — schedules, live scores, venues & how to watch.">
+  <meta name="twitter:image" content="https://usamastersfh.com/assets/hero.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Fetch the hero image immediately, in parallel with CSS (it's a CSS background, otherwise discovered late) -->
   <link rel="preload" as="image" href="assets/hero.jpg" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
@@ -17,7 +37,7 @@
 
   <!-- ============ NAV ============ -->
   <header class="nav" id="top">
-    <a class="nav-brand" href="#top">
+    <a class="nav-brand" href="./">
       <img id="navLogo" src="assets/logo.png" alt="USA Field Hockey Masters"
            onerror="this.style.display='none';document.getElementById('navFallback').style.display='flex'">
       <span id="navFallback" class="nav-fallback" style="display:none">
@@ -33,28 +53,24 @@
       </span>
     </a>
     <nav class="nav-links">
-      <a href="#schedule">Schedule</a>
-      <a href="#standings">Standings</a>
-      <a href="#venues">Venues</a>
-      <a href="#watch">Watch</a>
+      <a href="#tournaments">Tournaments</a>
+      <a href="#teams">Find your team</a>
+      <a href="july.html">July session</a>
       <a href="#links">Links</a>
     </nav>
-    <button class="tz-toggle" id="tzToggle" title="Switch time zone">
-      <span data-tz="NL" class="on">🇳🇱 NL</span><span data-tz="ET">🇺🇸 ET</span>
-    </button>
   </header>
 
   <!-- ============ HERO ============ -->
-  <section class="hero">
+  <section class="hero hub-hero">
     <div class="hero-bg"></div>
     <div class="hero-wash"></div>
     <div class="hero-inner">
-      <p class="hero-kicker">World Masters Hockey World Cup · Netherlands</p>
+      <p class="hero-kicker">World Masters Hockey World Cup · Netherlands + Belgium</p>
       <h1>GO<br>USA<span class="hero-period">.</span></h1>
-      <p class="hero-sub">July 22 – August 1, 2026 · Schiedam &amp; Rotterdam<br>Your one-stop hub for schedules, venues &amp; family fun.</p>
+      <p class="hero-sub">15 USA teams · 4 venues · July 22 – August 16, 2026<br>Pick your tournament and follow every game.</p>
       <div class="countdown" id="countdown" aria-live="polite"></div>
       <div class="hero-cta">
-        <a class="btn btn-solid" href="#schedule">See the schedule</a>
+        <a class="btn btn-solid" href="#tournaments">Choose your tournament</a>
         <a class="btn btn-ghost" href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener">📺 Watch live</a>
         <a class="btn btn-ghost" href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener">Follow @usamastersfh</a>
       </div>
@@ -62,199 +78,138 @@
     <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
   </section>
 
-  <!-- ============ SCHEDULE ============ -->
+  <!-- ============ TOURNAMENTS ============ -->
   <main>
-  <section class="section" id="schedule">
+  <section class="section" id="tournaments">
     <div class="section-head">
-      <h2>Match<br>Schedule</h2>
-      <p>All times shown in <strong id="tzLabel">Netherlands time (CEST)</strong> — flip the toggle up top for US Eastern.
-      Pool play runs July 23–28; every team then plays through quarterfinals, crossovers and finals. Official PDFs: <a href="https://drive.google.com/file/d/1k6KtA_rPml7MEPIUOYYGryKm98Pe0hsz/view" target="_blank" rel="noopener">Schiedam ↗</a> · <a href="https://drive.google.com/file/d/1hqSbJshK46_5mnDQH7mXAU1YFUPz3zf2/view" target="_blank" rel="noopener">Rotterdam ↗</a></p>
-    </div>
-
-    <div class="usa-chips" id="usaChips">
-      <span class="chips-label">Team USA quick view:</span>
-      <button class="chip chip-usa active" data-div="W35">Women O35</button>
-      <button class="chip chip-usa" data-div="W35I">W O35 IMC</button>
-      <button class="chip chip-usa" data-div="W40">Women O40</button>
-      <button class="chip chip-usa" data-div="W45">Women O45</button>
-      <button class="chip chip-usa" data-div="W50">Women O50</button>
-      <button class="chip chip-usa" data-div="M35">Men O35</button>
-      <button class="chip chip-usa" data-div="M40">Men O40</button>
-      <button class="chip chip-usa" data-div="M45">Men O45</button>
-      <button class="chip chip-usa" data-div="M50">Men O50</button>
-    </div>
-
-    <div class="filters">
-      <div class="filter-group">
-        <label for="teamSel">Team</label>
-        <select id="teamSel"></select>
-      </div>
-      <div class="filter-group">
-        <label>Division · pick one or more</label>
-        <div class="div-chips" id="divChips">
-          <button class="chip" data-div="ALL">All</button>
-          <button class="chip active" data-div="W35">W O35</button>
-          <button class="chip" data-div="W40">W O40</button>
-          <button class="chip" data-div="M35">M O35</button>
-          <button class="chip" data-div="M40">M O40</button>
-          <button class="chip" data-div="W45">W O45</button>
-          <button class="chip" data-div="W50">W O50</button>
-          <button class="chip" data-div="M45">M O45</button>
-          <button class="chip" data-div="M50">M O50</button>
-          <button class="chip" data-div="W35I">W35 IMC</button>
-        </div>
-      </div>
-      <div class="filter-group filter-knockout">
-        <label class="switch-label"><input type="checkbox" id="showKO" checked> Include knockout rounds &amp; events</label>
-      </div>
-      <div class="filter-group filter-ics">
-        <button class="btn btn-small btn-solid" id="icsBtn" title="Downloads a calendar file of the games in the current view">📅 Add these games to your calendar</button>
-      </div>
-    </div>
-    <p class="stream-note">📺 Games stream on <a href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener">worldmastershockey.tv</a> — per-game watch links will appear next to matches once WMH posts them.</p>
-
-    <div id="scheduleList"></div>
-  </section>
-
-  <!-- ============ STANDINGS ============ -->
-  <section class="section section-tinted" id="standings">
-    <div class="section-head">
-      <h2>Pool<br>Standings</h2>
-      <p id="standingsNote"></p>
-    </div>
-    <div class="div-chips stand-chips" id="standDivChips">
-      <button class="chip active" data-div="W35">W O35</button>
-      <button class="chip" data-div="W40">W O40</button>
-      <button class="chip" data-div="M35">M O35</button>
-      <button class="chip" data-div="M40">M O40</button>
-    </div>
-    <div id="standingsTable"></div>
-  </section>
-
-  <!-- ============ USA TEAMS ============ -->
-  <section class="section section-tinted" id="teams">
-    <div class="section-head">
-      <h2>USA<br>Teams</h2>
-      <p>Nine USA Masters teams compete in the July session across two venues, with more USA squads at the August session in Belgium. Rosters on <a href="https://www.usafieldhockey.com/masters" target="_blank" rel="noopener">USA Field Hockey ↗</a></p>
-    </div>
-    <div class="team-grid" id="teamGrid"></div>
-    <p class="team-note">📋 Rotterdam teams (O45/O50 &amp; WO35 IMC) show their USA games here — full division grids live in the <a href="https://drive.google.com/file/d/1hqSbJshK46_5mnDQH7mXAU1YFUPz3zf2/view" target="_blank" rel="noopener">official Rotterdam PDF</a>.</p>
-    <div class="photo-strip">
-      <figure><img src="assets/action-pass.jpg" alt="USA player controlling the ball" loading="lazy"></figure>
-      <figure><img src="assets/action-point.jpg" alt="USA players calling the play" loading="lazy"></figure>
-      <figure><img src="assets/team-smiles.jpg" alt="USA teammates on the pitch" loading="lazy"></figure>
-    </div>
-  </section>
-
-  <!-- ============ VENUES ============ -->
-  <section class="section" id="venues">
-    <div class="section-head">
-      <h2>Venues &amp;<br>Getting There</h2>
-      <p>Three clubs host the July session — HC Schiedam for O35/O40, with HC Rotterdam and HC Victoria sharing the O45/O50 &amp; IMC tournament. All are an easy tram or short ride from Rotterdam Centraal.</p>
+      <h2>Choose Your<br>Tournament</h2>
+      <p>One World Cup, four venues, two sessions. The July session in Schiedam &amp; Rotterdam is live on this site now — the August session pages open as soon as schedules are published.</p>
     </div>
     <div class="venue-grid">
       <article class="venue-card venue-primary">
-        <span class="venue-tag">Main venue · O35 &amp; O40</span>
-        <h3>HC Schiedam</h3>
-        <p class="venue-addr">Olympiaweg 63, Park Harga<br>3118 JD Schiedam, Netherlands</p>
+        <span class="venue-tag">July 22 – Aug 1 · Live now</span>
+        <h3>Schiedam &amp; Rotterdam</h3>
+        <p class="venue-addr">Netherlands 🇳🇱 · HC Schiedam, HC Rotterdam &amp; HC Victoria</p>
         <ul>
-          <li>🏑 Matches on Pitches 1, 2, 3 &amp; 5</li>
-          <li>🎉 Opening &amp; Closing Ceremonies + Dutch Party</li>
-          <li>👧 Kids' program on site</li>
-          <li>🚋 Public transport zone 5319 — tram from Rotterdam Centraal, ~5 min walk from the stop</li>
+          <li>🇺🇸 <b>9 USA teams</b> — Women's &amp; Men's O35 + O40 (Schiedam)</li>
+          <li>🇺🇸 Women's &amp; Men's O45 + O50, Women's O35 IMC (Rotterdam)</li>
+          <li>📅 Full schedule, standings, venues &amp; time-zone toggle</li>
         </ul>
         <div class="venue-actions">
-          <a class="btn btn-small btn-solid" href="https://maps.google.com/?q=HC+Schiedam,+Olympiaweg+63,+3118+JD+Schiedam,+Netherlands" target="_blank" rel="noopener">Open in Maps</a>
-          <a class="btn btn-small btn-ghost-dark" href="https://www.hcschiedam.nl/world-masters-hockey" target="_blank" rel="noopener">Event site</a>
+          <a class="btn btn-small btn-solid" href="july.html">Enter the July session</a>
+          <a class="btn btn-small btn-ghost-dark" href="july.html#venues">Venue guide</a>
         </div>
       </article>
-      <article class="venue-card">
-        <span class="venue-tag">O45 &amp; O50 + WO35 IMC</span>
-        <h3>HC Rotterdam</h3>
-        <p class="venue-addr">Hazelaarweg 2, 3053 PM Rotterdam<br>(north Rotterdam, near Rotterdam The Hague Airport)</p>
+      <article class="venue-card is-soon">
+        <span class="venue-tag tag-soon">Aug 6 – 16 · Coming soon</span>
+        <h3>Brasschaat, Belgium</h3>
+        <p class="venue-addr">Belgium 🇧🇪 · KHC Dragons + HC Olympia (Antwerp)</p>
         <ul>
-          <li>🏑 "ROT" pitches 1–3 · O45/O50 &amp; IMC games</li>
-          <li>🎉 Rotterdam Opening Ceremony · July 22, 8:00 PM</li>
-          <li>🇺🇸 WO45 practice July 20, 5:00–6:00 PM</li>
-          <li>🚋 Public transport zone 5310</li>
+          <li>🇺🇸 <b>5 USA teams</b> — Men's O55 + O60 · Women's O55, O60 + O65</li>
+          <li>📅 Schedule &amp; venue guide open here once published</li>
         </ul>
-        <div class="venue-actions">
-          <a class="btn btn-small btn-solid" href="https://maps.google.com/?q=HC+Rotterdam,+Hazelaarweg+2,+Rotterdam,+Netherlands" target="_blank" rel="noopener">Open in Maps</a>
-        </div>
+        <p class="soon-note">Not clickable yet — check back soon or follow <a href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener">@usamastersfh</a> for the announcement.</p>
       </article>
-      <article class="venue-card">
-        <span class="venue-tag">O45 &amp; O50 + IMC · second ground</span>
-        <h3>HC Victoria</h3>
-        <p class="venue-addr">Kralingseweg 226, 3062 CG Rotterdam</p>
+      <article class="venue-card is-soon">
+        <span class="venue-tag tag-soon">Aug 6 – 16 · Coming soon</span>
+        <h3>Breda</h3>
+        <p class="venue-addr">Netherlands 🇳🇱 · BHV Push</p>
         <ul>
-          <li>🏑 "VIC" pitches A–C · shares the Rotterdam tournament</li>
-          <li>🇺🇸 Many USA O45/O50 &amp; IMC games play here — check the pitch on each match</li>
+          <li>🇺🇸 <b>1 USA team</b> — Men's O65</li>
+          <li>📅 Schedule &amp; venue guide open here once published</li>
         </ul>
-        <div class="venue-actions">
-          <a class="btn btn-small btn-solid" href="https://maps.google.com/?q=Hockey+Club+Victoria,+Kralingseweg+226,+Rotterdam,+Netherlands" target="_blank" rel="noopener">Open in Maps</a>
-        </div>
-      </article>
-      <article class="venue-card">
-        <span class="venue-tag">Team USA practice · July 21</span>
-        <h3>HC Alecto</h3>
-        <p class="venue-addr">Leiderdorp, Netherlands</p>
-        <ul>
-          <li>🏑 Women 3:00–4:30 PM · Men 4:30–6:00 PM</li>
-          <li>🍔 US Delegation BBQ from 6:15 PM</li>
-          <li>✅ Showers, clubhouse, ice bath &amp; gear included</li>
-        </ul>
-        <div class="venue-actions">
-          <a class="btn btn-small btn-solid" href="https://maps.google.com/?q=Hockey+Club+Alecto,+Leiderdorp,+Netherlands" target="_blank" rel="noopener">Open in Maps</a>
-        </div>
+        <p class="soon-note">Not clickable yet — schedule hasn't been published.</p>
       </article>
     </div>
   </section>
 
-  <!-- ============ WATCH LIVE ============ -->
-  <section class="section section-kids" id="watch">
-    <div class="kids-card">
-      <div class="kids-copy">
-        <span class="venue-tag tag-light">Can't make it to Schiedam?</span>
-        <h2>Watch Live 📺</h2>
-        <p>Every game streams on <strong>worldmastershockey.tv</strong>, World Masters Hockey's official platform — catch Team USA live or on replay from anywhere.</p>
-        <ul>
-          <li>🏑 Official WMH streams, all pitches</li>
-          <li>▶️ Per-game watch links appear on the schedule above as WMH posts them</li>
-          <li>📊 Live scores &amp; standings on Masters AltiusRT</li>
-        </ul>
-        <div class="hero-cta">
-          <a class="btn btn-solid" href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener">Watch on worldmastershockey.tv</a>
-          <a class="btn btn-ghost" href="https://www.youtube.com/channel/UCk6X0_aIFngcxt3HiX2Hh_w" target="_blank" rel="noopener">WMH on YouTube</a>
+  <!-- ============ FIND YOUR TEAM ============ -->
+  <section class="section section-tinted" id="teams">
+    <div class="section-head">
+      <h2>Find Your<br>Team</h2>
+      <p>Tap a team to jump straight to their schedule. August-session teams unlock when their tournament pages open.</p>
+    </div>
+    <div class="team-finder">
+      <div class="finder-group">
+        <p class="chips-label">July · Schiedam &amp; Rotterdam</p>
+        <div class="div-chips">
+          <a class="chip chip-usa" href="july.html?div=W35">Women O35</a>
+          <a class="chip chip-usa" href="july.html?div=W35I">W O35 IMC</a>
+          <a class="chip chip-usa" href="july.html?div=W40">Women O40</a>
+          <a class="chip chip-usa" href="july.html?div=W45">Women O45</a>
+          <a class="chip chip-usa" href="july.html?div=W50">Women O50</a>
+          <a class="chip chip-usa" href="july.html?div=M35">Men O35</a>
+          <a class="chip chip-usa" href="july.html?div=M40">Men O40</a>
+          <a class="chip chip-usa" href="july.html?div=M45">Men O45</a>
+          <a class="chip chip-usa" href="july.html?div=M50">Men O50</a>
         </div>
       </div>
-      <div class="kids-photo"><img src="assets/team-photo.jpg" alt="USA Women's O35 team" loading="lazy"></div>
+      <div class="finder-group">
+        <p class="chips-label">August · Brasschaat 🇧🇪 &amp; Breda</p>
+        <div class="div-chips">
+          <span class="chip is-disabled" title="Schedule coming soon">Women O55</span>
+          <span class="chip is-disabled" title="Schedule coming soon">Women O60</span>
+          <span class="chip is-disabled" title="Schedule coming soon">Women O65</span>
+          <span class="chip is-disabled" title="Schedule coming soon">Men O55</span>
+          <span class="chip is-disabled" title="Schedule coming soon">Men O60</span>
+          <span class="chip is-disabled" title="Schedule coming soon">Men O65</span>
+        </div>
+        <p class="soon-note">Coming soon — these unlock when the August schedules are published.</p>
+      </div>
     </div>
   </section>
 
   <!-- ============ LINKS ============ -->
-  <section class="section section-tinted" id="links">
+  <section class="section" id="links">
     <div class="section-head">
-      <h2>Other<br>Links</h2>
+      <h2>Official<br>Links</h2>
     </div>
     <div class="link-grid">
-      <a class="link-card" href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener"><span>📺</span><b>Watch Live</b><small>worldmastershockey.tv — official WMH streams (also on <u>YouTube</u>)</small></a>
-      <a class="link-card" href="https://drive.google.com/file/d/1k6KtA_rPml7MEPIUOYYGryKm98Pe0hsz/view" target="_blank" rel="noopener"><span>📄</span><b>Schiedam Schedule PDF</b><small>Version 1 · all O35/O40 matches</small></a>
-      <a class="link-card" href="https://drive.google.com/file/d/1hqSbJshK46_5mnDQH7mXAU1YFUPz3zf2/view" target="_blank" rel="noopener"><span>📄</span><b>Rotterdam Schedule PDF</b><small>Version 1 · O45/O50 &amp; IMC (HC Rotterdam + HC Victoria)</small></a>
+      <a class="link-card" href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener"><span>📺</span><b>Watch Live</b><small>worldmastershockey.tv — official WMH streams</small></a>
       <a class="link-card" href="https://masters.altiusrt.com/" target="_blank" rel="noopener"><span>📊</span><b>Live Scores &amp; Standings</b><small>Masters AltiusRT — results post here during the event</small></a>
+      <a class="link-card" href="https://www.usafieldhockey.com/masters" target="_blank" rel="noopener"><span>🇺🇸</span><b>USA Field Hockey Masters</b><small>Rosters &amp; official Team USA news</small></a>
+      <a class="link-card" href="https://worldmastershockey.org/" target="_blank" rel="noopener"><span>🌍</span><b>World Masters Hockey</b><small>The governing body — official tournament info</small></a>
       <a class="link-card" href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener"><span>📸</span><b>@usamastersfh</b><small>USA Masters National Teams on Instagram</small></a>
-      <a class="link-card" href="https://kicksnsticks.eu/world-cup-masters/" target="_blank" rel="noopener"><span>🎒</span><b>Kids' Program</b><small>Kicks N Sticks · ages 4–14 · register early</small></a>
     </div>
   </section>
   </main>
 
   <footer class="footer">
     <p><b>GO USA! 🇺🇸🏑</b></p>
-    <p>An unofficial fan hub made with love by a USA WO35 family. Times from Official Schedule V1 (July 1, 2026) — always confirm against official sources.</p>
+    <p>An unofficial fan hub made with love by a USA WO35 family. Always confirm times against official sources.</p>
     <p><a href="https://www.instagram.com/usamastersfh/">@usamastersfh</a></p>
   </footer>
 
-  <script src="js/data.js"></script>
-  <script src="js/results.js"></script>
-  <script src="js/app.js"></script>
+  <script>
+    // Countdown to the Opening Ceremony (July 22, 19:00 CEST = 17:00 UTC),
+    // then to the first USA game; during the August gap it counts to Brasschaat.
+    (function () {
+      var el = document.getElementById("countdown");
+      var targets = [
+        [Date.UTC(2026, 6, 22, 17, 0, 0), "until the Opening Ceremony"],
+        [Date.UTC(2026, 6, 23, 14, 20, 0), "until USA WO35 v Australia"],
+        [Date.UTC(2026, 7, 6, 7, 0, 0), "until the August session (Brasschaat & Breda)"],
+      ];
+      function tick() {
+        var now = Date.now(), diff = 0, caption = "";
+        for (var i = 0; i < targets.length; i++) {
+          if (targets[i][0] - now > 0) { diff = targets[i][0] - now; caption = targets[i][1]; break; }
+        }
+        if (!diff) { el.innerHTML = '<span class="cd-live">🏑 IT\'S GAME TIME — GO USA!</span>'; return; }
+        var days = Math.floor(diff / 864e5),
+            hrs = Math.floor((diff % 864e5) / 36e5),
+            mins = Math.floor((diff % 36e5) / 6e4);
+        el.innerHTML =
+          '<div class="cd"><b>' + days + '</b><small>days</small></div>' +
+          '<div class="cd"><b>' + hrs + '</b><small>hours</small></div>' +
+          '<div class="cd"><b>' + mins + '</b><small>mins</small></div>' +
+          '<div class="cd"><b style="font-size:1rem;max-width:170px;display:block;line-height:1.2;padding-top:8px">' + caption + '</b></div>';
+      }
+      tick();
+      setInterval(tick, 30000);
+    })();
+    document.getElementById("ticker").textContent =
+      ("GO USA 🇺🇸 · 15 TEAMS · NETHERLANDS + BELGIUM · JULY 22 – AUG 16 · WORLD MASTERS HOCKEY · ".repeat(2)).repeat(2);
+  </script>
 </body>
 </html>

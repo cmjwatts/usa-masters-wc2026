@@ -375,6 +375,14 @@ function initTicker() {
   $("#ticker").textContent = (items + items).repeat(2);
 }
 
+// deep links from the hub (july.html?div=W45) land pre-filtered on that USA team
+const qDiv = new URLSearchParams(location.search).get("div");
+if (qDiv && DIVISIONS[qDiv]) {
+  state.team = "USA";
+  state.divs = new Set([qDiv]);
+  state.standDiv = ["W35", "W40", "M35", "M40"].includes(qDiv) ? qDiv : state.standDiv;
+}
+
 buildTeamSelect();
 initFilters();
 initIcs();

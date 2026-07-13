@@ -270,6 +270,21 @@ img { display: block; max-width: 100%; }
 .footer p { max-width: 640px; margin: 6px auto; }
 .footer a { color: var(--gold); }
 
+/* ============ HUB (tournament chooser) ============ */
+.hub-hero { min-height: 72vh; }
+a.chip { text-decoration: none; display: inline-block; }
+.venue-card.is-soon { opacity: 0.85; border-top: 6px solid var(--gold); }
+.venue-card.is-soon h3 { color: #4d5a77; }
+.venue-tag.tag-soon { background: var(--navy); }
+.soon-note { font-size: 0.85rem; color: #5c6478; }
+.chip.is-disabled {
+  opacity: 0.45; cursor: not-allowed; border-style: dashed; background: #fff;
+}
+.chip.is-disabled:hover { background: #fff; color: var(--navy); transform: none; }
+.team-finder { display: flex; flex-direction: column; gap: 28px; }
+.finder-group .chips-label { display: block; margin-bottom: 10px; }
+.finder-group .div-chips { row-gap: 10px; }
+
 /* ============ RESPONSIVE ============ */
 @media (max-width: 860px) {
   .nav { flex-wrap: wrap; padding: 10px 14px; gap: 8px; }
