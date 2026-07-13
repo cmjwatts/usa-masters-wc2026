@@ -270,12 +270,53 @@ img { display: block; max-width: 100%; }
 .footer p { max-width: 640px; margin: 6px auto; }
 .footer a { color: var(--gold); }
 
-/* ============ HUB (tournament chooser) ============ */
-.hub-hero { min-height: 56vh; }
-.venue-card.is-soon { opacity: 0.85; border-top: 6px solid var(--gold); }
-.venue-card.is-soon h3 { color: #4d5a77; }
-.venue-tag.tag-soon { background: var(--navy); }
-.soon-note { font-size: 0.85rem; color: #5c6478; }
+/* ============ HUB COVER (dark hero = tournament selector) ============ */
+.hub-cover {
+  position: relative; color: #fff; overflow: hidden;
+  background:
+    radial-gradient(900px 500px at 85% -10%, rgba(227, 24, 55, 0.35), transparent 60%),
+    radial-gradient(700px 460px at -10% 110%, rgba(255, 178, 90, 0.18), transparent 55%),
+    var(--navy-deep);
+}
+.hc-inner {
+  max-width: 1280px; margin: 0 auto; padding: 64px 6vw 56px;
+  display: grid; grid-template-columns: 1fr 1.15fr; gap: 56px; align-items: center;
+}
+.hc-left .hero-kicker { margin-bottom: 14px; }
+.hc-left h1 {
+  font-family: "Anton", sans-serif;
+  font-size: clamp(4.4rem, 9vw, 8.5rem);
+  line-height: 0.86; letter-spacing: 0.01em; text-transform: uppercase;
+  background: linear-gradient(100deg, #fff 30%, var(--gold) 130%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  margin-bottom: 18px;
+}
+.hc-sub { font-size: clamp(1rem, 1.6vw, 1.2rem); font-weight: 600; margin-bottom: 26px; }
+.hc-choose {
+  font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em;
+  font-size: 0.82rem; color: var(--gold); margin-bottom: 14px;
+}
+.hc-card { border: none; box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45); color: var(--ink); }
+.hc-card h3 { font-size: 2.2rem; }
+.hc-right { display: flex; flex-direction: column; gap: 14px; }
+.soon-row {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 14px; padding: 14px 18px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.soon-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.soon-head h3 {
+  font-family: "Anton", sans-serif; font-size: 1.5rem; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+}
+.soon-dates {
+  font-size: 0.7rem; font-weight: 900; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--gold);
+}
+.soon-where { font-size: 0.85rem; color: rgba(255, 255, 255, 0.65); }
+.hc-soon-note { font-size: 0.82rem; color: rgba(255, 255, 255, 0.55); }
+.hc-soon-note a { color: var(--gold); }
 .badge-label {
   font-size: 0.74rem; font-weight: 900; text-transform: uppercase;
   letter-spacing: 0.12em; color: var(--navy); margin-top: 2px;
@@ -290,8 +331,15 @@ img { display: block; max-width: 100%; }
 .team-badges .b-m { background: var(--navy); }
 .team-badges a:hover { background: var(--grad); transform: translateY(-2px); }
 .team-badges a { transition: all 0.13s ease; display: inline-block; }
-.venue-card.is-soon .team-badges .b-w { background: #d9909c; }
-.venue-card.is-soon .team-badges .b-m { background: #8a94ab; }
+.soon-row .team-badges a, .soon-row .team-badges span { font-size: 0.88rem; padding: 6px 11px; }
+.soon-row .team-badges .b-w { background: rgba(227, 24, 55, 0.45); }
+.soon-row .team-badges .b-m { background: rgba(255, 255, 255, 0.14); }
+@media (max-width: 980px) {
+  .hc-inner { grid-template-columns: 1fr; gap: 30px; padding-top: 40px; }
+  .hc-left h1 { font-size: clamp(3.6rem, 14vw, 6rem); margin-bottom: 12px; }
+  .hc-left .btn { display: none; } /* IG follow lives in Links + footer on mobile */
+  .hc-sub { margin-bottom: 0; }
+}
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 860px) {

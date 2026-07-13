@@ -28,7 +28,6 @@
   <meta name="twitter:image" content="https://usamastersfh.com/assets/hero.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="image" href="assets/hero.jpg" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="icon" href="assets/favicon.png" type="image/png">
@@ -53,83 +52,77 @@
       </span>
     </a>
     <nav class="nav-links">
-      <a href="#tournaments">Tournaments</a>
       <a href="#links">Links</a>
     </nav>
   </header>
 
-  <!-- ============ HERO ============ -->
-  <section class="hero hub-hero">
-    <div class="hero-bg"></div>
-    <div class="hero-wash"></div>
-    <div class="hero-inner">
-      <p class="hero-kicker">World Masters Hockey World Cup · Netherlands + Belgium</p>
-      <h1>GO<br>USA<span class="hero-period">.</span></h1>
-      <p class="hero-sub">15 USA teams · 4 venues · July 22 – August 16, 2026<br>Pick your tournament and follow every game.</p>
-      <div class="hero-cta">
-        <a class="btn btn-solid" href="#tournaments">Choose your tournament</a>
+  <!-- ============ HERO = TOURNAMENT SELECTOR ============ -->
+  <section class="hub-cover">
+    <div class="hc-inner">
+      <div class="hc-left">
+        <p class="hero-kicker">World Masters Hockey World Cup<br>Netherlands + Belgium</p>
+        <h1>GO<br>USA<span class="hero-period">.</span></h1>
+        <p class="hc-sub">15 USA teams · 4 venues<br>July 22 – August 16, 2026</p>
         <a class="btn btn-ghost" href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener">Follow @usamastersfh</a>
+      </div>
+      <div class="hc-right">
+        <p class="hc-choose">Choose your tournament</p>
+
+        <article class="venue-card venue-primary hc-card">
+          <span class="venue-tag">July 22 – Aug 1 · Live now</span>
+          <h3>Netherlands</h3>
+          <p class="venue-addr">Schiedam &amp; Rotterdam 🇳🇱 · HC Schiedam, HC Rotterdam &amp; HC Victoria</p>
+          <p class="badge-label">🇺🇸 9 USA teams — tap yours:</p>
+          <div class="team-badges">
+            <a class="b-w" href="july.html?div=W35">W O35</a>
+            <a class="b-w" href="july.html?div=W40">W O40</a>
+            <a class="b-w" href="july.html?div=W45">W O45</a>
+            <a class="b-w" href="july.html?div=W50">W O50</a>
+            <a class="b-w" href="july.html?div=W35I">W O35 IMC</a>
+            <a class="b-m" href="july.html?div=M35">M O35</a>
+            <a class="b-m" href="july.html?div=M40">M O40</a>
+            <a class="b-m" href="july.html?div=M45">M O45</a>
+            <a class="b-m" href="july.html?div=M50">M O50</a>
+          </div>
+          <div class="venue-actions">
+            <a class="btn btn-small btn-solid" href="july.html">Enter the Netherlands tournament →</a>
+          </div>
+        </article>
+
+        <div class="soon-row">
+          <div class="soon-head">
+            <h3>Belgium</h3>
+            <span class="soon-dates">Aug 6 – 16 · Coming soon</span>
+          </div>
+          <p class="soon-where">Brasschaat &amp; Antwerp 🇧🇪 · KHC Dragons + HC Olympia</p>
+          <div class="team-badges">
+            <span class="b-w">W O55</span>
+            <span class="b-w">W O60</span>
+            <span class="b-w">W O65</span>
+            <span class="b-m">M O55</span>
+            <span class="b-m">M O60</span>
+          </div>
+        </div>
+
+        <div class="soon-row">
+          <div class="soon-head">
+            <h3>O65</h3>
+            <span class="soon-dates">Aug 6 – 16 · Coming soon</span>
+          </div>
+          <p class="soon-where">Breda, Netherlands 🇳🇱 · BHV Push</p>
+          <div class="team-badges">
+            <span class="b-m">M O65</span>
+          </div>
+        </div>
+
+        <p class="hc-soon-note">Belgium &amp; O65 open here once their schedules are published — follow <a href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener">@usamastersfh</a> for the announcement.</p>
       </div>
     </div>
     <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
   </section>
 
-  <!-- ============ TOURNAMENTS ============ -->
-  <main>
-  <section class="section" id="tournaments">
-    <div class="section-head">
-      <h2>Choose Your<br>Tournament</h2>
-      <p>One World Cup, three tournaments. The Netherlands tournament (Schiedam &amp; Rotterdam) is live on this site now — Belgium and O65 open as soon as their schedules are published.</p>
-    </div>
-    <div class="venue-grid">
-      <article class="venue-card venue-primary">
-        <span class="venue-tag">July 22 – Aug 1 · Live now</span>
-        <h3>Netherlands</h3>
-        <p class="venue-addr">Schiedam &amp; Rotterdam 🇳🇱 · HC Schiedam, HC Rotterdam &amp; HC Victoria</p>
-        <p class="badge-label">🇺🇸 9 USA teams — tap yours:</p>
-        <div class="team-badges">
-          <a class="b-w" href="july.html?div=W35">W O35</a>
-          <a class="b-w" href="july.html?div=W40">W O40</a>
-          <a class="b-w" href="july.html?div=W45">W O45</a>
-          <a class="b-w" href="july.html?div=W50">W O50</a>
-          <a class="b-w" href="july.html?div=W35I">W O35 IMC</a>
-          <a class="b-m" href="july.html?div=M35">M O35</a>
-          <a class="b-m" href="july.html?div=M40">M O40</a>
-          <a class="b-m" href="july.html?div=M45">M O45</a>
-          <a class="b-m" href="july.html?div=M50">M O50</a>
-        </div>
-        <div class="venue-actions">
-          <a class="btn btn-small btn-solid" href="july.html">Enter the Netherlands tournament →</a>
-        </div>
-      </article>
-      <article class="venue-card is-soon">
-        <span class="venue-tag tag-soon">Aug 6 – 16 · Coming soon</span>
-        <h3>Belgium</h3>
-        <p class="venue-addr">Brasschaat &amp; Antwerp 🇧🇪 · KHC Dragons + HC Olympia</p>
-        <p class="badge-label">🇺🇸 5 USA teams:</p>
-        <div class="team-badges">
-          <span class="b-w">W O55</span>
-          <span class="b-w">W O60</span>
-          <span class="b-w">W O65</span>
-          <span class="b-m">M O55</span>
-          <span class="b-m">M O60</span>
-        </div>
-        <p class="soon-note">Schedule &amp; venue guide open here once published — follow <a href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener">@usamastersfh</a> for the announcement.</p>
-      </article>
-      <article class="venue-card is-soon">
-        <span class="venue-tag tag-soon">Aug 6 – 16 · Coming soon</span>
-        <h3>O65</h3>
-        <p class="venue-addr">Breda, Netherlands 🇳🇱 · BHV Push</p>
-        <p class="badge-label">🇺🇸 1 USA team:</p>
-        <div class="team-badges">
-          <span class="b-m">M O65</span>
-        </div>
-        <p class="soon-note">Schedule &amp; venue guide open here once published.</p>
-      </article>
-    </div>
-  </section>
-
   <!-- ============ LINKS ============ -->
+  <main>
   <section class="section section-tinted" id="links">
     <div class="section-head">
       <h2>Official<br>Links</h2>
