@@ -271,19 +271,27 @@ img { display: block; max-width: 100%; }
 .footer a { color: var(--gold); }
 
 /* ============ HUB (tournament chooser) ============ */
-.hub-hero { min-height: 72vh; }
-a.chip { text-decoration: none; display: inline-block; }
+.hub-hero { min-height: 56vh; }
 .venue-card.is-soon { opacity: 0.85; border-top: 6px solid var(--gold); }
 .venue-card.is-soon h3 { color: #4d5a77; }
 .venue-tag.tag-soon { background: var(--navy); }
 .soon-note { font-size: 0.85rem; color: #5c6478; }
-.chip.is-disabled {
-  opacity: 0.45; cursor: not-allowed; border-style: dashed; background: #fff;
+.badge-label {
+  font-size: 0.74rem; font-weight: 900; text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--navy); margin-top: 2px;
 }
-.chip.is-disabled:hover { background: #fff; color: var(--navy); transform: none; }
-.team-finder { display: flex; flex-direction: column; gap: 28px; }
-.finder-group .chips-label { display: block; margin-bottom: 10px; }
-.finder-group .div-chips { row-gap: 10px; }
+.team-badges { display: flex; flex-wrap: wrap; gap: 8px; }
+.team-badges a, .team-badges span {
+  font-family: "Anton", "Archivo", sans-serif; font-size: 1.02rem; letter-spacing: 0.05em;
+  text-transform: uppercase; color: #fff; padding: 7px 14px; border-radius: 10px;
+  text-decoration: none; line-height: 1;
+}
+.team-badges .b-w { background: var(--red); }
+.team-badges .b-m { background: var(--navy); }
+.team-badges a:hover { background: var(--grad); transform: translateY(-2px); }
+.team-badges a { transition: all 0.13s ease; display: inline-block; }
+.venue-card.is-soon .team-badges .b-w { background: #d9909c; }
+.venue-card.is-soon .team-badges .b-m { background: #8a94ab; }
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 860px) {
