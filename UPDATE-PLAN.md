@@ -1,6 +1,8 @@
 # USA Masters Fan Hub — Update Plan v2 (2026-07-12, post-review)
 
-**Status: reviewed and revised; ready for execution approval.** v1 was reviewed adversarially on 2026-07-12; this version incorporates the findings. Changes from v1 are marked **[v2]**.
+**Status: EXECUTING — Phases 0–2 shipped 2026-07-13.** Live: hub at root (tournament chooser; Brasschaat 🇧🇪 + Breda as non-clickable "coming soon" tiles per Christine), July session at `july.html` (old deep links auto-redirect; `?div=X` team deep links), OG/Twitter cards on both pages, pipeline hardened (Aug 6–16 cron, total-failure alerting, per-division score preservation, `window.RESULTS_UPDATED`), `netlify.toml` cache headers. Architecture note: no separate `rotterdam.html` was needed — the existing page already covered both Window-1 venues, so it became `july.html` unchanged. Fonts load from Google Fonts (local TTFs feed only the CI social renderer); WOFF2 files staged for optional future self-hosting. **Still open:** photos (B1–B4, gated on Christine's folder), Brasschaat/Breda pages + data (C2–C4, gated on published schedules), AltiusRT comp ids (D1), staleness stamp UI on the schedule page (D4 site-side), Belgium travel guide, "USA today" roll-up.
+
+v1 was reviewed adversarially on 2026-07-12; this version incorporates the findings. Changes from v1 are marked **[v2]**.
 
 ---
 
