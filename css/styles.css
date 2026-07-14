@@ -273,10 +273,15 @@ img { display: block; max-width: 100%; }
 /* ============ HUB COVER (dark hero = tournament selector) ============ */
 .hub-cover {
   position: relative; color: #fff; overflow: hidden;
-  background:
-    radial-gradient(900px 500px at 85% -10%, rgba(227, 24, 55, 0.35), transparent 60%),
-    radial-gradient(700px 460px at -10% 110%, rgba(255, 178, 90, 0.18), transparent 55%),
-    var(--navy-deep);
+  /* USA FH logo colors: red up top, navy blue down low.
+     Seam darkened through 36-56% so red->blue doesn't turn muddy purple. */
+  background: linear-gradient(180deg,
+    #e31837 0%,
+    #c8152f 16%,
+    #7c1233 36%,
+    #2a2a52 54%,
+    var(--navy) 78%,
+    var(--navy-deep) 100%);
 }
 /* thin sunset bar — same recipe as the @usamastersfh Instagram slides */
 .hub-cover::before {
