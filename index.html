@@ -28,7 +28,7 @@
   <meta name="twitter:image" content="https://usamastersfh.com/assets/hero.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Chakra+Petch:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="icon" href="assets/favicon.png" type="image/png">
 </head>
@@ -62,8 +62,8 @@
       <div class="hc-left">
         <p class="hero-kicker">World Masters Hockey World Cup<br>Netherlands + Belgium</p>
         <h1 class="hc-headline">
-          <img class="hc-usa" src="assets/usa-wordmark-white.png" alt="USA" width="298" height="108">
-          <span class="hc-fanhub">Fan Hub<span class="hero-period">.</span></span>
+          <img class="hc-usa" id="hcUsa" src="assets/usa-wordmark-white.png" alt="USA" width="298" height="108">
+          <span class="hc-fanhub" id="hcFanhub">Fan Hub<span class="hero-period">.</span></span>
         </h1>
         <p class="hc-sub">15 USA teams · 4 venues<br>July 22 – August 16, 2026</p>
         <a class="btn btn-ghost" href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener">Follow @usamastersfh</a>
@@ -149,6 +149,28 @@
   <script>
     document.getElementById("ticker").textContent =
       ("GO USA 🇺🇸 · 15 TEAMS · NETHERLANDS + BELGIUM · JULY 22 – AUG 16 · WORLD MASTERS HOCKEY · ".repeat(2)).repeat(2);
+
+    // Size "Fan Hub" (Chakra Petch) so its width exactly matches the USA
+    // wordmark above it — uniform font-size scaling, no letter distortion.
+    (function () {
+      var usa = document.getElementById("hcUsa"),
+          fh = document.getElementById("hcFanhub");
+      function fit() {
+        if (!usa || !fh) return;
+        var target = usa.getBoundingClientRect().width;
+        if (!target) return;
+        fh.style.fontSize = "";                    // back to CSS base
+        var natural = fh.getBoundingClientRect().width;
+        if (natural > 0) {
+          var base = parseFloat(getComputedStyle(fh).fontSize);
+          fh.style.fontSize = (base * target / natural) + "px";
+        }
+      }
+      if (usa.complete) fit(); else usa.addEventListener("load", fit);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+      window.addEventListener("resize", fit);
+      window.addEventListener("load", fit);
+    })();
   </script>
 </body>
 </html>

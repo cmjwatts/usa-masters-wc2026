@@ -299,10 +299,14 @@ img { display: block; max-width: 100%; }
   line-height: 0.95; letter-spacing: 0.01em; text-transform: uppercase;
   margin-bottom: 18px;
 }
-/* headline = logo-extracted USA wordmark stacked over "FAN HUB" */
-.hc-headline { display: flex; flex-direction: column; align-items: flex-start; gap: 0.14em; }
+/* headline = logo-extracted USA wordmark stacked over "FAN HUB" (Chakra Petch,
+   width-matched to the USA mark by the fit() script in index.html) */
+.hc-headline { display: flex; flex-direction: column; align-items: flex-start; gap: 0.16em; }
 .hc-usa { width: auto; height: 0.82em; display: block; }
 .hc-fanhub {
+  font-family: "Chakra Petch", sans-serif; font-weight: 700;
+  text-transform: uppercase; line-height: 0.92; letter-spacing: 0.015em;
+  display: inline-block; transform-origin: left top; white-space: nowrap;
   background: linear-gradient(100deg, #fff 30%, var(--gold) 130%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
