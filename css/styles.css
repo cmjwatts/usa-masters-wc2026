@@ -375,4 +375,8 @@ img { display: block; max-width: 100%; }
   .photo-strip img { height: 200px; }
   .hero { min-height: 78vh; }
   .countdown { gap: 16px; }
+  /* Hub nav has a single "Links" — keep it inline with the logo, not full-width */
+  .nav-hub { flex-wrap: nowrap; }
+  .nav-hub .nav-links { order: 0; width: auto; margin-left: auto; justify-content: flex-end; }
+  .nav-hub .nav-links a { padding: 7px 11px; font-size: 0.8rem; }
 }
