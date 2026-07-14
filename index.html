@@ -60,7 +60,7 @@
   <section class="hub-cover">
     <div class="hc-inner">
       <div class="hc-left">
-        <p class="hero-kicker">World Masters Hockey World Cup<br>Netherlands + Belgium</p>
+        <p class="hero-kicker"><span class="kick-full">World Masters Hockey World Cup<br>Netherlands + Belgium</span><span class="kick-short">WMH World Cup · NL + Belgium</span></p>
         <h1 class="hc-headline">
           <span class="hc-usa" id="hcUsa">USA</span>
           <span class="hc-fanhub" id="hcFanhub">Fan Hub<span class="hero-period">.</span></span>
@@ -170,6 +170,17 @@
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
       window.addEventListener("resize", fit);
       window.addEventListener("load", fit);
+    })();
+
+    // Whole Netherlands card is tappable — click anywhere on it that isn't
+    // one of its internal links (team badges, Enter button) opens july.html.
+    (function () {
+      var card = document.querySelector(".hc-card");
+      if (!card) return;
+      card.addEventListener("click", function (e) {
+        if (e.target.closest("a")) return;
+        window.location.href = "july.html";
+      });
     })();
   </script>
 </body>
