@@ -301,8 +301,12 @@ img { display: block; max-width: 100%; }
 }
 /* headline = logo-extracted USA wordmark stacked over "FAN HUB" (Chakra Petch,
    width-matched to the USA mark by the fit() script in index.html) */
-.hc-headline { display: flex; flex-direction: column; align-items: flex-start; gap: 0.16em; }
-.hc-usa { width: auto; height: 0.82em; display: block; }
+.hc-headline { display: flex; flex-direction: column; align-items: flex-start; gap: 0.14em; }
+.hc-usa {
+  font-family: "Chakra Petch", sans-serif; font-weight: 700; color: #fff;
+  text-transform: uppercase; line-height: 0.9; letter-spacing: 0.02em;
+  display: inline-block;
+}
 .hc-fanhub {
   font-family: "Chakra Petch", sans-serif; font-weight: 700;
   text-transform: uppercase; line-height: 0.92; letter-spacing: 0.015em;
