@@ -289,7 +289,12 @@ function initCountdown() {
 // ---- USA team cards ----
 function renderTeams() {
   const grid = $("#teamGrid");
-  grid.innerHTML = USA_TEAMS.map((t) => `
+  grid.innerHTML = USA_TEAMS.map((t) => t.page ? `
+    <a class="team-card ${t.star ? "star" : ""}" href="${t.page}">
+      <h3>🇺🇸 ${t.name}</h3>
+      <p class="t-venue">${t.venue}</p>
+      <p class="t-cta">Meet the team →</p>
+    </a>` : `
     <div class="team-card ${t.star ? "star" : ""}" ${t.inApp ? `data-div="${t.code}"` : ""}>
       <h3>🇺🇸 ${t.name}</h3>
       <p class="t-venue">${t.venue}</p>

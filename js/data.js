@@ -395,7 +395,7 @@ const EVENTS = [
 
 // All nine USA teams at the July session
 const USA_TEAMS = [
-  { code: "W35", name: "Women O35", venue: "HC Schiedam", star: true, inApp: true },
+  { code: "W35", name: "Women O35", venue: "HC Schiedam", star: true, inApp: true, page: "team.html" },
   { code: "W40", name: "Women O40", venue: "HC Schiedam", inApp: true },
   { code: "M35", name: "Men O35", venue: "HC Schiedam", inApp: true },
   { code: "M40", name: "Men O40", venue: "HC Schiedam", inApp: true },
