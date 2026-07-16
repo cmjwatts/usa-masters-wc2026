@@ -43,8 +43,7 @@
       </span>
     </a>
     <nav class="nav-links">
-      <a href="july.html?div=W35#schedule">WO35 Schedule</a>
-      <a href="july.html">Netherlands hub</a>
+      <a href="july.html" id="schedLink">Schedule</a>
       <a href="./">All USA teams</a>
     </nav>
   </header>
@@ -53,11 +52,11 @@
   <main>
   <section class="section" id="roster">
     <div class="section-head">
-      <h2>Meet<br>the WO35<span style="color:var(--red)">.</span></h2>
-      <p>The USA Women's O35 squad taking the pitch at HC Schiedam, July 22 – August 1. Tap any card to flip it over for the scouting report. 🇺🇸🏑</p>
+      <h2 id="rosterTitle">Meet<br>the team<span style="color:var(--red)">.</span></h2>
+      <p id="rosterSub"></p>
     </div>
     <div class="roster-grid" id="rosterGrid"></div>
-    <p class="roster-note">📸 Player headshots &amp; favorite quotes are being collected — cards update as they come in. Catch every WO35 game on the <a href="july.html?div=W35#schedule">schedule</a>.</p>
+    <p class="roster-note" id="rosterNote"></p>
   </section>
   </main>
 
@@ -72,9 +71,32 @@
     (function () {
       const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
       const initials = (name) => name.split(/\s+/).filter(Boolean).map((w) => w[0]).join("").slice(0, 3).toUpperCase();
-      const total = ROSTER.length;
 
-      document.getElementById("rosterGrid").innerHTML = ROSTER.map((p, i) => {
+      // Which team? team.html?div=W40 etc. — defaults to WO35.
+      const code = ROSTERS[new URLSearchParams(location.search).get("div")] ? new URLSearchParams(location.search).get("div") : "W35";
+      const team = ROSTERS[code];
+      const players = team.players;
+      const total = players.length;
+
+      document.title = `Meet the ${team.short} Team — USA Masters WC2026`;
+      document.getElementById("rosterTitle").innerHTML = `Meet<br>the ${esc(team.short)}<span style="color:var(--red)">.</span>`;
+      document.getElementById("rosterSub").textContent =
+        `The USA ${team.label} squad taking the pitch at ${team.venue}, ${team.dates}. ` +
+        (total ? "Tap any card to flip it over for the scouting report. 🇺🇸🏑" : "🇺🇸🏑");
+
+      const sched = document.getElementById("schedLink");
+      if (team.inJuly) { sched.textContent = `${team.short} Schedule`; sched.href = `july.html?div=${code}#schedule`; }
+      else { sched.textContent = "Netherlands hub"; }
+
+      const note = document.getElementById("rosterNote");
+      if (total) {
+        note.innerHTML = `📸 Player headshots &amp; favorite quotes are being collected — cards update as they come in.` +
+          (team.inJuly ? ` Catch every ${esc(team.short)} game on the <a href="july.html?div=${code}#schedule">schedule</a>.` : "");
+      } else {
+        note.innerHTML = `🏑 The ${esc(team.short)} player cards are being put together — headshots, hometowns, colleges &amp; favorite quotes are on their way. Check back soon!`;
+      }
+
+      document.getElementById("rosterGrid").innerHTML = players.map((p, i) => {
         const no = String(i + 1).padStart(2, "0");
         const photo = p.photo
           ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy">`
