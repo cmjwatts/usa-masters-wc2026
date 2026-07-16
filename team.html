@@ -99,10 +99,11 @@
 
       document.getElementById("rosterGrid").innerHTML = players.map((p, i) => {
         const no = String(i + 1).padStart(2, "0");
-        const photo = (p.photo
+        const photoInner = (p.photo
           ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy">`
           : `<div class="pc-initials">${esc(initials(p.name))}<small>Headshot coming soon</small></div>`)
           + (p.number != null ? `<span class="pc-num">#${esc(p.number)}</span>` : "");
+        const photoClass = p.photo ? "pc-photo" : "pc-photo no-photo";
         const meta = [
           p.hometown ? `<span>📍 ${esc(p.hometown)}</span>` : "",
           p.college ? `<span>🎓 ${esc(p.college)}</span>` : "",
@@ -117,7 +118,7 @@
             <div class="pcard-face pcard-front">
               <div class="pc-strip"><span>USA · WO35</span><span class="pc-no">№ ${no} / ${total}</span></div>
               <span class="pc-hint">Flip ↻</span>
-              <div class="pc-photo">${photo}</div>
+              <div class="${photoClass}">${photoInner}</div>
               <h3 class="pc-name">${esc(p.name)}<i>.</i></h3>
               <p class="pc-pos">${esc(p.position || "USA Masters")}</p>
               <div class="pc-meta">${meta}</div>
