@@ -372,9 +372,11 @@ img { display: block; max-width: 100%; }
 @media (max-width: 980px) { .roster-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
 @media (max-width: 620px) {
   .roster-grid { grid-template-columns: 1fr; max-width: 350px; margin: 0 auto; gap: 18px; }
-  /* single column: no row alignment to preserve, so shrink the empty
-     placeholder frame — a full 4:5 navy box is dead space on a phone */
-  .pc-photo.no-photo { aspect-ratio: 16 / 9; }
+  /* single column: one compact, uniform photo height for every card —
+     full 4:5 portraits made each card fill the whole screen and the
+     mixed photo/placeholder heights gave the scroll a lumpy rhythm */
+  .pc-photo, .pc-photo.no-photo { aspect-ratio: auto; height: 250px; }
+  .pc-photo img { object-position: 50% 25%; } /* bias the crop toward faces */
   .pc-initials { font-size: 2.6rem; gap: 4px; }
   .pc-name { font-size: 1.2rem; }
 }
