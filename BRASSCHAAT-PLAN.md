@@ -14,6 +14,10 @@ _Decisions locked 2026-07-16. Supersedes UPDATE-PLAN.md §C1–C4 where they dif
    `js/data-aug.js` + `js/app-aug.js`. Consolidate into a shared config after the season.
 4. **Naming:** the event is officially "2026 WMH World Cup Brasschaat" (not Brussels).
    Cities: Brasschaat + Antwerp, Belgium.
+5. **No roster links on Brasschaat team cards.** USA team cards on `brasschaat.html` (and
+   the Belgium division badges on the hub card) are plain, non-clickable — no links to
+   `team.html` roster pages and no "roster coming soon" copy, since other teams may not
+   want public roster pages. Only the W35 July flow keeps its roster links.
 
 ## Data source (blocking prerequisite)
 
@@ -65,7 +69,8 @@ Clone `july.html` and adapt:
 - Schedule section: division chips for the 5 codes + ALL; same filters (team select,
   knockout toggle, ICS button); empty `#scheduleList`.
 - Standings section: chips for the 5 codes.
-- USA Teams section: grid fed from `USA_TEAMS_AUG`.
+- USA Teams section: grid fed from `USA_TEAMS_AUG` — cards are static (name/venue only):
+  no `team.html` links, no "roster coming soon" copy (decision 5).
 - Venues: two static venue cards — KHC Dragons (Brasschaat) and HC Olympia (Antwerp) with
   addresses + Google Maps links (addresses from dragonsmasters.com during T0). Include the
   planned travel-from-NL note (UPDATE-PLAN travel item).
@@ -86,15 +91,12 @@ Netherlands constant:
 
 ### T4 — Hub + cross-links
 - `index.html`: convert the Belgium "coming soon" tile (lines ~95–108) into an active
-  `hc-card` linking `brasschaat.html`, with clickable division badges
-  (`brasschaat.html?div=W55` … and `team.html?div=CODE` roster links) mirroring the
-  Netherlands card. Leave the O65/Breda tile as coming-soon.
+  `hc-card` linking `brasschaat.html`. Division badges link to the schedule filter only
+  (`brasschaat.html?div=W55` …) — no `team.html` roster links (decision 5). Leave the
+  O65/Breda tile as coming-soon.
 - `july.html:143` "Belgium and O65 tournaments" line: link Belgium to `brasschaat.html`.
-- `team.html`: for the 5 Belgium divisions, the nav Schedule link should now point to
-  `brasschaat.html?div=CODE#schedule` (today it's hidden when `inJuly:false` — key the link
-  off a new `page` field in roster.js entries or off the division code list).
-- `js/roster.js`: update the 5 Belgium stubs' venue text if T0 corrects it; leave `inJuly`
-  semantics intact for July teams.
+- `team.html` / `js/roster.js`: leave untouched — Belgium divisions get no roster pages
+  for now (decision 5), and direct `team.html?div=W55` visits keep today's stub behavior.
 
 ### T5 — Results pipeline
 - `scripts/scrape-results.mjs`: add the 5 Brasschaat divisions with their AltiusRT
@@ -108,9 +110,9 @@ Netherlands constant:
 - `scripts/generate-social.mjs` is W35/Schiedam-specific and only reads `data.js` — leave it
   alone; confirm it still runs (it must not break when results-aug.js appears).
 
-### T6 — Rosters (content-dependent, can slip past launch)
-Populate `ROSTERS` player arrays for W55/W60/W65/M55/M60 in `js/roster.js` when roster
-sheets are provided. Not a launch blocker — team.html already renders placeholder cards.
+### T6 — Rosters (deferred indefinitely)
+Per decision 5, Belgium teams are not getting roster pages at launch. Revisit only if a
+team asks for one; `js/roster.js` stubs stay as-is.
 
 ### T7 — QA + launch (after T1–T5)
 - Serve locally, screenshot `brasschaat.html` desktop + mobile (Playwright/Chromium is
