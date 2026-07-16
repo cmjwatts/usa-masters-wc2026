@@ -472,6 +472,13 @@ img { display: block; max-width: 100%; }
 /* team card on july.html that links to the roster page */
 a.team-card { display: block; text-decoration: none; color: inherit; }
 a.team-card .t-cta { color: var(--red); }
+/* teams whose roster page isn't ready yet — not clickable */
+.team-card.static { cursor: default; }
+.team-card.static:hover { transform: none; }
+
+/* per-pool standings tables (M45) */
+.pool-head { font-size: 1.3rem; text-transform: uppercase; color: var(--navy); margin: 26px 0 10px; }
+.pool-head:first-child { margin-top: 0; }
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 860px) {

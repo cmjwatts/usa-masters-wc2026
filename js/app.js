@@ -110,9 +110,6 @@ function renderSchedule() {
   const byDay = {};
   rows.forEach((r) => (byDay[r.d] ??= []).push(r));
   let html = "";
-  if ([...state.divs].some((d) => DIVISIONS[d].partial)) {
-    html += `<div class="partial-note">🇺🇸 Rotterdam divisions (O45 · O50 · IMC) show <strong>USA games and key knockout rounds only</strong> — full grids in the <a href="${LINKS.schedulePdfRotterdam}" target="_blank" rel="noopener">official Rotterdam PDF ↗</a></div>`;
-  }
   for (const day of Object.keys(byDay).sort()) {
     const [wd, date, tag] = DATE_LABELS[day] || ["", day, ""];
     html += `<div class="day-block"><div class="day-head"><h3>${wd} ${date}</h3><small>${tag}</small></div>`;
@@ -164,15 +161,15 @@ function computeStandings(div) {
 function renderStandings() {
   const rows = computeStandings(state.standDiv);
   const played = rows.some((r) => r.P > 0);
-  const note = (played
+  const note = played
     ? `Unofficial — computed from results entered on this site. Confirm on <a href="https://masters.altiusrt.com/" target="_blank" rel="noopener">AltiusRT</a>.`
-    : `Pool play starts July 23 — the table fills in as results come in. Official live standings will also post on <a href="https://masters.altiusrt.com/" target="_blank" rel="noopener">AltiusRT</a>.`)
-    + ` Rotterdam divisions (O45/O50/IMC): standings on AltiusRT & the <a href="${LINKS.schedulePdfRotterdam}" target="_blank" rel="noopener">official PDF</a>.`;
+    : `Pool play starts July 23 — tables fill in as results come in. Official live standings will also post on <a href="https://masters.altiusrt.com/" target="_blank" rel="noopener">AltiusRT</a>.`;
   $("#standingsNote").innerHTML = note;
-  $("#standingsTable").innerHTML = `
+  const table = (rows2, heading) => `
+    ${heading ? `<h3 class="pool-head">${heading}</h3>` : ""}
     <table class="stand-table">
       <thead><tr><th>#</th><th class="st-team">Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr></thead>
-      <tbody>${rows.map((r, i) => `
+      <tbody>${rows2.map((r, i) => `
         <tr class="${r.code === "USA" ? "st-usa" : ""}">
           <td>${i + 1}</td>
           <td class="st-team">${teamName(r.code)}</td>
@@ -182,18 +179,26 @@ function renderStandings() {
         </tr>`).join("")}
       </tbody>
     </table>`;
+  const pools = DIVISION_POOLS[state.standDiv];
+  if (pools) {
+    // multi-pool division (M45): one table per round-robin pool
+    const byCode = Object.fromEntries(rows.map((r) => [r.code, r]));
+    $("#standingsTable").innerHTML = Object.entries(pools).map(([letter, teams]) => {
+      const poolRows = rows.length
+        ? teams.map((c) => byCode[c]).filter(Boolean)
+        : teams.map((c) => ({ code: c, P: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, Pts: 0 }));
+      return table(poolRows, `Pool ${letter}`);
+    }).join("");
+  } else {
+    $("#standingsTable").innerHTML = table(rows);
+  }
 }
 
 // ---- filters ----
 function buildTeamSelect() {
   const sel = $("#teamSel");
   const codes = new Set();
-  // dropdown only lists teams with complete schedules (Schiedam divisions);
-  // Rotterdam teams are reachable via the USA quick-view chips
-  POOL.forEach(([, , div, h, a]) => {
-    if (DIVISIONS[div].partial) return;
-    codes.add(h); codes.add(a);
-  });
+  POOL.forEach(([, , , h, a]) => { codes.add(h); codes.add(a); });
   const sorted = [...codes].sort((a, b) => TEAMS[a].name.localeCompare(TEAMS[b].name));
   sel.innerHTML =
     `<option value="ALL">All teams</option>` +
@@ -289,12 +294,20 @@ function initCountdown() {
 // ---- USA team cards ----
 function renderTeams() {
   const grid = $("#teamGrid");
-  grid.innerHTML = USA_TEAMS.map((t) => `
+  grid.innerHTML = USA_TEAMS.map((t) => {
+    const hasRoster = typeof ROSTERS !== "undefined" && ROSTERS[t.code]?.players?.length;
+    return hasRoster ? `
     <a class="team-card ${t.star ? "star" : ""}" href="team.html?div=${t.code}">
       <h3>🇺🇸 ${t.name}</h3>
       <p class="t-venue">${t.venue}</p>
       <p class="t-cta">Meet the team →</p>
-    </a>`).join("");
+    </a>` : `
+    <div class="team-card static ${t.star ? "star" : ""}">
+      <h3>🇺🇸 ${t.name}</h3>
+      <p class="t-venue">${t.venue}</p>
+      <p class="t-cta">Player cards coming soon</p>
+    </div>`;
+  }).join("");
 }
 
 // ---- calendar export (.ics) ----
@@ -374,7 +387,7 @@ const qDiv = new URLSearchParams(location.search).get("div");
 if (qDiv && DIVISIONS[qDiv]) {
   state.team = "USA";
   state.divs = new Set([qDiv]);
-  state.standDiv = ["W35", "W40", "M35", "M40"].includes(qDiv) ? qDiv : state.standDiv;
+  state.standDiv = qDiv;
 }
 
 buildTeamSelect();
