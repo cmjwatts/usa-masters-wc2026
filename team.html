@@ -97,12 +97,11 @@
         note.innerHTML = `🏑 The ${esc(team.short)} player cards are being put together — headshots, hometowns, colleges &amp; favorite quotes are on their way. Check back soon!`;
       }
 
-      document.getElementById("rosterGrid").innerHTML = players.map((p, i) => {
-        const no = String(i + 1).padStart(2, "0");
-        const photoInner = (p.photo
+      document.getElementById("rosterGrid").innerHTML = players.map((p) => {
+        const jersey = p.number != null ? `#${esc(p.number)}` : "";
+        const photoInner = p.photo
           ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy" decoding="async">`
-          : `<div class="pc-initials">${esc(initials(p.name))}<small>Headshot coming soon</small></div>`)
-          + (p.number != null ? `<span class="pc-num">#${esc(p.number)}</span>` : "");
+          : `<div class="pc-initials">${esc(initials(p.name))}<small>Headshot coming soon</small></div>`;
         const photoClass = p.photo ? "pc-photo" : "pc-photo no-photo";
         const meta = [
           p.hometown ? `<span>📍 ${esc(p.hometown)}</span>` : "",
@@ -116,7 +115,7 @@
         <div class="pcard" role="button" tabindex="0" aria-label="${esc(p.name)} — tap to flip card">
           <div class="pcard-inner">
             <div class="pcard-face pcard-front">
-              <div class="pc-strip"><span>USA · WO35</span><span class="pc-no">№ ${no} / ${total}</span></div>
+              <div class="pc-strip"><span>USA · ${esc(team.short)}</span><span class="pc-no">${jersey}</span></div>
               <span class="pc-hint">Flip ↻</span>
               <div class="${photoClass}">${photoInner}</div>
               <h3 class="pc-name">${esc(p.name)}<i>.</i></h3>
@@ -129,7 +128,7 @@
               <h3 class="pc-back-name">${esc(p.name)}</h3>
               <div class="pc-back-bar"></div>
               <p class="pc-fact">${esc(fact)}</p>
-              <div class="pc-back-foot"><span>№ ${no} / ${total}</span><span>usamastersfh.com</span></div>
+              <div class="pc-back-foot"><span>${jersey}</span><span>usamastersfh.com</span></div>
             </div>
           </div>
         </div>`;

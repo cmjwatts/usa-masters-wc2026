@@ -429,12 +429,7 @@ img { display: block; max-width: 100%; }
   font-family: "Archivo", sans-serif; font-weight: 900; font-size: 0.6rem;
   letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255, 255, 255, 0.6);
 }
-.pc-num {
-  position: absolute; top: 8px; left: 8px;
-  background: var(--navy-deep); color: var(--gold);
-  font-family: "Anton", sans-serif; font-size: 1.05rem; line-height: 1;
-  padding: 6px 9px 5px; border-radius: 8px; box-shadow: 0 0 0 2px var(--gold);
-}
+.pc-strip .pc-no { font-family: "Anton", sans-serif; font-size: 1rem; letter-spacing: 0.04em; }
 .pc-name {
   margin: 10px 10px 0; padding: 9px 10px 7px; border-radius: 8px;
   background: var(--navy); color: #fff; text-align: center;
