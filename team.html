@@ -99,9 +99,10 @@
 
       document.getElementById("rosterGrid").innerHTML = players.map((p, i) => {
         const no = String(i + 1).padStart(2, "0");
-        const photo = p.photo
+        const photo = (p.photo
           ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy">`
-          : `<div class="pc-initials">${esc(initials(p.name))}<small>Headshot coming soon</small></div>`;
+          : `<div class="pc-initials">${esc(initials(p.name))}<small>Headshot coming soon</small></div>`)
+          + (p.number != null ? `<span class="pc-num">#${esc(p.number)}</span>` : "");
         const meta = [
           p.hometown ? `<span>📍 ${esc(p.hometown)}</span>` : "",
           p.college ? `<span>🎓 ${esc(p.college)}</span>` : "",
