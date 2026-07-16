@@ -57,7 +57,7 @@
   </header>
 
   <!-- ============ HERO = TOURNAMENT SELECTOR ============ -->
-  <section class="hub-cover">
+  <section class="hub-cover" id="tournaments">
     <div class="hc-inner">
       <div class="hc-left">
         <p class="hero-kicker"><span class="kick-full">World Masters Hockey World Cup<br>Netherlands + Belgium</span><span class="kick-short">WMH World Cup · NL + Belgium</span></p>
@@ -92,33 +92,35 @@
           </div>
         </article>
 
-        <div class="soon-row">
+        <div class="soon-row" data-href="brasschaat.html" style="cursor:pointer">
           <div class="soon-head">
             <h3>Belgium</h3>
-            <span class="soon-dates">Aug 6 – 16 · Coming soon</span>
+            <span class="soon-dates">Aug 6 – 16 · Venues &amp; travel live</span>
           </div>
           <p class="soon-where">Brasschaat &amp; Antwerp 🇧🇪 · KHC Dragons + HC Olympia</p>
           <div class="team-badges">
-            <span class="b-w">W O55</span>
-            <span class="b-w">W O60</span>
-            <span class="b-w">W O65</span>
-            <span class="b-m">M O55</span>
-            <span class="b-m">M O60</span>
+            <a class="b-w" href="brasschaat.html">W O55</a>
+            <a class="b-w" href="brasschaat.html">W O60</a>
+            <a class="b-w" href="brasschaat.html">W O65</a>
+            <a class="b-m" href="brasschaat.html">M O55</a>
+            <a class="b-m" href="brasschaat.html">M O60</a>
+            <a class="b-m" href="brasschaat.html">Enter →</a>
           </div>
         </div>
 
-        <div class="soon-row">
+        <div class="soon-row" data-href="breda.html" style="cursor:pointer">
           <div class="soon-head">
             <h3>O65</h3>
-            <span class="soon-dates">Aug 6 – 16 · Coming soon</span>
+            <span class="soon-dates">Aug 6 – 16 · Venue &amp; travel live</span>
           </div>
           <p class="soon-where">Breda, Netherlands 🇳🇱 · BHV Push</p>
           <div class="team-badges">
-            <span class="b-m">M O65</span>
+            <a class="b-m" href="breda.html">M O65</a>
+            <a class="b-m" href="breda.html">Enter →</a>
           </div>
         </div>
 
-        <p class="hc-soon-note">Belgium &amp; O65 open here once their schedules are published — follow <a href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener">@usamastersfh</a> for the announcement.</p>
+        <p class="hc-soon-note">Belgium &amp; O65 schedules land on their pages the moment they're published — follow <a href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener">@usamastersfh</a> for the announcement.</p>
       </div>
     </div>
     <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
@@ -174,14 +176,19 @@
       window.addEventListener("load", fit);
     })();
 
-    // Whole Netherlands card is tappable — click anywhere on it that isn't
-    // one of its internal links (team badges, Enter button) opens july.html.
+    // Whole tournament cards are tappable — click anywhere that isn't one of
+    // their internal links (team badges, Enter button) opens the page.
     (function () {
       var card = document.querySelector(".hc-card");
-      if (!card) return;
-      card.addEventListener("click", function (e) {
+      if (card) card.addEventListener("click", function (e) {
         if (e.target.closest("a")) return;
         window.location.href = "july.html";
+      });
+      document.querySelectorAll(".soon-row[data-href]").forEach(function (row) {
+        row.addEventListener("click", function (e) {
+          if (e.target.closest("a")) return;
+          window.location.href = row.dataset.href;
+        });
       });
     })();
   </script>

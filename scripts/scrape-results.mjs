@@ -30,6 +30,7 @@ function loadExistingResults() {
 // division -> AltiusRT competition id (e.g. 512). null = not published yet.
 // Schiedam (O35/O40) + Rotterdam (O45/O50; USA games only are on the site,
 // but scraped scores merge by div|home|away so extras are harmless).
+// Window 2 (Aug 6–16): Brasschaat/Antwerp (O55/O60 + W O65) + Breda (M O65).
 const COMPETITIONS = {
   W35: null,
   W40: null,
@@ -40,6 +41,12 @@ const COMPETITIONS = {
   M45: null,
   M50: null,
   W35I: null, // 35/40W IMC competition
+  W55: null,
+  W60: null,
+  W65: null,
+  M55: null,
+  M60: null,
+  M65: null, // Breda
 };
 
 // Team codes used in js/data.js, with names AltiusRT might display.
