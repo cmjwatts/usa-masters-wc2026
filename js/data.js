@@ -421,7 +421,6 @@ const LINKS = {
   wmh: "https://worldmastershockey.org/",
   eventSite: "https://www.hcschiedam.nl/world-masters-hockey",
   instagram: "https://www.instagram.com/usamastersfh/",
-  kidsProgram: "https://kicksnsticks.eu/world-cup-masters/",
   usafh: "https://www.usafieldhockey.com/masters",
   mapsSchiedam: "https://maps.google.com/?q=HC+Schiedam,+Olympiaweg+63,+3118+JD+Schiedam,+Netherlands",
   mapsRotterdam: "https://maps.google.com/?q=HC+Rotterdam,+Hazelaarweg,+Rotterdam,+Netherlands",

@@ -7,7 +7,7 @@ A one-page fan hub for following USA Masters Field Hockey at the 2026 WMH World 
 - Full O35/O40 match schedule (Official Schedule V1, 1-Jul-26) with team + division filters
 - USA WO35 default view, one-tap quick views for every USA Schiedam team
 - NL ⇄ US Eastern time toggle
-- Venue guides (HC Schiedam, HC Rotterdam, HC Alecto), kids' program info, and every official link
+- Venue guides (HC Schiedam, HC Rotterdam, HC Alecto) and every official link
 
 **Updating the schedule when V2 drops**
 All match data lives in [`js/data.js`](js/data.js) — edit the `POOL` / `KNOCKOUT` arrays

@@ -242,17 +242,17 @@ img { display: block; max-width: 100%; }
 .venue-card ul { list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 0.95rem; }
 .venue-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: auto; }
 
-/* ============ KIDS ============ */
-.section-kids { max-width: none; background: var(--navy-deep); padding-top: 70px; padding-bottom: 70px; }
-.kids-card {
+/* ============ WATCH LIVE (dark band) ============ */
+.section-watch { max-width: none; background: var(--navy-deep); padding-top: 70px; padding-bottom: 70px; }
+.watch-card {
   max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px;
   color: #fff; align-items: center;
 }
-.kids-copy h2 { font-size: clamp(2.6rem, 6vw, 4rem); text-transform: uppercase; margin: 10px 0 14px;
+.watch-copy h2 { font-size: clamp(2.6rem, 6vw, 4rem); text-transform: uppercase; margin: 10px 0 14px;
   background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.kids-copy p { font-size: 1.08rem; margin-bottom: 16px; }
-.kids-copy ul { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; font-weight: 600; }
-.kids-photo img { border-radius: var(--radius); box-shadow: 0 18px 60px rgba(0,0,0,0.4); }
+.watch-copy p { font-size: 1.08rem; margin-bottom: 16px; }
+.watch-copy ul { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; font-weight: 600; }
+.watch-photo img { border-radius: var(--radius); box-shadow: 0 18px 60px rgba(0,0,0,0.4); }
 
 /* ============ LINKS ============ */
 .link-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
@@ -469,7 +469,7 @@ a.team-card .t-cta { color: var(--red); }
   .section-head { grid-template-columns: 1fr; gap: 12px; }
   .match-row { grid-template-columns: 74px 1fr 64px; }
   .match-row .m-div { display: none; }
-  .kids-card { grid-template-columns: 1fr; }
+  .watch-card { grid-template-columns: 1fr; }
   .photo-strip { grid-template-columns: 1fr; }
   .photo-strip img { height: 200px; }
   .hero { min-height: 78vh; }
