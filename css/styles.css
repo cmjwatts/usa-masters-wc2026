@@ -383,8 +383,11 @@ img { display: block; max-width: 100%; }
 .pcard:focus-visible { outline: 3px solid var(--red); outline-offset: 4px; border-radius: 18px; }
 .pcard-inner {
   position: relative; width: 100%;
-  transform-style: preserve-3d; transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.3, 1);
+  transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.3, 1);
 }
+/* 3D context only while flipped/animating — 20 always-on preserve-3d layers
+   cause janky scrolling and backface flicker on mobile Safari */
+.pcard.flipped .pcard-inner, .pcard.anim .pcard-inner { transform-style: preserve-3d; }
 .pcard.flipped .pcard-inner { transform: rotateY(180deg); }
 .pcard-face {
   display: flex; flex-direction: column;
@@ -398,7 +401,9 @@ img { display: block; max-width: 100%; }
   position: absolute; inset: 0; transform: rotateY(180deg);
   background: var(--navy-deep); color: #fff; border-color: var(--navy-deep);
   padding: 20px; gap: 10px;
+  visibility: hidden;
 }
+.pcard.flipped .pcard-back, .pcard.anim .pcard-back { visibility: visible; }
 
 /* front */
 .pc-strip {
@@ -474,6 +479,10 @@ a.team-card .t-cta { color: var(--red); }
      card content scrolls behind the taller two-row mobile nav */
   .nav { flex-wrap: wrap; padding: 8px 14px; gap: 6px; background: var(--cream); backdrop-filter: none; }
   #navLogo { height: 38px; }
+  /* the two-row mobile nav is tall — slide it away while scrolling down
+     (js/nav.js), bring it back on the first upward scroll */
+  .nav { transition: transform 0.25s ease; }
+  .nav.nav-hidden { transform: translateY(-100%); }
   .nav-links {
     order: 3; width: 100%; display: flex; flex-wrap: nowrap; overflow-x: auto;
     -webkit-overflow-scrolling: touch; scrollbar-width: none; justify-content: flex-start; gap: 2px;
