@@ -44,7 +44,6 @@
     </a>
     <nav class="nav-links">
       <a href="july.html" id="schedLink">Schedule</a>
-      <a href="./">All USA teams</a>
     </nav>
   </header>
 
@@ -88,7 +87,7 @@
 
       const sched = document.getElementById("schedLink");
       if (team.inJuly) { sched.textContent = `${team.short} Schedule`; sched.href = `july.html?div=${code}#schedule`; }
-      else { sched.textContent = "Netherlands hub"; }
+      else { sched.style.display = "none"; } // Belgium/O65 schedules aren't published yet
 
       const note = document.getElementById("rosterNote");
       if (total) {

@@ -51,7 +51,6 @@
       <a href="#standings">Standings</a>
       <a href="#venues">Venues</a>
       <a href="#watch">Watch</a>
-      <a href="./">All USA teams</a>
     </nav>
     <button class="tz-toggle" id="tzToggle" title="Switch time zone">
       <span data-tz="NL" class="on">🇳🇱 NL</span><span data-tz="ET">🇺🇸 ET</span>
@@ -126,8 +125,13 @@
     <div class="div-chips stand-chips" id="standDivChips">
       <button class="chip active" data-div="W35">W O35</button>
       <button class="chip" data-div="W40">W O40</button>
+      <button class="chip" data-div="W45">W O45</button>
+      <button class="chip" data-div="W50">W O50</button>
+      <button class="chip" data-div="W35I">W35 IMC</button>
       <button class="chip" data-div="M35">M O35</button>
       <button class="chip" data-div="M40">M O40</button>
+      <button class="chip" data-div="M45">M O45</button>
+      <button class="chip" data-div="M50">M O50</button>
     </div>
     <div id="standingsTable"></div>
   </section>
@@ -139,7 +143,7 @@
       <p>Nine USA Masters teams compete in the Netherlands tournament across two venues, with six more USA squads at the <a href="./#tournaments">Belgium and O65 tournaments in August</a>. Rosters on <a href="https://www.usafieldhockey.com/masters" target="_blank" rel="noopener">USA Field Hockey ↗</a></p>
     </div>
     <div class="team-grid" id="teamGrid"></div>
-    <p class="team-note">📋 Rotterdam teams (O45/O50 &amp; WO35 IMC) show their USA games here — full division grids live in the <a href="https://drive.google.com/file/d/1hqSbJshK46_5mnDQH7mXAU1YFUPz3zf2/view" target="_blank" rel="noopener">official Rotterdam PDF</a>.</p>
+    <p class="team-note">📋 Full schedules &amp; pool standings for all nine divisions are on this site — cross-check the official PDFs above if in doubt. Tap a team card to meet the players (more rosters coming soon).</p>
     <div class="photo-strip">
       <figure><img src="assets/action-pass.jpg" alt="USA player controlling the ball" loading="lazy"></figure>
       <figure><img src="assets/action-point.jpg" alt="USA players calling the play" loading="lazy"></figure>
@@ -254,6 +258,7 @@
   </footer>
 
   <script src="js/nav.js"></script>
+  <script src="js/roster.js"></script>
   <script src="js/data.js"></script>
   <script src="js/results.js"></script>
   <script src="js/app.js"></script>
