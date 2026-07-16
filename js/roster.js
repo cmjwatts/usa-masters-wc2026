@@ -42,7 +42,7 @@ const ROSTERS = {
       { name: "Sol", number: null, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
       { name: "Erin Tarburton", number: 13, position: "Defense/Midfield", college: "University of Delaware", hometown: "San Diego, CA → New Castle, DE", fact: "Delaware forward (as Erin Marihugh), U.S. U-16 alum and U.S. Indoor National Teamer.", photo: "assets/players/erin-tarburton.jpg", quote: "You miss 100% of the shots you don't take. — Wayne Gretzky" },
       { name: "Courtney Veinotte Crosby", number: 12, position: "Midfield", college: "University of Maine", hometown: "Skowhegan, ME → Georgetown, ME", fact: "Four-year Black Bear and senior captain, former Hofstra head coach — and just rejoined Maine's coaching staff this spring.", photo: "assets/players/courtney-veinotte-crosby.jpg", quote: null },
-      { name: "Christine Watts", number: null, position: "Defense", college: "William & Mary", hometown: "Williamsburg, VA → Atlanta, GA", fact: "Four-year Tribe defender who started every match as a junior, three-time NFHCA All-Academic pick — and now President of the Georgia Field Hockey Association.", photo: "assets/players/christine-watts.jpg", quote: null },
+      { name: "Christine Watts", number: 21, position: "Defense", college: "William & Mary", hometown: "Williamsburg, VA → Atlanta, GA", fact: "Four-year Tribe defender who started every match as a junior, three-time NFHCA All-Academic pick — and now President of the Georgia Field Hockey Association.", photo: "assets/players/christine-watts.jpg", quote: null },
     ],
   },
   W40: { label: "Women O40", short: "WO40", venue: "HC Schiedam, Netherlands", dates: "July 22 – August 1", inJuly: true, players: [] },
