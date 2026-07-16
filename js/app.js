@@ -387,3 +387,11 @@ initTicker();
 syncChips();
 renderSchedule();
 renderStandings();
+
+// Arriving with a #hash (e.g. team.html's "WO35 Schedule" link): the browser's
+// native anchor jump ran before the schedule was injected, so it landed on a
+// half-built page and then everything shifted. Re-align instantly after render.
+if (location.hash) {
+  const target = document.querySelector(location.hash);
+  if (target) target.scrollIntoView({ behavior: "instant", block: "start" });
+}

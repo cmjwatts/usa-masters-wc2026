@@ -67,6 +67,7 @@
     <p>Built by <a href="https://christinewatts.com" target="_blank" rel="noopener">Christine Watts</a></p>
   </footer>
 
+  <script src="js/nav.js"></script>
   <script src="js/roster.js"></script>
   <script>
     (function () {
@@ -100,7 +101,7 @@
       document.getElementById("rosterGrid").innerHTML = players.map((p, i) => {
         const no = String(i + 1).padStart(2, "0");
         const photoInner = (p.photo
-          ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy">`
+          ? `<img src="${esc(p.photo)}" alt="${esc(p.name)}" loading="lazy" decoding="async">`
           : `<div class="pc-initials">${esc(initials(p.name))}<small>Headshot coming soon</small></div>`)
           + (p.number != null ? `<span class="pc-num">#${esc(p.number)}</span>` : "");
         const photoClass = p.photo ? "pc-photo" : "pc-photo no-photo";
@@ -136,7 +137,15 @@
       }).join("");
 
       document.querySelectorAll(".pcard").forEach((card) => {
-        const flip = () => card.classList.toggle("flipped");
+        // .anim keeps the 3D context (and back face) alive only for the
+        // duration of the flip — cards at rest are cheap 2D layers
+        const flip = () => {
+          card.classList.add("anim");
+          card.classList.toggle("flipped");
+        };
+        card.querySelector(".pcard-inner").addEventListener("transitionend", () => {
+          if (!card.classList.contains("flipped")) card.classList.remove("anim");
+        });
         card.addEventListener("click", flip);
         card.addEventListener("keydown", (e) => {
           if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); }
