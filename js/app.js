@@ -290,17 +290,11 @@ function initCountdown() {
 function renderTeams() {
   const grid = $("#teamGrid");
   grid.innerHTML = USA_TEAMS.map((t) => `
-    <div class="team-card ${t.star ? "star" : ""}" ${t.inApp ? `data-div="${t.code}"` : ""}>
+    <a class="team-card ${t.star ? "star" : ""}" href="team.html?div=${t.code}">
       <h3>🇺🇸 ${t.name}</h3>
       <p class="t-venue">${t.venue}</p>
-      <p class="t-cta">${t.inApp ? "Tap to see their schedule ↑" : "Schedule posts separately →"}</p>
-    </div>`).join("");
-  grid.querySelectorAll(".team-card[data-div]").forEach((card) =>
-    card.addEventListener("click", () => {
-      state.team = "USA"; state.divs = new Set([card.dataset.div]);
-      $("#teamSel").value = "USA"; syncChips(); renderSchedule();
-      $("#schedule").scrollIntoView({ behavior: "smooth" });
-    }));
+      <p class="t-cta">Meet the team →</p>
+    </a>`).join("");
 }
 
 // ---- calendar export (.ics) ----
