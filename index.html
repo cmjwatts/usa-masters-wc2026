@@ -10,7 +10,7 @@
     // Old deep links (usamastersfh.com/#schedule etc.) now live on the July page.
     (function () {
       var moved = { "#schedule": 1, "#standings": 1, "#teams": 1, "#venues": 1, "#watch": 1, "#links": 1 };
-      if (moved[location.hash]) location.replace("july.html" + location.hash);
+      if (moved[location.hash]) location.replace("july" + location.hash);
     })();
   </script>
   <!-- Social share card -->
@@ -77,49 +77,48 @@
           <p class="venue-addr">Schiedam &amp; Rotterdam 🇳🇱 · HC Schiedam, HC Rotterdam &amp; HC Victoria</p>
           <p class="badge-label">🇺🇸 9 USA teams — tap yours:</p>
           <div class="team-badges">
-            <a class="b-w" href="july.html?div=W35">W O35</a>
-            <a class="b-w" href="july.html?div=W40">W O40</a>
-            <a class="b-w" href="july.html?div=W45">W O45</a>
-            <a class="b-w" href="july.html?div=W50">W O50</a>
-            <a class="b-w" href="july.html?div=W35I">W O35 IMC</a>
-            <a class="b-m" href="july.html?div=M35">M O35</a>
-            <a class="b-m" href="july.html?div=M40">M O40</a>
-            <a class="b-m" href="july.html?div=M45">M O45</a>
-            <a class="b-m" href="july.html?div=M50">M O50</a>
+            <a class="b-w" href="july?div=W35">W O35</a>
+            <a class="b-w" href="july?div=W40">W O40</a>
+            <a class="b-w" href="july?div=W45">W O45</a>
+            <a class="b-w" href="july?div=W50">W O50</a>
+            <a class="b-w" href="july?div=W35I">W O35 IMC</a>
+            <a class="b-m" href="july?div=M35">M O35</a>
+            <a class="b-m" href="july?div=M40">M O40</a>
+            <a class="b-m" href="july?div=M45">M O45</a>
+            <a class="b-m" href="july?div=M50">M O50</a>
           </div>
           <div class="venue-actions">
-            <a class="btn btn-small btn-solid" href="july.html">Enter the Netherlands tournament →</a>
+            <a class="btn btn-small btn-solid" href="july">Enter the Netherlands tournament →</a>
           </div>
         </article>
 
-        <div class="soon-row" data-href="brasschaat.html" style="cursor:pointer">
+        <div class="soon-row" data-href="brasschaat" style="cursor:pointer">
           <div class="soon-head">
             <h3>Belgium</h3>
             <span class="soon-dates">Aug 6 – 16 · Schedule live — tap your team</span>
           </div>
           <p class="soon-where">Brasschaat &amp; Antwerp 🇧🇪 · KHC Dragons + HC Olympia</p>
           <div class="team-badges">
-            <a class="b-w" href="brasschaat.html?div=W55">W O55</a>
-            <a class="b-w" href="brasschaat.html?div=W60">W O60</a>
-            <a class="b-w" href="brasschaat.html?div=W65">W O65</a>
-            <a class="b-m" href="brasschaat.html?div=M55">M O55</a>
-            <a class="b-m" href="brasschaat.html?div=M60">M O60</a>
-            <a class="b-m" href="brasschaat.html">Enter →</a>
+            <a class="b-w" href="brasschaat?div=W55">W O55</a>
+            <a class="b-w" href="brasschaat?div=W60">W O60</a>
+            <a class="b-w" href="brasschaat?div=W65">W O65</a>
+            <a class="b-m" href="brasschaat?div=M55">M O55</a>
+            <a class="b-m" href="brasschaat?div=M60">M O60</a>
+            <a class="b-m" href="brasschaat">Enter →</a>
           </div>
         </div>
 
-        <div class="soon-row">
+        <div class="soon-row" data-href="breda" style="cursor:pointer">
           <div class="soon-head">
             <h3>O65</h3>
-            <span class="soon-dates">Aug 6 – 16 · Coming soon</span>
+            <span class="soon-dates">Aug 6 – 16 · Schedule live — tap your team</span>
           </div>
           <p class="soon-where">Breda, Netherlands 🇳🇱 · BHV Push</p>
           <div class="team-badges">
-            <span class="b-m">M O65</span>
+            <a class="b-m" href="breda?div=M65">M O65</a>
+            <a class="b-m" href="breda">Enter →</a>
           </div>
         </div>
-
-        <p class="hc-soon-note">The O65 tournament opens here once its page is ready — follow <a href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener">@usamastersfh</a> for the announcement.</p>
       </div>
     </div>
     <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
@@ -181,7 +180,7 @@
       var card = document.querySelector(".hc-card");
       if (card) card.addEventListener("click", function (e) {
         if (e.target.closest("a")) return;
-        window.location.href = "july.html";
+        window.location.href = "july";
       });
       document.querySelectorAll(".soon-row[data-href]").forEach(function (row) {
         row.addEventListener("click", function (e) {

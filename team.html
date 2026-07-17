@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meet the WO35 Team — USA Masters WC2026</title>
   <meta name="description" content="Meet the USA Women's O35 Masters field hockey team headed to the 2026 WMH World Cup in Schiedam, Netherlands — player cards for the whole squad.">
-  <link rel="canonical" href="https://usamastersfh.com/team.html">
+  <link rel="canonical" href="https://usamastersfh.com/team">
   <!-- Social share card -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="USA Masters Fan Hub">
   <meta property="og:title" content="Meet the USA WO35 Team — 2026 World Cup">
   <meta property="og:description" content="The whole squad, trading-card style. USA Women's O35 at the WMH World Cup, Schiedam, July 22 – Aug 1.">
-  <meta property="og:url" content="https://usamastersfh.com/team.html">
+  <meta property="og:url" content="https://usamastersfh.com/team">
   <meta property="og:image" content="https://usamastersfh.com/assets/team-photo.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Meet the USA WO35 Team — 2026 World Cup">
@@ -43,7 +43,7 @@
       </span>
     </a>
     <nav class="nav-links">
-      <a href="july.html" id="schedLink">Schedule</a>
+      <a href="july" id="schedLink">Schedule</a>
     </nav>
   </header>
 
@@ -86,13 +86,13 @@
         (total ? "Tap any card to flip it over for the scouting report. 🇺🇸🏑" : "🇺🇸🏑");
 
       const sched = document.getElementById("schedLink");
-      if (team.inJuly) { sched.textContent = `${team.short} Schedule`; sched.href = `july.html?div=${code}#schedule`; }
+      if (team.inJuly) { sched.textContent = `${team.short} Schedule`; sched.href = `july?div=${code}#schedule`; }
       else { sched.style.display = "none"; } // Belgium/O65 schedules aren't published yet
 
       const note = document.getElementById("rosterNote");
       if (total) {
         note.innerHTML = `📸 Player headshots &amp; favorite quotes are being collected — cards update as they come in.` +
-          (team.inJuly ? ` Catch every ${esc(team.short)} game on the <a href="july.html?div=${code}#schedule">schedule</a>.` : "");
+          (team.inJuly ? ` Catch every ${esc(team.short)} game on the <a href="july?div=${code}#schedule">schedule</a>.` : "");
       } else {
         note.innerHTML = `🏑 The ${esc(team.short)} player cards are being put together — headshots, hometowns, colleges &amp; favorite quotes are on their way. Check back soon!`;
       }

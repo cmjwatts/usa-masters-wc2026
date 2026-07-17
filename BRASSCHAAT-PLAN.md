@@ -5,9 +5,9 @@ _Decisions locked 2026-07-16. Supersedes UPDATE-PLAN.md §C1–C4 where they dif
 **Status: EXECUTED on main, 2026-07-17** (T0–T5 + T7; T6 deferred by design). Schedule V1
 (16-Jul-26 PDF) transcribed to `js/data-aug.js`; AltiusRT ids: W55 494 · W60 495 · W65 496 ·
 M55 498 · M60 499 (+ Breda M65 506, and all July ids — see `scripts/scrape-results.mjs`).
-Deviation on record: `breda.html` (venue/travel only) was built before this plan was found
-and stays reachable by URL + brasschaat/breda footers, but per decision 1 the hub O65 tile
-remains coming-soon and no Breda schedule data is loaded.
+Decision 1's Breda deferral was lifted by Christine later on 2026-07-17: breda.html is now
+the full M65 tournament page (data-breda.js/app-breda.js, Breda Schedule 15-Jul-26) and the
+hub O65 tile is live.
 
 ## Decisions
 

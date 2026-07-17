@@ -1,35 +1,39 @@
 // ============================================================
-// USA Masters WC2026 hub — rendering & filters
+// USA Masters WC2026 — Breda page (Men O65, BHV Push)
+// Fork of js/app-aug.js wired to the _BRE data globals (js/data-breda.js);
+// RESULTS_AUG is reused as-is — the scraper writes Breda M65 scores into
+// js/results-aug.js under keys "M65|HOME|AWAY".
+// Consolidate into a shared config after the season.
 // ============================================================
 
-const ALL_DIVS = ["W35", "W40", "M35", "M40", "W45", "W50", "M45", "M50", "W35I"];
+const ALL_DIVS = ["M65"];
 
-// pitch cell: Schiedam pitches are numbers; Rotterdam ones carry their venue
 const pitchLabel = (p) => (typeof p === "number" ? `Pitch ${p}` : p);
 
 const state = {
-  tz: localStorage.getItem("wc-tz") || "NL", // NL (CEST) or ET (US Eastern, -6h)
+  tz: localStorage.getItem("wc-tz") || "NL", // NL = European local (CEST), ET = US Eastern
   team: "USA",
-  divs: new Set(["W35"]), // multi-select; all four = "All"
+  divs: new Set(ALL_DIVS), // default: every USA division
   showKO: true,
-  standDiv: "W35",
+  standDiv: "M65",
 };
 
 const $ = (sel) => document.querySelector(sel);
 const DATE_LABELS = {
-  "2026-07-20": ["Monday", "July 20", "Practice day"],
-  "2026-07-21": ["Tuesday", "July 21", "Practice day"],
-  "2026-07-22": ["Wednesday", "July 22", "Opening day"],
-  "2026-07-23": ["Thursday", "July 23", "Pool play · Day 1"],
-  "2026-07-24": ["Friday", "July 24", "Pool play · Day 2"],
-  "2026-07-25": ["Saturday", "July 25", "Pool play · Day 3"],
-  "2026-07-26": ["Sunday", "July 26", "Pool play · Day 4"],
-  "2026-07-27": ["Monday", "July 27", "Pool play · Day 5"],
-  "2026-07-28": ["Tuesday", "July 28", "Pool play · Final day"],
-  "2026-07-29": ["Wednesday", "July 29", "Quarterfinals + Dutch Party"],
-  "2026-07-30": ["Thursday", "July 30", "Crossovers"],
-  "2026-07-31": ["Friday", "July 31", "Semifinals"],
-  "2026-08-01": ["Saturday", "August 1", "FINALS DAY"],
+  "2026-08-03": ["Monday", "August 3", "Training day"],
+  "2026-08-04": ["Tuesday", "August 4", "Training day"],
+  "2026-08-05": ["Wednesday", "August 5", "Training day"],
+  "2026-08-06": ["Thursday", "August 6", "Opening Ceremony"],
+  "2026-08-07": ["Friday", "August 7", "Pool play · Day 1"],
+  "2026-08-08": ["Saturday", "August 8", "Pool play · Day 2"],
+  "2026-08-09": ["Sunday", "August 9", "Pool play · Day 3"],
+  "2026-08-10": ["Monday", "August 10", "Pool play · Day 4"],
+  "2026-08-11": ["Tuesday", "August 11", "Pool play · Day 5"],
+  "2026-08-12": ["Wednesday", "August 12", "Pool play · Final day"],
+  "2026-08-13": ["Thursday", "August 13", "Quarterfinals & crossovers"],
+  "2026-08-14": ["Friday", "August 14", "Rest day"],
+  "2026-08-15": ["Saturday", "August 15", "Semifinals & classification"],
+  "2026-08-16": ["Sunday", "August 16", "FINALS DAY"],
 };
 
 // ---- time helpers (12-hour everywhere — easier for US fans) ----
@@ -52,16 +56,16 @@ function displayTime(hhmm) {
 }
 
 function teamName(code) {
-  const t = TEAMS[code];
+  const t = TEAMS_BRE[code];
   return t ? `${t.flag} ${t.name}` : code;
 }
 
 // ---- schedule filtering ----
 function poolRow(r) {
   let [d, t, div, h, a, p, hs, as] = r;
-  // auto-scraped scores (js/results.js) fill in unless hand-entered in data.js
-  if (hs == null && typeof RESULTS !== "undefined") {
-    const auto = RESULTS[`${div}|${h}|${a}`] || RESULTS[`${div}|${a}|${h}`]?.slice().reverse();
+  // auto-scraped scores (js/results-aug.js) fill in unless hand-entered
+  if (hs == null && typeof RESULTS_AUG !== "undefined") {
+    const auto = RESULTS_AUG[`${div}|${h}|${a}`] || RESULTS_AUG[`${div}|${a}|${h}`]?.slice().reverse();
     if (auto) [hs, as] = auto;
   }
   return { d, t, div, h, a, p, hs, as, type: "pool" };
@@ -71,28 +75,27 @@ function koVisible(row) {
   if (state.team === "ALL") return true;
   // matchup already known → only show for those teams
   if (row.teams && row.teams.length) return row.teams.includes(state.team);
-  // pool rank known → hide games that rank can't reach
-  const rank = FINAL_RANKS[row.div]?.[state.team];
-  if (rank != null) return row.ranks.includes(rank);
-  // nothing known yet → show the full bracket path
+  // multi-pool brackets carry no rank ranges → show the full bracket path
+  const rank = FINAL_RANKS_BRE[row.div]?.[state.team];
+  if (rank != null && row.ranks) return row.ranks.includes(rank);
   return true;
 }
 
 function matchesFiltered() {
   const rows = [];
-  for (const r of POOL) {
+  for (const r of POOL_BRE) {
     const m = poolRow(r);
     if (!state.divs.has(m.div)) continue;
     if (state.team !== "ALL" && m.h !== state.team && m.a !== state.team) continue;
     rows.push(m);
   }
   if (state.showKO) {
-    for (const k of KNOCKOUT) {
+    for (const k of KNOCKOUT_BRE) {
       if (!state.divs.has(k.div)) continue;
       if (!koVisible(k)) continue;
       rows.push({ ...k, type: "ko" });
     }
-    for (const ev of EVENTS) {
+    for (const ev of EVENTS_BRE) {
       rows.push({ d: ev.d, t: ev.t, title: ev.title, note: ev.note, type: "event" });
     }
   }
@@ -124,14 +127,14 @@ function renderSchedule() {
           ? `${teamName(r.teams[0])}<span class="vs">vs</span>${teamName(r.teams[1])} <span class="m-note">${r.label}</span>`
           : `${r.label}${state.team !== "ALL" ? `<span class="m-note">Bracket game — opponents decided by standings</span>` : ""}`;
         const usa = named && r.teams.includes("USA");
-        html += `<div class="match-row is-ko ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-label">${title}</div><div class="m-pitch">${pitchLabel(r.p)}</div></div>`;
+        html += `<div class="match-row is-ko ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS_BRE[r.div].short}</div><div class="m-label">${title}</div><div class="m-pitch">${pitchLabel(r.p)}</div></div>`;
       } else {
         const usa = r.h === "USA" || r.a === "USA";
         const name = (c) => `<span class="${c === "USA" ? "usa-name" : ""}">${teamName(c)}</span>`;
         const score = r.hs != null ? `<b class="m-score">${r.hs}–${r.as}</b>` : `<span class="vs">vs</span>`;
-        const vid = VIDEO[`${r.d}|${r.t}|${r.p}`];
+        const vid = VIDEO_BRE[`${r.d}|${r.t}|${r.p}`];
         const watch = vid ? `<a class="m-watch" href="${vid}" target="_blank" rel="noopener">▶ Watch</a>` : "";
-        html += `<div class="match-row ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-match">${name(r.h)}${score}${name(r.a)}</div><div class="m-pitch">${pitchLabel(r.p)}${watch}</div></div>`;
+        html += `<div class="match-row ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS_BRE[r.div].short}</div><div class="m-match">${name(r.h)}${score}${name(r.a)}</div><div class="m-pitch">${pitchLabel(r.p)}${watch}</div></div>`;
       }
     }
     html += `</div>`;
@@ -139,11 +142,11 @@ function renderSchedule() {
   list.innerHTML = html;
 }
 
-// ---- standings (computed from POOL scores; 3-1-0 points) ----
+// ---- standings (computed from POOL_BRE scores; 3-1-0 points) ----
 function computeStandings(div) {
   const table = {};
   const ensure = (c) => (table[c] ??= { code: c, P: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, Pts: 0 });
-  for (const r of POOL) {
+  for (const r of POOL_BRE) {
     const { div: d, h, a, hs, as } = poolRow(r);
     if (d !== div) continue;
     const H = ensure(h), A = ensure(a);
@@ -155,7 +158,7 @@ function computeStandings(div) {
   }
   return Object.values(table).sort((x, y) =>
     y.Pts - x.Pts || (y.GF - y.GA) - (x.GF - x.GA) || y.GF - x.GF ||
-    TEAMS[x.code].name.localeCompare(TEAMS[y.code].name));
+    TEAMS_BRE[x.code].name.localeCompare(TEAMS_BRE[y.code].name));
 }
 
 function renderStandings() {
@@ -163,7 +166,7 @@ function renderStandings() {
   const played = rows.some((r) => r.P > 0);
   const note = played
     ? `Unofficial — computed from results entered on this site. Confirm on <a href="https://masters.altiusrt.com/" target="_blank" rel="noopener">AltiusRT</a>.`
-    : `Pool play starts July 23 — tables fill in as results come in. Official live standings will also post on <a href="https://masters.altiusrt.com/" target="_blank" rel="noopener">AltiusRT</a>.`;
+    : `Pool play starts August 7 — tables fill in as results come in. Official live standings will also post on <a href="https://masters.altiusrt.com/" target="_blank" rel="noopener">AltiusRT</a>.`;
   $("#standingsNote").innerHTML = note;
   const table = (rows2, heading) => `
     ${heading ? `<h3 class="pool-head">${heading}</h3>` : ""}
@@ -179,15 +182,18 @@ function renderStandings() {
         </tr>`).join("")}
       </tbody>
     </table>`;
-  const pools = DIVISION_POOLS[state.standDiv];
+  const pools = DIVISION_POOLS_BRE[state.standDiv];
   if (pools) {
-    // multi-pool division (M45): one table per round-robin pool
+    // multi-pool division: one table per round-robin pool (USA's pool first)
     const byCode = Object.fromEntries(rows.map((r) => [r.code, r]));
-    $("#standingsTable").innerHTML = Object.entries(pools).map(([letter, teams]) => {
+    const letters = Object.keys(pools).sort((a, b) =>
+      pools[b].includes("USA") - pools[a].includes("USA") || a.localeCompare(b));
+    $("#standingsTable").innerHTML = letters.map((letter) => {
+      const teams = pools[letter];
       const poolRows = rows.length
         ? teams.map((c) => byCode[c]).filter(Boolean)
         : teams.map((c) => ({ code: c, P: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, Pts: 0 }));
-      return table(poolRows, `Pool ${letter}`);
+      return table(poolRows, `Pool ${letter}${teams.includes("USA") ? " 🇺🇸" : ""}`);
     }).join("");
   } else {
     $("#standingsTable").innerHTML = table(rows);
@@ -198,11 +204,11 @@ function renderStandings() {
 function buildTeamSelect() {
   const sel = $("#teamSel");
   const codes = new Set();
-  POOL.forEach(([, , , h, a]) => { codes.add(h); codes.add(a); });
-  const sorted = [...codes].sort((a, b) => TEAMS[a].name.localeCompare(TEAMS[b].name));
+  POOL_BRE.forEach(([, , , h, a]) => { codes.add(h); codes.add(a); });
+  const sorted = [...codes].sort((a, b) => TEAMS_BRE[a].name.localeCompare(TEAMS_BRE[b].name));
   sel.innerHTML =
     `<option value="ALL">All teams</option>` +
-    sorted.map((c) => `<option value="${c}" ${c === "USA" ? "selected" : ""}>${TEAMS[c].flag} ${TEAMS[c].name}</option>`).join("");
+    sorted.map((c) => `<option value="${c}" ${c === "USA" ? "selected" : ""}>${TEAMS_BRE[c].flag} ${TEAMS_BRE[c].name}</option>`).join("");
   sel.addEventListener("change", () => { state.team = sel.value; syncChips(); renderSchedule(); });
 }
 
@@ -212,8 +218,6 @@ function syncChips() {
     if (c.dataset.div === "ALL") c.classList.toggle("active", isAll);
     else c.classList.toggle("active", !isAll && state.divs.has(c.dataset.div));
   });
-  document.querySelectorAll("#usaChips .chip").forEach((c) =>
-    c.classList.toggle("active", state.team === "USA" && !isAll && state.divs.size === 1 && state.divs.has(c.dataset.div)));
 }
 
 function initFilters() {
@@ -232,11 +236,6 @@ function initFilters() {
       }
       syncChips(); renderSchedule();
     }));
-  document.querySelectorAll("#usaChips .chip").forEach((c) =>
-    c.addEventListener("click", () => {
-      state.team = "USA"; state.divs = new Set([c.dataset.div]);
-      $("#teamSel").value = "USA"; syncChips(); renderSchedule();
-    }));
   $("#showKO").addEventListener("change", (e) => { state.showKO = e.target.checked; renderSchedule(); });
   document.querySelectorAll("#standDivChips .chip").forEach((c) =>
     c.addEventListener("click", () => {
@@ -251,7 +250,7 @@ function initTz() {
   const btn = $("#tzToggle");
   const apply = () => {
     btn.querySelectorAll("span").forEach((s) => s.classList.toggle("on", s.dataset.tz === state.tz));
-    $("#tzLabel").textContent = state.tz === "NL" ? "Netherlands time" : "US Eastern time";
+    $("#tzLabel").textContent = state.tz === "NL" ? "Netherlands time (CEST)" : "US Eastern time";
   };
   btn.addEventListener("click", () => {
     state.tz = state.tz === "NL" ? "ET" : "NL";
@@ -261,18 +260,18 @@ function initTz() {
   apply();
 }
 
-// ---- countdown to Opening Ceremony (July 22, 19:00 CEST = 17:00 UTC) ----
+// ---- countdown to the Opening Ceremony (Aug 6, 16:00 CEST = 14:00 UTC) ----
 function initCountdown() {
   const el = $("#countdown");
-  const target = Date.UTC(2026, 6, 22, 17, 0, 0);
-  const firstGame = Date.UTC(2026, 6, 23, 14, 20, 0); // WO35 USA v AUS 16:20 CEST
+  const target = Date.UTC(2026, 7, 6, 14, 0, 0);
+  const firstGame = Date.UTC(2026, 7, 7, 9, 5, 0); // MO65 USA v Belgium 11:05 CEST
   function tick() {
     const now = Date.now();
     let diff = target - now;
-    let caption = "until the Opening Ceremony";
+    let caption = "until the Opening Ceremony in Breda";
     if (diff <= 0) {
       diff = firstGame - now;
-      caption = "until USA WO35 v Australia";
+      caption = "until USA MO65 v Belgium";
     }
     if (diff <= 0) {
       el.innerHTML = `<span class="cd-live">🏑 IT'S GAME TIME — GO USA!</span>`;
@@ -292,27 +291,26 @@ function initCountdown() {
 }
 
 // ---- USA team cards ----
+// Plain schedule-filter cards only: Breda teams get no roster pages or
+// roster copy on this page (per the locked Brasschaat plan, decision 5).
 function renderTeams() {
   const grid = $("#teamGrid");
-  grid.innerHTML = USA_TEAMS.map((t) => {
-    const hasRoster = typeof ROSTERS !== "undefined" && ROSTERS[t.code]?.players?.length;
-    return hasRoster ? `
-    <a class="team-card ${t.star ? "star" : ""}" href="team?div=${t.code}">
+  grid.innerHTML = USA_TEAMS_BRE.map((t) => `
+    <div class="team-card static" data-div="${t.code}">
       <h3>🇺🇸 ${t.name}</h3>
       <p class="t-venue">${t.venue}</p>
-      <p class="t-cta">Meet the team →</p>
-    </a>` : `
-    <div class="team-card static ${t.star ? "star" : ""}">
-      <h3>🇺🇸 ${t.name}</h3>
-      <p class="t-venue">${t.venue}</p>
-      <p class="t-cta">Player cards coming soon</p>
-    </div>`;
-  }).join("");
+      <p class="t-cta">Tap to see their schedule ↑</p>
+    </div>`).join("");
+  grid.querySelectorAll(".team-card[data-div]").forEach((card) =>
+    card.addEventListener("click", () => {
+      state.team = "USA"; state.divs = new Set([card.dataset.div]);
+      $("#teamSel").value = "USA"; syncChips(); renderSchedule();
+      $("#schedule").scrollIntoView({ behavior: "smooth" });
+    }));
 }
 
 // ---- calendar export (.ics) ----
-// Times are entered in NL time (CEST, UTC+2) and written to the file in UTC,
-// so they land correctly in any calendar app regardless of the user's zone.
+// Times are entered in Netherlands time (CEST, UTC+2) and written in UTC.
 function icsStamp(dateStr, hhmm, addMinutes = 0) {
   const [y, mo, d] = dateStr.split("-").map(Number);
   const [h, m] = hhmm.split(":").map(Number);
@@ -320,32 +318,27 @@ function icsStamp(dateStr, hhmm, addMinutes = 0) {
   return utc.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 }
 
-// venue depends on the pitch: ROT/VIC prefixes are the Rotterdam grounds
+// single venue: every match plays at BHV Push, Breda
 function icsLocation(p) {
-  const s = String(p);
-  if (s.startsWith("ROT")) return "HC Rotterdam\\, Hazelaarweg 2\\, 3053 PM Rotterdam\\, Netherlands";
-  if (s.startsWith("VIC")) return "HC Victoria\\, Kralingseweg 226\\, 3062 CG Rotterdam\\, Netherlands";
-  return "HC Schiedam\\, Olympiaweg 63\\, 3118 JD Schiedam\\, Netherlands";
+  return "BHV Push\\, Nieuwe Inslag 97\\, 4817 GN Breda\\, Netherlands";
 }
 
 function buildICS() {
-  // Only games we KNOW: pool matches, plus knockout games once their
-  // matchup has been filled in (teams array set in data.js).
   const rows = matchesFiltered().filter((r) =>
     r.type === "pool" || (r.type === "ko" && r.teams && r.teams.length));
   const events = rows.map((r) => {
-    const divShort = DIVISIONS[r.div].label.replace("Women", "W").replace("Men", "M");
+    const divShort = DIVISIONS_BRE[r.div].label.replace("Women", "W").replace("Men", "M");
     const title = r.type === "ko"
       ? `${divShort} ${r.teams[0]} vs. ${r.teams[1]}`
       : `${divShort} ${r.h} vs. ${r.a}`;
-    const where = String(r.p).startsWith("ROT") || String(r.p).startsWith("VIC") ? "Rotterdam" : "Schiedam";
+    const where = "Breda";
     const desc = r.type === "ko"
       ? `${pitchLabel(r.p)} · ${r.label} · 2026 WMH Masters World Cup · ${where}`
       : `${pitchLabel(r.p)} · 2026 WMH Masters World Cup · ${where}`;
     return [
       "BEGIN:VEVENT",
       `UID:wc2026-${r.d}-${r.t.replace(":", "")}-${String(r.p).replace(/\s+/g, "") || "ev"}@usamasters`,
-      `DTSTAMP:${icsStamp("2026-07-01", "12:00")}`,
+      `DTSTAMP:${icsStamp("2026-07-17", "12:00")}`,
       `DTSTART:${icsStamp(r.d, r.t)}`,
       `DTEND:${icsStamp(r.d, r.t, 90)}`,
       `SUMMARY:${title}`,
@@ -370,7 +363,7 @@ function initIcs() {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     const who = state.team === "ALL" ? "all-teams" : state.team;
-    a.download = `wc2026-${who}-${[...state.divs].join("-")}.ics`;
+    a.download = `wc2026-breda-${who}-${[...state.divs].join("-")}.ics`;
     a.click();
     URL.revokeObjectURL(a.href);
   });
@@ -378,16 +371,18 @@ function initIcs() {
 
 // ---- ticker ----
 function initTicker() {
-  const items = "GO USA 🇺🇸 · NETHERLANDS 2026 · SCHIEDAM + ROTTERDAM · JULY 22 – AUG 1 · WORLD MASTERS HOCKEY · ";
+  const items = "GO USA 🇺🇸 · O65 WORLD CUP · BHV PUSH BREDA · AUG 6 – 16 · WORLD MASTERS HOCKEY · ";
   $("#ticker").textContent = (items + items).repeat(2);
 }
 
-// deep links from the hub (july.html?div=W45) land pre-filtered on that USA team
+// deep links from the hub (breda.html?div=M65) land pre-filtered
 const qDiv = new URLSearchParams(location.search).get("div");
-if (qDiv && DIVISIONS[qDiv]) {
+if (qDiv && DIVISIONS_BRE[qDiv]) {
   state.team = "USA";
   state.divs = new Set([qDiv]);
   state.standDiv = qDiv;
+  document.querySelectorAll("#standDivChips .chip").forEach((c) =>
+    c.classList.toggle("active", c.dataset.div === qDiv));
 }
 
 buildTeamSelect();
@@ -401,9 +396,8 @@ syncChips();
 renderSchedule();
 renderStandings();
 
-// Arriving with a #hash (e.g. team.html's "WO35 Schedule" link): the browser's
-// native anchor jump ran before the schedule was injected, so it landed on a
-// half-built page and then everything shifted. Re-align instantly after render.
+// Arriving with a #hash: the browser's native anchor jump ran before the
+// schedule was injected — re-align instantly after render.
 if (location.hash) {
   const target = document.querySelector(location.hash);
   if (target) target.scrollIntoView({ behavior: "instant", block: "start" });

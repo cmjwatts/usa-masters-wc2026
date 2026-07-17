@@ -33,3 +33,41 @@
   for = "/js/results-aug.js"
   [headers.values]
     Cache-Control = "public, max-age=300, must-revalidate"
+
+# Clean-URL scheme: pages live on disk as .html (index.html, july.html,
+# brasschaat.html, breda.html, team.html, social.html) so Netlify's default
+# extensionless serving keeps working, but every public-facing link should
+# point at the extensionless path. These force redirects catch anyone who
+# still has an old *.html link (social posts, bookmarks, search results)
+# and send them to the clean URL instead of serving duplicate content at
+# both paths. force = true is required because Netlify only redirects an
+# existing static file when forced; query strings pass through untouched.
+[[redirects]]
+  from = "/july.html"
+  to = "/july"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/brasschaat.html"
+  to = "/brasschaat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/breda.html"
+  to = "/breda"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/team.html"
+  to = "/team"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/social.html"
+  to = "/social"
+  status = 301
+  force = true

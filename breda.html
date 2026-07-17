@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>O65 Tournament · Breda — USA Masters WC2026</title>
   <meta name="description" content="Follow USA Masters Field Hockey at the 2026 WMH World Cup O65 tournament in Breda, Netherlands — venue, travel guide & schedule, August 6–16.">
-  <link rel="canonical" href="https://usamastersfh.com/breda.html">
+  <link rel="canonical" href="https://usamastersfh.com/breda">
   <!-- Social share card -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="USA Masters Fan Hub">
   <meta property="og:title" content="USA Masters · 2026 World Cup — Breda O65 Tournament">
   <meta property="og:description" content="USA Men O65 at BHV Push in Breda, August 6–16. Venue, travel guide, schedule & how to watch.">
-  <meta property="og:url" content="https://usamastersfh.com/breda.html">
+  <meta property="og:url" content="https://usamastersfh.com/breda">
   <meta property="og:image" content="https://usamastersfh.com/assets/og-breda.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -51,10 +51,14 @@
     </a>
     <nav class="nav-links">
       <a href="#schedule">Schedule</a>
+      <a href="#standings">Standings</a>
       <a href="#venues">Venue</a>
       <a href="#watch">Watch</a>
       <a href="./">All USA teams</a>
     </nav>
+    <button class="tz-toggle" id="tzToggle" title="Switch time zone">
+      <span data-tz="NL" class="on">🇳🇱 NL</span><span data-tz="ET">🇺🇸 ET</span>
+    </button>
   </header>
 
   <!-- ============ HERO ============ -->
@@ -67,7 +71,7 @@
       <p class="hero-sub">August 6 – 16, 2026 · BHV Push, Breda 🇳🇱<br>USA Men O65 at the World Cup.</p>
       <div class="countdown" id="countdown" aria-live="polite"></div>
       <div class="hero-cta">
-        <a class="btn btn-solid" href="#venues">Venue &amp; travel</a>
+        <a class="btn btn-solid" href="#schedule">See the schedule</a>
         <a class="btn btn-ghost" href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener">📺 Watch live</a>
         <a class="btn btn-ghost" href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener">Follow @usamastersfh</a>
       </div>
@@ -75,36 +79,65 @@
     <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
   </section>
 
-  <!-- ============ SCHEDULE (coming) ============ -->
+  <!-- ============ SCHEDULE ============ -->
   <main>
   <section class="section" id="schedule">
     <div class="section-head">
       <h2>Match<br>Schedule</h2>
-      <p>The official Breda schedule is out — see the
-      <a href="https://drive.google.com/file/d/1KqjbrM43nXkRKDtKdekwDkj6Q7mECqyu/view" target="_blank" rel="noopener">Breda Match Schedule PDF ↗</a>.
-      USA O65 game listings with NL + ET times and an add-to-calendar button land on this page soon,
-      exactly like the <a href="july.html">Netherlands page</a>.</p>
+      <p>All times shown in <strong id="tzLabel">Netherlands time (CEST)</strong> — flip the toggle up top for US Eastern.
+      Pool play runs August 7–12; knockouts follow through Finals Day on August 16. Official PDF:
+      <a href="https://drive.google.com/file/d/1KqjbrM43nXkRKDtKdekwDkj6Q7mECqyu/view" target="_blank" rel="noopener">Breda Schedule PDF ↗</a></p>
     </div>
-    <div class="venue-grid">
-      <article class="venue-card venue-primary">
-        <span class="venue-tag">What we know so far</span>
-        <h3>Key dates</h3>
-        <ul>
-          <li>🏑 Breda hosts the men's O65 – O80 divisions (national + IMC teams), August 6 – 16</li>
-          <li>🛂 Teams check in one day before their first match — equipment &amp; passport checks</li>
-          <li>🏅 Finals weekend · August 15 – 16</li>
-          <li>✉️ Tournament contact: <a href="mailto:masters@push.nl">masters@push.nl</a></li>
-        </ul>
-        <div class="venue-actions">
-          <a class="btn btn-small btn-solid" href="https://pushmasters.nl/" target="_blank" rel="noopener">Official event site</a>
-          <a class="btn btn-small btn-ghost-dark" href="https://masters.altiusrt.com/" target="_blank" rel="noopener">Live scores (AltiusRT)</a>
+
+    <div class="filters">
+      <div class="filter-group">
+        <label for="teamSel">Team</label>
+        <select id="teamSel"></select>
+      </div>
+      <div class="filter-group">
+        <label>Division</label>
+        <div class="div-chips" id="divChips">
+          <button class="chip active" data-div="ALL">All</button>
+          <button class="chip" data-div="M65">M O65</button>
         </div>
-      </article>
+      </div>
+      <div class="filter-group filter-knockout">
+        <label class="switch-label"><input type="checkbox" id="showKO" checked> Include knockout rounds &amp; events</label>
+      </div>
+      <div class="filter-group filter-ics">
+        <button class="btn btn-small btn-solid" id="icsBtn" title="Downloads a calendar file of the games in the current view">📅 Add these games to your calendar</button>
+      </div>
     </div>
+    <p class="stream-note">📺 Games stream on <a href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener">worldmastershockey.tv</a> — per-game watch links will appear next to matches once WMH posts them.</p>
+
+    <div id="scheduleList"></div>
+  </section>
+
+  <!-- ============ STANDINGS ============ -->
+  <section class="section section-tinted" id="standings">
+    <div class="section-head">
+      <h2>Pool<br>Standings</h2>
+      <p id="standingsNote"></p>
+    </div>
+    <div class="div-chips stand-chips" id="standDivChips">
+      <button class="chip active" data-div="M65">M O65</button>
+    </div>
+    <div id="standingsTable"></div>
+  </section>
+
+  <!-- ============ USA TEAMS ============ -->
+  <section class="section section-tinted" id="teams">
+    <div class="section-head">
+      <h2>USA<br>Teams</h2>
+      <p>One USA Masters squad competes in Breda — the men's O65 — alongside five USA teams at the
+      <a href="brasschaat">Belgium tournament</a> and nine at the <a href="july">Netherlands tournament in July</a>.
+      Rosters on <a href="https://www.usafieldhockey.com/masters" target="_blank" rel="noopener">USA Field Hockey ↗</a></p>
+    </div>
+    <div class="team-grid" id="teamGrid"></div>
   </section>
 
   <!-- ============ VENUE & TRAVEL ============ -->
-  <section class="section section-tinted" id="venues">
+  <section class="section" id="venues">
     <div class="section-head">
       <h2>Venue &amp;<br>Getting There</h2>
       <p>One club hosts the whole O65+ tournament: BHV Push in Breda — a classic Dutch hockey club
@@ -116,7 +149,8 @@
         <h3>BHV Push</h3>
         <p class="venue-addr">Nieuwe Inslag 97<br>4817 GN Breda, Netherlands</p>
         <ul>
-          <li>🏑 All Breda matches play here</li>
+          <li>🏑 Pitches 1, 2, 5 &amp; 7 — all matches at this one club</li>
+          <li>🎉 Opening Ceremony · August 6, 4:00 PM</li>
           <li>🚆 ~10 min by bike or taxi from Breda Centraal (about a 30-min walk)</li>
           <li>🍔 Clubhouse food &amp; drinks, merch shop on site</li>
         </ul>
@@ -147,7 +181,7 @@
         <p>Every game streams on <strong>worldmastershockey.tv</strong>, World Masters Hockey's official platform — catch Team USA live or on replay from anywhere.</p>
         <ul>
           <li>🏑 Official WMH streams, all pitches</li>
-          <li>▶️ Per-game watch links appear on the schedule as WMH posts them</li>
+          <li>▶️ Per-game watch links appear on the schedule above as WMH posts them</li>
           <li>📊 Live scores &amp; standings on Masters AltiusRT</li>
         </ul>
         <div class="hero-cta">
@@ -164,6 +198,7 @@
       <h2>Other<br>Links</h2>
     </div>
     <div class="link-grid">
+      <a class="link-card" href="https://drive.google.com/file/d/1KqjbrM43nXkRKDtKdekwDkj6Q7mECqyu/view" target="_blank" rel="noopener"><span>📄</span><b>Breda Schedule PDF</b><small>Version 15 Jul · all divisions, BHV Push</small></a>
       <a class="link-card" href="https://pushmasters.nl/" target="_blank" rel="noopener"><span>🏑</span><b>Official Event Site</b><small>pushmasters.nl — BHV Push host site (schedule, accommodation, FAQ)</small></a>
       <a class="link-card" href="https://worldmastershockey.org/wmhevents/2026-wct4-breda/" target="_blank" rel="noopener"><span>🌍</span><b>WMH Event Page</b><small>World Masters Hockey — official Breda tournament info</small></a>
       <a class="link-card" href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener"><span>📺</span><b>Watch Live</b><small>worldmastershockey.tv — official WMH streams</small></a>
@@ -176,38 +211,14 @@
 
   <footer class="footer">
     <p><b>GO USA! 🇺🇸🏑</b></p>
-    <p>An unofficial fan hub made with love by a USA WO35 family. Schedule details land here as WMH publishes them — always confirm against official sources.</p>
-    <p><a href="./">All USA tournaments</a> · <a href="july.html">Netherlands (July)</a> · <a href="brasschaat.html">Belgium</a> · <a href="https://www.instagram.com/usamastersfh/">@usamastersfh</a></p>
+    <p>An unofficial fan hub made with love by a USA WO35 family. Times from the Official Breda Schedule (July 15, 2026) — always confirm against official sources.</p>
+    <p><a href="./">All USA tournaments</a> · <a href="july">Netherlands (July)</a> · <a href="brasschaat">Belgium</a> · <a href="https://www.instagram.com/usamastersfh/">@usamastersfh</a></p>
     <p>Built by <a href="https://christinewatts.com" target="_blank" rel="noopener">Christine Watts</a></p>
   </footer>
 
   <script src="js/nav.js"></script>
-  <script>
-    document.getElementById("ticker").textContent =
-      ("GO USA 🇺🇸 · O65 WORLD CUP · BHV PUSH BREDA · AUG 6 – 16 · WORLD MASTERS HOCKEY · ".repeat(2)).repeat(2);
-
-    // countdown to tournament start (Aug 6; ceremonies/checks precede Aug 7 matches)
-    (function () {
-      var el = document.getElementById("countdown");
-      var target = Date.UTC(2026, 7, 6, 17, 0, 0);
-      function tick() {
-        var diff = target - Date.now();
-        if (diff <= 0) {
-          el.innerHTML = '<span class="cd-live">🏑 IT\'S GAME TIME — GO USA!</span>';
-          return;
-        }
-        var days = Math.floor(diff / 864e5),
-            hrs = Math.floor((diff % 864e5) / 36e5),
-            mins = Math.floor((diff % 36e5) / 6e4);
-        el.innerHTML =
-          '<div class="cd"><b>' + days + '</b><small>days</small></div>' +
-          '<div class="cd"><b>' + hrs + '</b><small>hours</small></div>' +
-          '<div class="cd"><b>' + mins + '</b><small>mins</small></div>' +
-          '<div class="cd"><b style="font-size:1rem;max-width:150px;display:block;line-height:1.2;padding-top:8px">until the Breda tournament begins</b></div>';
-      }
-      tick();
-      setInterval(tick, 30000);
-    })();
-  </script>
+  <script src="js/data-breda.js"></script>
+  <script src="js/results-aug.js"></script>
+  <script src="js/app-breda.js"></script>
 </body>
 </html>
