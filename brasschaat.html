@@ -4,20 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Belgium Tournament · Brasschaat &amp; Antwerp — USA Masters WC2026</title>
-  <meta name="description" content="Follow USA Masters Field Hockey at the 2026 WMH World Cup Belgium tournament in Brasschaat & Antwerp — five USA teams, venues, travel guide & schedule, August 6–16.">
+  <meta name="description" content="Follow USA Masters Field Hockey at the 2026 WMH World Cup Belgium tournament in Brasschaat & Antwerp — schedules, standings, venues & travel guide, August 6–16.">
   <link rel="canonical" href="https://usamastersfh.com/brasschaat.html">
   <!-- Social share card -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="USA Masters Fan Hub">
   <meta property="og:title" content="USA Masters · 2026 World Cup — Belgium Tournament">
-  <meta property="og:description" content="Five USA teams in Brasschaat & Antwerp, August 6–16. Venues, travel guide, schedule & how to watch.">
+  <meta property="og:description" content="Five USA teams in Brasschaat & Antwerp, August 6–16. Schedules, live scores, venues & how to watch.">
   <meta property="og:url" content="https://usamastersfh.com/brasschaat.html">
   <meta property="og:image" content="https://usamastersfh.com/assets/og-brasschaat.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="USA Masters · 2026 World Cup — Belgium Tournament">
-  <meta name="twitter:description" content="Five USA teams in Brasschaat & Antwerp, August 6–16. Venues, travel guide, schedule & how to watch.">
+  <meta name="twitter:description" content="Five USA teams in Brasschaat & Antwerp, August 6–16. Schedules, live scores, venues & how to watch.">
   <meta name="twitter:image" content="https://usamastersfh.com/assets/og-brasschaat.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -51,11 +51,14 @@
     </a>
     <nav class="nav-links">
       <a href="#schedule">Schedule</a>
-      <a href="#teams">Teams</a>
+      <a href="#standings">Standings</a>
       <a href="#venues">Venues</a>
       <a href="#watch">Watch</a>
       <a href="./">All USA teams</a>
     </nav>
+    <button class="tz-toggle" id="tzToggle" title="Switch time zone">
+      <span data-tz="NL" class="on">🇧🇪 BE</span><span data-tz="ET">🇺🇸 ET</span>
+    </button>
   </header>
 
   <!-- ============ HERO ============ -->
@@ -68,7 +71,7 @@
       <p class="hero-sub">August 6 – 16, 2026 · Brasschaat &amp; Antwerp 🇧🇪<br>Five USA teams take the pitch in Belgium.</p>
       <div class="countdown" id="countdown" aria-live="polite"></div>
       <div class="hero-cta">
-        <a class="btn btn-solid" href="#teams">Meet the USA teams</a>
+        <a class="btn btn-solid" href="#schedule">See the schedule</a>
         <a class="btn btn-ghost" href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener">📺 Watch live</a>
         <a class="btn btn-ghost" href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener">Follow @usamastersfh</a>
       </div>
@@ -76,32 +79,58 @@
     <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
   </section>
 
-  <!-- ============ SCHEDULE (coming) ============ -->
+  <!-- ============ SCHEDULE ============ -->
   <main>
   <section class="section" id="schedule">
     <div class="section-head">
       <h2>Match<br>Schedule</h2>
-      <p>The official Brasschaat schedule hasn't been published yet — WMH posts it about three weeks
-      before the tournament, so it's due <strong>any day now</strong>. The moment it drops, every USA
-      game lands here with NL + ET times, pitch info and an add-to-calendar button, exactly like the
-      <a href="july.html">Netherlands page</a>.</p>
+      <p>All times shown in <strong id="tzLabel">Belgium time (CEST)</strong> — flip the toggle up top for US Eastern.
+      Pool play runs August 7–12; knockouts follow through Finals Day on August 16. Official PDF:
+      <a href="https://drive.google.com/file/d/1LRN8ZxsxjuOGvrogNJUmdXRDkiGbrbSB/view" target="_blank" rel="noopener">Brasschaat Schedule V1 ↗</a></p>
     </div>
-    <div class="venue-grid">
-      <article class="venue-card venue-primary">
-        <span class="venue-tag">What we know so far</span>
-        <h3>Key dates</h3>
-        <ul>
-          <li>🏑 Training slots at both venues from <strong>August 3</strong> (equipment checks at training or before each team's first match)</li>
-          <li>🎉 Opening Ceremony · <strong>Thursday, August 6, 7:00 PM</strong> at KHC Dragons</li>
-          <li>🥍 Matches run <strong>August 7 – 16</strong> at KHC Dragons &amp; HC Olympia</li>
-          <li>🏅 Finals weekend · August 15 – 16</li>
-        </ul>
-        <div class="venue-actions">
-          <a class="btn btn-small btn-solid" href="https://dragonsmasters.com/" target="_blank" rel="noopener">Official event site</a>
-          <a class="btn btn-small btn-ghost-dark" href="https://masters.altiusrt.com/" target="_blank" rel="noopener">Live scores (AltiusRT)</a>
+
+    <div class="filters">
+      <div class="filter-group">
+        <label for="teamSel">Team</label>
+        <select id="teamSel"></select>
+      </div>
+      <div class="filter-group">
+        <label>Division · pick one or more</label>
+        <div class="div-chips" id="divChips">
+          <button class="chip active" data-div="ALL">All</button>
+          <button class="chip" data-div="W55">W O55</button>
+          <button class="chip" data-div="W60">W O60</button>
+          <button class="chip" data-div="W65">W O65</button>
+          <button class="chip" data-div="M55">M O55</button>
+          <button class="chip" data-div="M60">M O60</button>
         </div>
-      </article>
+      </div>
+      <div class="filter-group filter-knockout">
+        <label class="switch-label"><input type="checkbox" id="showKO" checked> Include knockout rounds &amp; events</label>
+      </div>
+      <div class="filter-group filter-ics">
+        <button class="btn btn-small btn-solid" id="icsBtn" title="Downloads a calendar file of the games in the current view">📅 Add these games to your calendar</button>
+      </div>
     </div>
+    <p class="stream-note">📺 Games stream on <a href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener">worldmastershockey.tv</a> — per-game watch links will appear next to matches once WMH posts them.</p>
+
+    <div id="scheduleList"></div>
+  </section>
+
+  <!-- ============ STANDINGS ============ -->
+  <section class="section section-tinted" id="standings">
+    <div class="section-head">
+      <h2>Pool<br>Standings</h2>
+      <p id="standingsNote"></p>
+    </div>
+    <div class="div-chips stand-chips" id="standDivChips">
+      <button class="chip active" data-div="W55">W O55</button>
+      <button class="chip" data-div="W60">W O60</button>
+      <button class="chip" data-div="W65">W O65</button>
+      <button class="chip" data-div="M55">M O55</button>
+      <button class="chip" data-div="M60">M O60</button>
+    </div>
+    <div id="standingsTable"></div>
   </section>
 
   <!-- ============ USA TEAMS ============ -->
@@ -109,16 +138,10 @@
     <div class="section-head">
       <h2>USA<br>Teams</h2>
       <p>Five USA Masters teams compete in the Belgium tournament, with nine more at the
-      <a href="july.html">Netherlands tournament in July</a> and the O65 men in
-      <a href="breda.html">Breda</a>. Rosters on <a href="https://www.usafieldhockey.com/masters" target="_blank" rel="noopener">USA Field Hockey ↗</a></p>
+      <a href="july.html">Netherlands tournament in July</a> and the O65 men in Breda.
+      Rosters on <a href="https://www.usafieldhockey.com/masters" target="_blank" rel="noopener">USA Field Hockey ↗</a></p>
     </div>
-    <div class="team-grid">
-      <div class="team-card static"><h3>🇺🇸 Women O55</h3><p class="t-venue">KHC Dragons / HC Olympia</p><p class="t-cta">Player cards &amp; schedule coming soon</p></div>
-      <div class="team-card static"><h3>🇺🇸 Women O60</h3><p class="t-venue">KHC Dragons / HC Olympia</p><p class="t-cta">Player cards &amp; schedule coming soon</p></div>
-      <div class="team-card static"><h3>🇺🇸 Women O65</h3><p class="t-venue">KHC Dragons / HC Olympia</p><p class="t-cta">Player cards &amp; schedule coming soon</p></div>
-      <div class="team-card static"><h3>🇺🇸 Men O55</h3><p class="t-venue">KHC Dragons / HC Olympia</p><p class="t-cta">Player cards &amp; schedule coming soon</p></div>
-      <div class="team-card static"><h3>🇺🇸 Men O60</h3><p class="t-venue">KHC Dragons / HC Olympia</p><p class="t-cta">Player cards &amp; schedule coming soon</p></div>
-    </div>
+    <div class="team-grid" id="teamGrid"></div>
   </section>
 
   <!-- ============ VENUES & TRAVEL ============ -->
@@ -135,8 +158,8 @@
         <h3>KHC Dragons</h3>
         <p class="venue-addr">Sportendreef 1<br>2930 Brasschaat, Belgium</p>
         <ul>
-          <li>🏑 3 water-based pitches + 1 semi-sand pitch</li>
-          <li>🎉 Opening Ceremony · August 6, 7:00 PM</li>
+          <li>🏑 "DRA" pitches 1–4 · 3 water-based + 1 semi-sand</li>
+          <li>🎉 Opening Ceremony · August 6, 6:00 PM</li>
           <li>🌳 In Brasschaat's park belt, ~30–40 min north of central Antwerp by car or bus</li>
           <li>🚗 Outside Antwerp's low-emission zone — easy to drive to</li>
         </ul>
@@ -150,7 +173,7 @@
         <h3>HC Olympia</h3>
         <p class="venue-addr">Vogelzanglaan 6, 2020 Antwerp<br>(Sportcentrum Wilrijkse Plein, south Antwerp)</p>
         <ul>
-          <li>🏑 Shares the tournament with KHC Dragons — check the venue on each match</li>
+          <li>🏑 "OLY" pitches 1, 2 &amp; 5 — check the pitch on each match</li>
           <li>🛣️ Just off the Antwerp Ring (exit 5A Antwerpen-Centrum / exit 5 Wilrijk-Berchem)</li>
           <li>⏱️ Allow ~30–40 min between the two grounds across the city</li>
         </ul>
@@ -164,7 +187,7 @@
         <ul>
           <li>🚆 Direct trains Rotterdam Centraal → Antwerpen-Centraal: ~30 min on the high-speed line, ~1 hr by intercity</li>
           <li>🚗 Driving from Rotterdam: ~1 hr 15 via the A16/E19 — Brasschaat sits just off the E19 north of Antwerp</li>
-          <li>⚠️ Central Antwerp (inside the Ring) is a low-emission zone — register a foreign-plated car in advance at <a href="https://www.slimnaarantwerpen.be/en/lez" target="_blank" rel="noopener">lez / slimnaarantwerpen.be</a></li>
+          <li>⚠️ Central Antwerp (inside the Ring) is a low-emission zone — register a foreign-plated car in advance at <a href="https://www.slimnaarantwerpen.be/en/lez" target="_blank" rel="noopener">slimnaarantwerpen.be</a></li>
           <li>🚌 Local buses &amp; route planning: <a href="https://www.slimnaarantwerpen.be/en/home" target="_blank" rel="noopener">Smart Ways to Antwerp</a> (the host's recommended planner)</li>
         </ul>
       </article>
@@ -180,7 +203,7 @@
         <p>Every game streams on <strong>worldmastershockey.tv</strong>, World Masters Hockey's official platform — catch Team USA live or on replay from anywhere.</p>
         <ul>
           <li>🏑 Official WMH streams, all pitches</li>
-          <li>▶️ Per-game watch links appear on the schedule as WMH posts them</li>
+          <li>▶️ Per-game watch links appear on the schedule above as WMH posts them</li>
           <li>📊 Live scores &amp; standings on Masters AltiusRT</li>
         </ul>
         <div class="hero-cta">
@@ -197,11 +220,11 @@
       <h2>Other<br>Links</h2>
     </div>
     <div class="link-grid">
-      <a class="link-card" href="https://dragonsmasters.com/" target="_blank" rel="noopener"><span>🐉</span><b>Official Event Site</b><small>dragonsmasters.com — KHC Dragons host site (schedule, hotels, FAQ)</small></a>
+      <a class="link-card" href="https://drive.google.com/file/d/1LRN8ZxsxjuOGvrogNJUmdXRDkiGbrbSB/view" target="_blank" rel="noopener"><span>📄</span><b>Brasschaat Schedule PDF</b><small>Version 1 (16 Jul) · all divisions, both venues</small></a>
+      <a class="link-card" href="https://dragonsmasters.com/" target="_blank" rel="noopener"><span>🐉</span><b>Official Event Site</b><small>dragonsmasters.com — KHC Dragons host site (hotels, FAQ, merch)</small></a>
       <a class="link-card" href="https://worldmastershockey.org/wmhevents/2026-wct3-brasschaat/" target="_blank" rel="noopener"><span>🌍</span><b>WMH Event Page</b><small>World Masters Hockey — official Brasschaat tournament info</small></a>
       <a class="link-card" href="https://www.worldmastershockey.tv/" target="_blank" rel="noopener"><span>📺</span><b>Watch Live</b><small>worldmastershockey.tv — official WMH streams</small></a>
       <a class="link-card" href="https://masters.altiusrt.com/" target="_blank" rel="noopener"><span>📊</span><b>Live Scores &amp; Standings</b><small>Masters AltiusRT — results post here during the event</small></a>
-      <a class="link-card" href="https://www.usafieldhockey.com/masters" target="_blank" rel="noopener"><span>🇺🇸</span><b>USA Field Hockey Masters</b><small>Rosters &amp; official Team USA news</small></a>
       <a class="link-card" href="https://www.instagram.com/usamastersfh/" target="_blank" rel="noopener"><span>📸</span><b>@usamastersfh</b><small>USA Masters National Teams on Instagram</small></a>
     </div>
   </section>
@@ -209,38 +232,14 @@
 
   <footer class="footer">
     <p><b>GO USA! 🇺🇸🏑</b></p>
-    <p>An unofficial fan hub made with love by a USA WO35 family. Schedule details land here as WMH publishes them — always confirm against official sources.</p>
+    <p>An unofficial fan hub made with love by a USA WO35 family. Times from Official Brasschaat Schedule V1 (July 16, 2026) — always confirm against official sources.</p>
     <p><a href="./">All USA tournaments</a> · <a href="july.html">Netherlands (July)</a> · <a href="breda.html">Breda O65</a> · <a href="https://www.instagram.com/usamastersfh/">@usamastersfh</a></p>
     <p>Built by <a href="https://christinewatts.com" target="_blank" rel="noopener">Christine Watts</a></p>
   </footer>
 
   <script src="js/nav.js"></script>
-  <script>
-    document.getElementById("ticker").textContent =
-      ("GO USA 🇺🇸 · BELGIUM 2026 · BRASSCHAAT + ANTWERP · AUG 6 – 16 · WORLD MASTERS HOCKEY · ".repeat(2)).repeat(2);
-
-    // countdown to the Opening Ceremony (Aug 6, 19:00 CEST = 17:00 UTC)
-    (function () {
-      var el = document.getElementById("countdown");
-      var target = Date.UTC(2026, 7, 6, 17, 0, 0);
-      function tick() {
-        var diff = target - Date.now();
-        if (diff <= 0) {
-          el.innerHTML = '<span class="cd-live">🏑 IT\'S GAME TIME — GO USA!</span>';
-          return;
-        }
-        var days = Math.floor(diff / 864e5),
-            hrs = Math.floor((diff % 864e5) / 36e5),
-            mins = Math.floor((diff % 36e5) / 6e4);
-        el.innerHTML =
-          '<div class="cd"><b>' + days + '</b><small>days</small></div>' +
-          '<div class="cd"><b>' + hrs + '</b><small>hours</small></div>' +
-          '<div class="cd"><b>' + mins + '</b><small>mins</small></div>' +
-          '<div class="cd"><b style="font-size:1rem;max-width:150px;display:block;line-height:1.2;padding-top:8px">until the Opening Ceremony in Brasschaat</b></div>';
-      }
-      tick();
-      setInterval(tick, 30000);
-    })();
-  </script>
+  <script src="js/data-aug.js"></script>
+  <script src="js/results-aug.js"></script>
+  <script src="js/app-aug.js"></script>
 </body>
 </html>

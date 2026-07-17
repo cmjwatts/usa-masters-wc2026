@@ -169,6 +169,11 @@ img { display: block; max-width: 100%; }
 .m-div.d-W35 { background: var(--red); }
 .m-div.d-W40 { background: var(--coral); }
 .m-div.d-M40 { background: #5a7bc0; }
+/* Brasschaat divisions (brasschaat.html) */
+.m-div.d-W55 { background: var(--red); }
+.m-div.d-W60 { background: var(--coral); }
+.m-div.d-W65 { background: #c0392b; }
+.m-div.d-M60 { background: #5a7bc0; }
 .m-match { font-weight: 700; font-size: 1.02rem; }
 .m-match .vs { color: #99a0b2; font-weight: 400; padding: 0 6px; }
 .m-match .usa-name { color: var(--red); }

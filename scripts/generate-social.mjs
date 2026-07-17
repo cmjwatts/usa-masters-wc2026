@@ -25,8 +25,10 @@ const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const p = (...s) => path.join(ROOT, ...s);
 
 // ---------- load site data (plain const declarations, no exports) ----------
+// A stub `window` is passed in scope: the scraper's results files carry
+// `window.RESULTS_UPDATED = ...` lines that would otherwise throw in Node.
 const loadConsts = (file, names) =>
-  new Function(`${readFileSync(file, "utf8")}; return {${names}};`)();
+  new Function("window", `${readFileSync(file, "utf8")}; return {${names}};`)({});
 const { TEAMS, DIVISIONS, POOL, KNOCKOUT, EVENTS } = loadConsts(
   p("js/data.js"), "TEAMS, DIVISIONS, POOL, KNOCKOUT, EVENTS");
 const { RESULTS } = loadConsts(
