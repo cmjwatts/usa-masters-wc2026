@@ -31,7 +31,6 @@
     /* Belgium page: Griffin Stadium hero */
     .hero-bg { background: url("assets/belgium/hero-belgium.jpg") center 40% / cover no-repeat; }
     .hero { min-height: 72vh; }
-    .photo-strip img { transition: opacity 0.45s ease, transform 0.3s ease; }
     @media (max-width: 640px) {
       .hero-bg { background-image: url("assets/belgium/hero-belgium-mobile.jpg"); }
     }
@@ -153,6 +152,10 @@
       <figure><img src="assets/belgium/fall-lineup.jpg" alt="USA Masters players lined up on the pitch at fall trials" loading="lazy" style="object-position:center 55%"></figure>
       <figure><img src="assets/belgium/sunset-trio.jpg" alt="Three USA teammates at sunset after training" loading="lazy" style="object-position:center 30%"></figure>
       <figure><img src="assets/belgium/men-goal.jpg" alt="USA men's masters team in front of the goal" loading="lazy" style="object-position:center 40%"></figure>
+      <figure><img src="assets/belgium/team-selfie.jpg" alt="Training-day selfie with the USA masters squads" loading="lazy" style="object-position:center 45%"></figure>
+      <figure><img src="assets/belgium/men-sunshine.jpg" alt="USA men's team after a summer scrimmage" loading="lazy" style="object-position:center 45%"></figure>
+      <figure><img src="assets/belgium/park-crew.jpg" alt="USA women's masters group after an off-pitch workout" loading="lazy" style="object-position:center 55%"></figure>
+      <figure><img src="assets/belgium/indoor-training.jpg" alt="USA teammates at an indoor training session" loading="lazy" style="object-position:center 45%"></figure>
     </div>
   </section>
 
@@ -254,38 +257,6 @@
   <script src="js/data-aug.js"></script>
   <script src="js/results-aug.js"></script>
   <script src="js/app-aug.js"></script>
-  <script>
-  // Rotate the photo strip through the full photo pool (Davidson shot lives in the Watch card)
-  (function () {
-    var photos = [
-      { src: 'assets/belgium/fall-lineup.jpg', alt: 'USA Masters players lined up on the pitch at fall trials', pos: 'center 55%' },
-      { src: 'assets/belgium/sunset-trio.jpg', alt: 'Three USA teammates at sunset after training', pos: 'center 30%' },
-      { src: 'assets/belgium/men-goal.jpg', alt: "USA men's masters team in front of the goal", pos: 'center 40%' },
-      { src: 'assets/belgium/team-selfie.jpg', alt: 'Training-day selfie with the USA masters squads', pos: 'center 45%' },
-      { src: 'assets/belgium/men-sunshine.jpg', alt: "USA men's team after a summer scrimmage", pos: 'center 45%' },
-      { src: 'assets/belgium/park-crew.jpg', alt: "USA women's masters group after an off-pitch workout", pos: 'center 55%' },
-      { src: 'assets/belgium/indoor-training.jpg', alt: 'USA teammates at an indoor training session', pos: 'center 45%' }
-    ];
-    var strip = document.getElementById('photoStrip');
-    if (!strip || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var slots = strip.querySelectorAll('img');
-    if (photos.length <= slots.length) return;
-    var next = slots.length, slot = 0;
-    setInterval(function () {
-      var p = photos[next++ % photos.length];
-      var img = slots[slot++ % slots.length];
-      var pre = new Image();
-      pre.onload = pre.onerror = function () {
-        img.style.opacity = 0;
-        setTimeout(function () {
-          img.src = p.src; img.alt = p.alt;
-          img.style.objectPosition = p.pos || 'center';
-          img.style.opacity = 1;
-        }, 450);
-      };
-      pre.src = p.src;
-    }, 4000);
-  })();
-  </script>
+  <script src="js/photo-strip.js"></script>
 </body>
 </html>

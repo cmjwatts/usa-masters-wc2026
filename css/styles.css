@@ -227,7 +227,7 @@ img { display: block; max-width: 100%; }
 .team-note { margin-top: 20px; font-size: 0.95rem; color: #5c6478; }
 .photo-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 38px; }
 .photo-strip figure { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
-.photo-strip img { width: 100%; height: 240px; object-fit: cover; transition: transform 0.3s ease; }
+.photo-strip img { width: 100%; height: 240px; object-fit: cover; transition: opacity 0.45s ease, transform 0.3s ease; }
 .photo-strip figure:hover img { transform: scale(1.04); }
 
 /* ============ VENUES ============ */
