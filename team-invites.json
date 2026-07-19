@@ -2,5 +2,11 @@
   "_readme": "Teammates to invite to tournament calendar events (practices, games, socials). Used by the .claude/skills/add-team skill — say 'add the team' to Claude Code and everyone listed here gets added as an attendee. Add/remove people here as the group grows.",
   "calendar": "primary",
   "organizer": "cmwatts02@gmail.com",
-  "team": []
+  "team": [
+    { "name": "Katharina Helling", "email": "katharina.helling@googlemail.com" },
+    { "name": "Missy Arenz", "email": "missyarenz@gmail.com" },
+    { "name": "Melissa McCarthy", "email": "mlmccarthy791@gmail.com" },
+    { "name": "Daphne de Poot", "email": "daphnedepoot@hotmail.com" },
+    { "name": "Melissa Katz", "email": "mkatzdesigns@gmail.com" }
+  ]
 }
