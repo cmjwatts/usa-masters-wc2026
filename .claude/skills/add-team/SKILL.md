@@ -21,11 +21,12 @@ one or more Google Calendar events, so the events show up on their calendars.
      narrow time window) on her primary calendar.
    - If she said something broad ("all the team events"), the team-facing
      events are: USA O35 practices, the team meeting, equipment check, all
-     W O35 games (pool + knockout), US Delegation BBQ, Opening/Closing
-     Ceremony, Team Dinner, Team Lunch, and the Dutch Tournament Party.
-   - Do NOT include: the 🚗 "Arrive @ ..." reminder events (personal logistics),
-     the "M O50 ..." men's games (spectating, not her team), the "(Optional)
-     O40 ..." events, or any family/hotel/flight events.
+     W O35 games (pool + knockout), the 🚗 "Arrive @ ..." / "Be on site ..."
+     arrival events (the whole team uses these), US Delegation BBQ,
+     Opening/Closing Ceremony, Team Dinner, Team Lunch, and the Dutch
+     Tournament Party.
+   - Do NOT include: the "M O50 ..." men's games (spectating, not her team),
+     the "(Optional) O40 ..." events, or any family/hotel/flight events.
 3. For each event, call `mcp__Google_Calendar__update_event` with
    `addedAttendees: [{email: ...}, ...]` for every roster member **not already
    on the event's attendee list** (check first; re-adding is harmless but
