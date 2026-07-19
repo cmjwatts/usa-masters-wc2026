@@ -19,15 +19,21 @@
   <meta name="twitter:title" content="USA Masters · 2026 World Cup — Belgium Tournament">
   <meta name="twitter:description" content="Five USA teams in Brasschaat & Antwerp, August 6–16. Schedules, live scores, venues & how to watch.">
   <meta name="twitter:image" content="https://usamastersfh.com/assets/og-brasschaat.png">
+  <!-- Fetch the hero image immediately, in parallel with CSS (it's a CSS background, otherwise discovered late) -->
+  <link rel="preload" as="image" href="assets/belgium/hero-belgium.jpg" fetchpriority="high" media="(min-width: 641px)">
+  <link rel="preload" as="image" href="assets/belgium/hero-belgium-mobile.jpg" fetchpriority="high" media="(max-width: 640px)">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,600;0,700;0,900;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <style>
-    /* Belgium page: gradient hero (no photo yet) */
-    .hero-bg { background: linear-gradient(15deg, var(--navy-deep) 25%, var(--navy) 62%, var(--red) 135%); }
+    /* Belgium page: Griffin Stadium hero */
+    .hero-bg { background: url("assets/belgium/hero-belgium.jpg") center 40% / cover no-repeat; }
     .hero { min-height: 72vh; }
+    @media (max-width: 640px) {
+      .hero-bg { background-image: url("assets/belgium/hero-belgium-mobile.jpg"); }
+    }
   </style>
 </head>
 <body>
@@ -142,6 +148,15 @@
       Rosters on <a href="https://www.usafieldhockey.com/masters" target="_blank" rel="noopener">USA Field Hockey ↗</a></p>
     </div>
     <div class="team-grid" id="teamGrid"></div>
+    <div class="photo-strip" id="photoStrip">
+      <figure><img src="assets/belgium/fall-lineup.jpg" alt="USA Masters players lined up on the pitch at fall trials" loading="lazy" style="object-position:center 55%"></figure>
+      <figure><img src="assets/belgium/sunset-trio.jpg" alt="Three USA teammates at sunset after training" loading="lazy" style="object-position:center 30%"></figure>
+      <figure><img src="assets/belgium/men-goal.jpg" alt="USA men's masters team in front of the goal" loading="lazy" style="object-position:center 40%"></figure>
+      <figure><img src="assets/belgium/team-selfie.jpg" alt="Training-day selfie with the USA masters squads" loading="lazy" style="object-position:center 45%"></figure>
+      <figure><img src="assets/belgium/men-sunshine.jpg" alt="USA men's team after a summer scrimmage" loading="lazy" style="object-position:center 45%"></figure>
+      <figure><img src="assets/belgium/park-crew.jpg" alt="USA women's masters group after an off-pitch workout" loading="lazy" style="object-position:center 55%"></figure>
+      <figure><img src="assets/belgium/indoor-training.jpg" alt="USA teammates at an indoor training session" loading="lazy" style="object-position:center 45%"></figure>
+    </div>
   </section>
 
   <!-- ============ VENUES & TRAVEL ============ -->
@@ -211,7 +226,7 @@
           <a class="btn btn-ghost" href="https://www.youtube.com/channel/UCk6X0_aIFngcxt3HiX2Hh_w" target="_blank" rel="noopener">WMH on YouTube</a>
         </div>
       </div>
-      <div class="watch-photo"><img src="assets/team-photo.jpg" alt="USA Women's O35 team" loading="lazy"></div>
+      <div class="watch-photo"><img src="assets/belgium/team-davidson.jpg" alt="USA masters squad at Davidson Field Hockey" loading="lazy"></div>
     </div>
   </section>
 
@@ -242,5 +257,6 @@
   <script src="js/data-aug.js"></script>
   <script src="js/results-aug.js"></script>
   <script src="js/app-aug.js"></script>
+  <script src="js/photo-strip.js"></script>
 </body>
 </html>
