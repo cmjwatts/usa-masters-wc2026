@@ -7,6 +7,9 @@
     { "name": "Missy Arenz", "email": "missyarenz@gmail.com" },
     { "name": "Melissa McCarthy", "email": "mlmccarthy791@gmail.com" },
     { "name": "Daphne de Poot", "email": "daphnedepoot@hotmail.com" },
-    { "name": "Melissa Katz", "email": "mkatzdesigns@gmail.com" }
+    { "name": "Melissa Katz", "email": "mkatzdesigns@gmail.com" },
+    { "name": "Tom Johnson", "email": "tjohnson.ai@gmail.com", "role": "family" },
+    { "name": "Karen Johnson", "email": "kjohnson.ai@gmail.com", "role": "family" },
+    { "name": "Matt Johnson", "email": "matt7@vt.edu", "role": "family" }
   ]
 }
