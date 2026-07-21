@@ -1,5 +1,28 @@
 [
   {
+    "id": "countdown-1",
+    "type": "countdown",
+    "date": "2026-07-21",
+    "title": "1 days to go",
+    "caption": "1 day. 🇳🇱\n\nThe World Masters Hockey World Cup kicks off July 22 in Schiedam, and USA WO35 opens July 23 vs Australia.\n\nFull schedule, standings & how to watch: usamastersfh.com\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #WO35 @masterswc2026.schiedam",
+    "created": "2026-07-21T11:25",
+    "images": [
+      "social/img/countdown-1-1.png",
+      "social/img/countdown-1-2.png"
+    ]
+  },
+  {
+    "id": "event-2026-07-21-1500",
+    "type": "event",
+    "date": "2026-07-21",
+    "title": "🇺🇸 Team USA Practice — HC Alecto",
+    "caption": "🇺🇸 Team USA Practice — HC Alecto\n\nAll women's teams 3:00–4:30 PM · All men's teams 4:30–6:00 PM · US Delegation BBQ 6:15 PM\n\nTuesday, July 21 · 15:00 NL\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #WO35 @masterswc2026.schiedam",
+    "created": "2026-07-21T11:25",
+    "images": [
+      "social/img/event-2026-07-21-1500-1.png"
+    ]
+  },
+  {
     "id": "countdown-2",
     "type": "countdown",
     "date": "2026-07-20",
