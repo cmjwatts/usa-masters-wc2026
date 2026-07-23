@@ -192,6 +192,9 @@ img { display: block; max-width: 100%; }
 .filter-ics .btn { border: none; cursor: pointer; font-family: "Anton"; }
 .empty-state { text-align: center; padding: 40px; color: #5c6478; font-weight: 600; }
 .m-score { font-family: "Anton"; color: var(--navy); padding: 0 10px; font-size: 1.15rem; }
+/* finished games: "Final" + score stacked where the pitch normally sits */
+.m-result .final-tag { display: block; font-size: 0.62rem; letter-spacing: 0.14em; color: #5c6478; }
+.m-result .m-score { display: block; padding: 0; font-size: 1.3rem; line-height: 1.15; }
 
 /* ============ STANDINGS ============ */
 .stand-chips { margin-bottom: 22px; }
