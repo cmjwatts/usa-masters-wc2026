@@ -56,6 +56,13 @@ function teamName(code) {
   return t ? `${t.flag} ${t.name}` : code;
 }
 
+// In the schedule, USA squads read "US <division>" (e.g. US WO35) so
+// multi-team views make clear which team is playing.
+function teamNameIn(code, div) {
+  if (code === "USA") return `${TEAMS.USA.flag} US ${DIVISIONS[div].short}`;
+  return teamName(code);
+}
+
 // ---- schedule filtering ----
 function poolRow(r) {
   let [d, t, div, h, a, p, hs, as] = r;
@@ -121,13 +128,13 @@ function renderSchedule() {
       } else if (r.type === "ko") {
         const named = r.teams && r.teams.length;
         const title = named
-          ? `${teamName(r.teams[0])}<span class="vs">vs</span>${teamName(r.teams[1])} <span class="m-note">${r.label}</span>`
+          ? `${teamNameIn(r.teams[0], r.div)}<span class="vs">vs</span>${teamNameIn(r.teams[1], r.div)} <span class="m-note">${r.label}</span>`
           : `${r.label}${state.team !== "ALL" ? `<span class="m-note">Bracket game — opponents decided by standings</span>` : ""}`;
         const usa = named && r.teams.includes("USA");
         html += `<div class="match-row is-ko ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-label">${title}</div><div class="m-pitch">${pitchLabel(r.p)}</div></div>`;
       } else {
         const usa = r.h === "USA" || r.a === "USA";
-        const name = (c) => `<span class="${c === "USA" ? "usa-name" : ""}">${teamName(c)}</span>`;
+        const name = (c) => `<span class="${c === "USA" ? "usa-name" : ""}">${teamNameIn(c, r.div)}</span>`;
         const vid = VIDEO[`${r.d}|${r.t}|${r.p}`];
         const watch = vid ? `<a class="m-watch" href="${vid}" target="_blank" rel="noopener">▶ Watch</a>` : "";
         // finished games swap the pitch for a "Final" + score block
