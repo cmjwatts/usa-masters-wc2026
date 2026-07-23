@@ -53,7 +53,18 @@ jobs:
             git config user.name "results-bot"
             git config user.email "actions@github.com"
             git commit -m "Auto-update: results + social content"
-            git push
+            # main may have moved while this job ran (e.g. a merged PR) —
+            # rebase our one commit onto it and retry instead of failing.
+            pushed=""
+            for attempt in 1 2 3; do
+              if git push; then
+                pushed=yes
+                break
+              fi
+              echo "Push rejected (attempt $attempt), rebasing onto latest main…"
+              git pull --rebase origin main
+            done
+            [ -n "$pushed" ] || { echo "Push still failing after 3 attempts"; exit 1; }
           fi
 
       # Email Christine + Melissa when new posts land. Needs two repo
