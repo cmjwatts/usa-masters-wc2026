@@ -22,8 +22,11 @@ jobs:
               "https://masters.altiusrt.com/competitions/$id/matches" \
               -o "out/comp$id-matches.html" -w "comp $id matches: %{http_code} %{size_download} bytes\n"
           done
-          echo "--- first 3000 chars of comp478-matches.html ---"
-          head -c 3000 out/comp478-matches.html
+          for f in out/*.html; do
+            echo "=== BEGIN-B64 $f ==="
+            base64 "$f"
+            echo "=== END-B64 $f ==="
+          done
       - uses: actions/upload-artifact@v4
         with:
           name: altiusrt-pages
