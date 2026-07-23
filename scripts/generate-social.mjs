@@ -273,6 +273,8 @@ function slideUpNext(div, next) {
     T(64, 1150, 56, GOLD, "SEE YOU THERE"));
 }
 
+const RES_WORD = { W: "Win", D: "Draw", L: "Loss" };
+
 function slideRecap(date, rows) {
   let y = 600;
   let out = headline(430, "USA TODAY", 140) +
@@ -281,7 +283,7 @@ function slideRecap(date, rows) {
     out += `<rect x="64" y="${y - 44}" width="150" height="60" fill="${r.res === "W" ? RED : NAVY}" rx="10"/>` +
       T(139, y, 34, "#fff", DIVISIONS[r.div].short, { a: "middle" }) +
       T(250, y, 48, "#fff", `USA ${r.us} - ${r.them} ${r.opp}`) +
-      T(1000, y, 48, r.res === "W" ? GOLD : CREAM, r.res, { a: "end" });
+      T(1000, y, 48, r.res === "W" ? GOLD : CREAM, RES_WORD[r.res].toUpperCase(), { a: "end" });
     y += 100;
   }
   return frame("Team USA in Schiedam", out);
@@ -339,7 +341,7 @@ ${TAGS} #${DIVISIONS[div].short}`;
 
 const capRecap = (date, rows) =>
   `🇺🇸 TEAM USA IN SCHIEDAM — ${prettyDate(date)}\n\n` +
-  rows.map((r) => `${DIVISIONS[r.div].short}: USA ${r.us}–${r.them} ${name(r.opp)} (${r.res})`).join("\n") +
+  rows.map((r) => `${DIVISIONS[r.div].short}: USA ${r.us}–${r.them} ${name(r.opp)} (${RES_WORD[r.res]})`).join("\n") +
   `\n\nAll scores & standings: usamastersfh.com\n\n${TAGS}`;
 
 const capEvent = (ev) => `${ev.title}
