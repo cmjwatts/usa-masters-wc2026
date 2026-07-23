@@ -13,20 +13,6 @@
     ]
   },
   {
-    "id": "sample-gameday",
-    "type": "preview",
-    "date": "2026-07-23",
-    "title": "SAMPLE \u2014 Game day: USA vs Australia",
-    "caption": "GAME DAY \ud83c\uddfa\ud83c\uddf8\ud83c\udfd1\n\nUSA WO35 takes on Australia \ud83c\udde6\ud83c\uddfa \u2014 Thursday, July 23.\n\n\ud83d\udd50 16:20 NL / 10:20 AM ET\n\ud83d\udccd Pitch 3 \u00b7 HC Schiedam\n\ud83d\udcfa worldmastershockey.tv\n\ud83d\udcca Live scores & schedule: usamastersfh.com\n\nLet's go USA!\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #WO35 @masterswc2026.schiedam",
-    "created": "2026-07-04T09:00",
-    "images": [
-      "social/img/sample-gameday-1.png",
-      "social/img/sample-gameday-2.png",
-      "social/img/sample-gameday-3.png"
-    ],
-    "sample": true
-  },
-  {
     "id": "sample-result",
     "type": "result",
     "date": "2026-07-23",
