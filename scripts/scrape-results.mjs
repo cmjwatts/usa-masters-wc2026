@@ -110,7 +110,12 @@ async function scrapeDivision(div, id) {
     if (!cells.some((c) => /^(complete|full ?time|official)/i.test(c))) continue;
     const [home, away] = teamsCell.split(/\sv\s/);
     const codes = [toCode(home), toCode(away)];
-    if (!codes[0] || !codes[1]) continue; // placeholder slots like "Winner 148"
+    if (!codes[0] || !codes[1]) {
+      // A finished game we can't attribute means TEAM_NAMES is missing the
+      // display name AltiusRT uses — log it so the mapping can be fixed.
+      console.log(`${div}: dropping completed match — unmatched team name(s) in "${teamsCell}"`);
+      continue;
+    }
     const [hs, as] = scoreCell.match(/\d{1,2}/g).map((n) => parseInt(n, 10));
     // key format consumed by app.js: div|HOME|AWAY
     results[`${div}|${codes[0]}|${codes[1]}`] = [hs, as];
