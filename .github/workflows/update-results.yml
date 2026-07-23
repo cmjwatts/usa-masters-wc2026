@@ -1,8 +1,9 @@
 name: Update results & social content
 
-# TEMPORARILY converted to a debug fetcher on this branch only — the dev
-# sandbox can't reach masters.altiusrt.com, so we use the Actions runner to
-# capture the real HTML the scraper sees. Will be restored before merge.
+# TEMPORARILY in verify-only mode on this branch: runs the real scraper
+# against live AltiusRT and prints the output without committing, so we can
+# confirm the parser fix end-to-end. Will be restored to the scheduled
+# commit-and-push version (as on main) before merge.
 
 on:
   workflow_dispatch: {}
@@ -14,20 +15,16 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: Fetch competition pages
-        run: |
-          mkdir -p out
-          for id in 478 494; do
-            curl -sS -L -A "Mozilla/5.0 (usa-masters-wc2026 fan hub)" \
-              "https://masters.altiusrt.com/competitions/$id/matches" \
-              -o "out/comp$id-matches.html" -w "comp $id matches: %{http_code} %{size_download} bytes\n"
-          done
-          for f in out/*.html; do
-            echo "=== BEGIN-B64 $f ==="
-            base64 "$f"
-            echo "=== END-B64 $f ==="
-          done
-      - uses: actions/upload-artifact@v4
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
         with:
-          name: altiusrt-pages
-          path: out/
+          node-version: 20
+
+      - name: Scrape AltiusRT results (verify only)
+        run: |
+          node scripts/scrape-results.mjs
+          echo "=== js/results.js ==="
+          cat js/results.js
+          echo "=== js/results-aug.js ==="
+          cat js/results-aug.js

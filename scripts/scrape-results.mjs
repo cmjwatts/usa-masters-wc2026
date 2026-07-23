@@ -54,7 +54,7 @@ const COMPETITIONS_AUG = {
 
 // Team codes used in js/data.js, with names AltiusRT might display.
 const TEAM_NAMES = {
-  ARG: ["argentina"], AUS: ["australia"], AUSB: ["australia b"],
+  ARG: ["argentina"], AUS: ["australia"], AUSB: ["australia b", "aus b"],
   BEL: ["belgium"], CAN: ["canada"], CHI: ["chile"], CZE: ["czech republic", "czechia"],
   ENG: ["england"], ESP: ["spain"], FRA: ["france"], GER: ["germany"],
   GHA: ["ghana"], HKG: ["hong kong", "hong-kong", "hong kong china"], IND: ["india"],
@@ -67,13 +67,14 @@ const TEAM_NAMES = {
   ARGB40: ["argentina b o40", "argentina b 40"],
   AUSB35: ["australia b o35", "australia b 35"],
   NED: ["netherlands"], NZL: ["new zealand"], PAR: ["paraguay"],
-  RSA: ["south africa"], RSAB: ["south africa b"], SCO: ["scotland"],
+  RSA: ["south africa"], RSAB: ["south africa b", "rsa b"], SCO: ["scotland"],
   SGP: ["singapore"], SRI: ["sri lanka"], URU: ["uruguay"],
   USA: ["united states", "usa"], WAL: ["wales"], ZIM: ["zimbabwe"],
 };
 
 function toCode(text) {
-  const t = text.trim().toLowerCase();
+  // Drop any trailing parenthetical, e.g. "IRL (Pool A)" -> "IRL".
+  const t = text.replace(/\s*\(.*\)\s*$/, "").trim().toLowerCase();
   for (const [code, names] of Object.entries(TEAM_NAMES)) {
     if (t === code.toLowerCase() || names.includes(t)) return code;
   }
@@ -91,15 +92,23 @@ async function scrapeDivision(div, id) {
   const html = await res.text();
 
   const results = {};
-  // Each match is a <tr>; cells hold team names and a "N - N" score.
+  // Each match is a <tr> like:
+  //   003 | 23 Jul 2026 09:00 | RSA v IRL (Pool A) | 0 - 1 | Complete | Pitch 3 | ...
+  // Both teams live in ONE cell ("HOME v AWAY (Pool X)"), scores are "N - N",
+  // and in-progress games also show a score — so gate on the status cell.
   for (const row of html.split(/<tr[\s>]/).slice(1)) {
     const cells = [...row.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((m) => stripTags(m[1]));
-    if (!cells.length) continue;
-    const scoreCell = cells.find((c) => /^\d{1,2}\s*-\s*\d{1,2}$/.test(c));
-    if (!scoreCell) continue; // unplayed or not a match row
-    const codes = cells.map(toCode).filter(Boolean);
-    if (codes.length < 2) continue;
-    const [hs, as] = scoreCell.split("-").map((n) => parseInt(n, 10));
+    if (cells.length < 5) continue; // header/nav rows
+    const teamsCell = cells.find((c) => /\sv\s/.test(c));
+    if (!teamsCell) continue;
+    const scoreCell = cells.find((c) => /^\d{1,2}\s*-\s*\d{1,2}(\s*\(.*\))?$/.test(c));
+    if (!scoreCell) continue; // unplayed ("-")
+    // Only final scores: skip live games ("Half Time 30'+", "3rd Quarter", …).
+    if (!cells.some((c) => /^(complete|full ?time)/i.test(c))) continue;
+    const [home, away] = teamsCell.split(/\sv\s/);
+    const codes = [toCode(home), toCode(away)];
+    if (!codes[0] || !codes[1]) continue; // placeholder slots like "Winner 148"
+    const [hs, as] = scoreCell.match(/\d{1,2}/g).map((n) => parseInt(n, 10));
     // key format consumed by app.js: div|HOME|AWAY
     results[`${div}|${codes[0]}|${codes[1]}`] = [hs, as];
   }
