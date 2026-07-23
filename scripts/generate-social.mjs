@@ -3,7 +3,7 @@
 //
 // Reads js/data.js + js/results.js, figures out what's newsworthy
 // for the USA WO35 team right now (gameday previews, final scores,
-// standings, daily all-USA recaps), then:
+// standings, daily all-USA recaps, event days), then:
 //   1. renders branded 1080x1350 carousel slides -> social/img/*.png
 //   2. appends post suggestions (caption + slides) -> social/posts.json
 // social.html serves them phone-friendly at usamastersfh.com/social.html
@@ -29,8 +29,8 @@ const p = (...s) => path.join(ROOT, ...s);
 // `window.RESULTS_UPDATED = ...` lines that would otherwise throw in Node.
 const loadConsts = (file, names) =>
   new Function("window", `${readFileSync(file, "utf8")}; return {${names}};`)({});
-const { TEAMS, DIVISIONS, POOL, KNOCKOUT } = loadConsts(
-  p("js/data.js"), "TEAMS, DIVISIONS, POOL, KNOCKOUT");
+const { TEAMS, DIVISIONS, POOL, KNOCKOUT, EVENTS } = loadConsts(
+  p("js/data.js"), "TEAMS, DIVISIONS, POOL, KNOCKOUT, EVENTS");
 const { RESULTS } = loadConsts(
   process.env.SOCIAL_RESULTS || p("js/results.js"), "RESULTS");
 
@@ -281,6 +281,18 @@ function slideRecap(date, rows) {
   return frame("Team USA in Schiedam", out);
 }
 
+function slideEvent(ev) {
+  const title = ev.title.replace(/^[^\w]+\s*/, "");
+  return frame("World Masters Hockey World Cup · Schiedam",
+    headline(500, title.length > 18 ? title.split("—")[0].trim() : title,
+      title.length > 14 ? 96 : 150) +
+    detailRows(640, [
+      ["Date", prettyDate(ev.d)],
+      ["Time", `${ev.t} NL`],
+      ["Details", ev.note.length > 44 ? ev.note.slice(0, 42) + "…" : ev.note],
+    ]));
+}
+
 // ---------- captions ----------
 const TAGS = "#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #WO35";
 const flag = (c) => TEAMS[c]?.flag || "";
@@ -324,6 +336,14 @@ const capRecap = (date, rows) =>
   rows.map((r) => `${DIVISIONS[r.div].short}: USA ${r.us}–${r.them} ${name(r.opp)} (${r.res})`).join("\n") +
   `\n\nAll scores & standings: usamastersfh.com\n\n${TAGS}`;
 
+const capEvent = (ev) => `${ev.title}
+
+${ev.note}
+
+${prettyDate(ev.d)} · ${ev.t} NL
+
+${TAGS} @masterswc2026.schiedam`;
+
 // ============================================================
 // Assemble posts
 // ============================================================
@@ -336,7 +356,15 @@ const add = (id, type, date, title, caption, slides) => {
   fresh.push({ id, type, date, title, caption, slides, created: NL_NOW });
 };
 
-// 1. gameday previews — from 18:00 NL the evening before
+// 1. event posts (e.g. tournament party, closing ceremonies), morning of
+for (const ev of EVENTS) {
+  if (TODAY === ev.d) {
+    add(`event-${ev.d}-${ev.t.replace(":", "")}`, "event", ev.d,
+      ev.title, capEvent(ev), [slideEvent(ev)]);
+  }
+}
+
+// 2. gameday previews — from 18:00 NL the evening before
 for (const g of W35_USA_GAMES) {
   const [date, , , h, a] = g;
   const opp = h === "USA" ? a : h;
@@ -347,7 +375,7 @@ for (const g of W35_USA_GAMES) {
   }
 }
 
-// 2. pool result posts (score + standings + up next)
+// 3. pool result posts (score + standings + up next)
 for (const g of W35_USA_GAMES) {
   const [date, time, div, h, a] = g;
   const sc = usaScore(div, h, a);
@@ -360,7 +388,7 @@ for (const g of W35_USA_GAMES) {
     capResult(date, sc.opp, sc, null), slides);
 }
 
-// 3. knockout: preview when matchup is known, result when score lands
+// 4. knockout: preview when matchup is known, result when score lands
 for (const k of KNOCKOUT.filter((k) => k.div === "W35" && k.teams?.includes("USA"))) {
   const opp = k.teams.find((c) => c !== "USA");
   const round = k.label.split("·")[0].replace(/🏆/g, "").trim();
@@ -391,7 +419,7 @@ for (const k of KNOCKOUT.filter((k) => k.div === "W35" && k.teams?.includes("USA
   }
 }
 
-// 4. daily "Team USA in Schiedam" recap once every USA game that day has a score
+// 5. daily "Team USA in Schiedam" recap once every USA game that day has a score
 const usaDays = [...new Set(POOL.filter(([, , , h, a]) => h === "USA" || a === "USA").map((g) => g[0]))];
 for (const date of usaDays) {
   if (date > TODAY) continue;
