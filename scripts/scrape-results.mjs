@@ -55,23 +55,27 @@ const COMPETITIONS_AUG = {
 // Team codes used in js/data.js, with names AltiusRT might display.
 const TEAM_NAMES = {
   ARG: ["argentina"], AUS: ["australia"], AUSB: ["australia b", "aus b"],
+  BAN: ["bangladesh"],
   BEL: ["belgium"], CAN: ["canada"], CHI: ["chile"], CZE: ["czech republic", "czechia"],
   ENG: ["england"], ESP: ["spain"], FRA: ["france"], GER: ["germany"],
   GHA: ["ghana"], HKG: ["hong kong", "hong-kong", "hong kong china"], IND: ["india"],
   IRL: ["ireland"], ITA: ["italy"], JPN: ["japan"], KEN: ["kenya"], MAS: ["malaysia"],
   PAK: ["pakistan"],
-  // IMC sides (Rotterdam W35/40 IMC, comp 486) — best-guess display names
-  ALL35: ["alliance o35", "alliance 35", "alliance"],
-  ALLP40: ["alliance purple o40", "alliance purple"],
-  ALLB40: ["alliance blue o40", "alliance blue"],
-  ARGB40: ["argentina b o40", "argentina b 40"],
-  AUSB35: ["australia b o35", "australia b 35"],
+  // IMC sides (Rotterdam W35/40 IMC, comp 486). AltiusRT displays them as
+  // short codes + age group, e.g. "ALL W35 v USAB W35 (WIMC35)" — observed
+  // in the 2026-07-23 scrape logs. USA's IMC side shows as "USAB W35" but
+  // is keyed USA to match js/data.js.
+  ALL35: ["alliance o35", "alliance 35", "alliance", "all w35"],
+  ALLP40: ["alliance purple o40", "alliance purple", "allp w40"],
+  ALLB40: ["alliance blue o40", "alliance blue", "allb w40"],
+  ARGB40: ["argentina b o40", "argentina b 40", "argb w40"],
+  AUSB35: ["australia b o35", "australia b 35", "ausb w35"],
   NED: ["netherlands"], NZL: ["new zealand"], PAR: ["paraguay"],
   RSA: ["south africa"],
   RSAB: ["south africa b", "rsa b", "rsa imc 35", "rsa imc 40", "rsa imc"],
   SCO: ["scotland"],
   SGP: ["singapore"], SRI: ["sri lanka"], URU: ["uruguay"],
-  USA: ["united states", "usa"], WAL: ["wales"], ZIM: ["zimbabwe"],
+  USA: ["united states", "usa", "usab w35"], WAL: ["wales"], ZIM: ["zimbabwe"],
 };
 
 function toCode(text) {
