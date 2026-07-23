@@ -128,10 +128,13 @@ function renderSchedule() {
       } else {
         const usa = r.h === "USA" || r.a === "USA";
         const name = (c) => `<span class="${c === "USA" ? "usa-name" : ""}">${teamName(c)}</span>`;
-        const score = r.hs != null ? `<b class="m-score">${r.hs}–${r.as}</b>` : `<span class="vs">vs</span>`;
         const vid = VIDEO[`${r.d}|${r.t}|${r.p}`];
         const watch = vid ? `<a class="m-watch" href="${vid}" target="_blank" rel="noopener">▶ Watch</a>` : "";
-        html += `<div class="match-row ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-match">${name(r.h)}${score}${name(r.a)}</div><div class="m-pitch">${pitchLabel(r.p)}${watch}</div></div>`;
+        // finished games swap the pitch for a "Final" + score block
+        const right = r.hs != null
+          ? `<div class="m-pitch m-result"><span class="final-tag">Final</span><b class="m-score">${r.hs}–${r.as}</b>${watch}</div>`
+          : `<div class="m-pitch">${pitchLabel(r.p)}${watch}</div>`;
+        html += `<div class="match-row ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-match">${name(r.h)}<span class="vs">vs</span>${name(r.a)}</div>${right}</div>`;
       }
     }
     html += `</div>`;
