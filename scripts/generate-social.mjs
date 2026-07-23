@@ -286,7 +286,7 @@ function slideRecap(date, rows) {
       T(1000, y, 48, r.res === "W" ? GOLD : CREAM, RES_WORD[r.res].toUpperCase(), { a: "end" });
     y += 100;
   }
-  return frame("Team USA in Schiedam", out);
+  return frame("Team USA in Schiedam & Rotterdam", out);
 }
 
 function slideEvent(ev) {
@@ -340,7 +340,7 @@ ${TAGS} #${DIVISIONS[div].short}`;
 };
 
 const capRecap = (date, rows) =>
-  `🇺🇸 TEAM USA IN SCHIEDAM — ${prettyDate(date)}\n\n` +
+  `🇺🇸 TEAM USA IN SCHIEDAM & ROTTERDAM — ${prettyDate(date)}\n\n` +
   rows.map((r) => `${DIVISIONS[r.div].short}: USA ${r.us}–${r.them} ${name(r.opp)} (${RES_WORD[r.res]})`).join("\n") +
   `\n\nAll scores & standings: usamastersfh.com\n\n${TAGS}`;
 
