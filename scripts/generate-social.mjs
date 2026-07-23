@@ -3,7 +3,7 @@
 //
 // Reads js/data.js + js/results.js, figures out what's newsworthy
 // for the USA WO35 team right now (gameday previews, final scores,
-// standings, daily all-USA recaps, countdown milestones), then:
+// standings, daily all-USA recaps), then:
 //   1. renders branded 1080x1350 carousel slides -> social/img/*.png
 //   2. appends post suggestions (caption + slides) -> social/posts.json
 // social.html serves them phone-friendly at usamastersfh.com/social.html
@@ -29,8 +29,8 @@ const p = (...s) => path.join(ROOT, ...s);
 // `window.RESULTS_UPDATED = ...` lines that would otherwise throw in Node.
 const loadConsts = (file, names) =>
   new Function("window", `${readFileSync(file, "utf8")}; return {${names}};`)({});
-const { TEAMS, DIVISIONS, POOL, KNOCKOUT, EVENTS } = loadConsts(
-  p("js/data.js"), "TEAMS, DIVISIONS, POOL, KNOCKOUT, EVENTS");
+const { TEAMS, DIVISIONS, POOL, KNOCKOUT } = loadConsts(
+  p("js/data.js"), "TEAMS, DIVISIONS, POOL, KNOCKOUT");
 const { RESULTS } = loadConsts(
   process.env.SOCIAL_RESULTS || p("js/results.js"), "RESULTS");
 
@@ -40,10 +40,8 @@ const NL_NOW = process.env.SOCIAL_NOW ||
     timeZone: "Europe/Amsterdam", dateStyle: "short", timeStyle: "short",
   }).format(new Date()).replace(" ", "T");
 const TODAY = NL_NOW.slice(0, 10);
-const OPENING = "2026-07-22";
 
 const dayNum = (d) => Date.UTC(+d.slice(0, 4), +d.slice(5, 7) - 1, +d.slice(8, 10)) / 86400000;
-const daysUntilOpening = dayNum(OPENING) - dayNum(TODAY);
 const prevDay = (d) => {
   const t = new Date((dayNum(d) - 1) * 86400000);
   return t.toISOString().slice(0, 10);
@@ -52,8 +50,6 @@ const WEEKDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","S
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const prettyDate = (d) =>
   `${WEEKDAYS[new Date(d).getUTCDay()]}, ${MONTHS[+d.slice(5,7)-1]} ${+d.slice(8,10)}`;
-const shortDate = (d) =>
-  `${WEEKDAYS[new Date(d).getUTCDay()].slice(0,3).toUpperCase()} ${MONTHS[+d.slice(5,7)-1].slice(0,3).toUpperCase()} ${+d.slice(8,10)}`;
 const etTime = (hhmm) => { // NL (CEST) -> US Eastern = -6h, 12-hour clock
   let [h, m] = hhmm.split(":").map(Number);
   h = (h - 6 + 24) % 24;
@@ -271,26 +267,6 @@ function slideUpNext(next) {
     T(64, 1150, 56, GOLD, "SEE YOU THERE"));
 }
 
-function slideCountdown(days) {
-  return frame("World Masters Hockey World Cup · Schiedam",
-    T(64, 620, 330, GOLD, String(days)) +
-    headline(830, days === 1 ? "DAY TO GO" : "DAYS TO GO", 150) +
-    detailRows(950, [
-      ["First whistle", "July 22 · Schiedam, Netherlands"],
-      ["USA WO35 opener", "July 23 vs Australia"],
-    ]));
-}
-
-function slideRoad() {
-  const rows = W35_USA_GAMES.map((g) => {
-    const opp = g[3] === "USA" ? g[4] : g[3];
-    return [shortDate(g[0]), `USA vs ${TEAMS[opp]?.name || opp} · ${g[1]} NL`];
-  });
-  return frame("USA WO35 · Pool A",
-    headline(430, "THE ROAD", 140) + detailRows(520, rows) +
-    T(64, 1150, 44, GOLD, "KNOCKOUTS JULY 29 · FINALS AUGUST 1"));
-}
-
 function slideRecap(date, rows) {
   let y = 600;
   let out = headline(430, "USA TODAY", 140) +
@@ -303,63 +279,6 @@ function slideRecap(date, rows) {
     y += 100;
   }
   return frame("Team USA in Schiedam", out);
-}
-
-// player intro: full-bleed photo + navy wash + roster details.
-// pl: { name, number?, position?, college?, collegeTeam?, collegeYear?, hometown?, fact?, photo }
-function slidePlayer(pl) {
-  const photo64 = readFileSync(p(pl.photo)).toString("base64");
-  const mime = pl.photo.endsWith(".png") ? "png" : "jpeg";
-  const rows = [];
-  if (pl.position) rows.push(["Position", pl.number ? `#${pl.number} · ${pl.position}` : pl.position]);
-  if (pl.college) rows.push(["College", pl.collegeYear ? `${pl.college} '${pl.collegeYear}` : pl.college]);
-  if (pl.hometown) rows.push(["Hometown", pl.hometown]);
-  const rowsH = rows.length * 108;
-  const nameSize = pl.name.length > 16 ? 92 : 120;
-  return `<svg width="1080" height="1350" viewBox="0 0 1080 1350" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<linearGradient id="g" x1="0" y1="0" x2="1" y2="0.35">
-<stop offset="0" stop-color="${RED}"/><stop offset="0.55" stop-color="#ff4671"/><stop offset="1" stop-color="${GOLD}"/>
-</linearGradient>
-<linearGradient id="wash" x1="0" y1="0" x2="0" y2="1">
-<stop offset="0.38" stop-color="${NAVY_DEEP}" stop-opacity="0"/><stop offset="0.55" stop-color="${NAVY_DEEP}" stop-opacity="0.9"/><stop offset="0.63" stop-color="${NAVY_DEEP}" stop-opacity="1"/>
-</linearGradient>
-</defs>
-<rect width="1080" height="1350" fill="${NAVY_DEEP}"/>
-<image x="0" y="0" width="1080" height="1350" preserveAspectRatio="xMidYMid slice" href="data:image/${mime};base64,${photo64}"/>
-<rect width="1080" height="1350" fill="url(#wash)"/>
-<rect width="1080" height="16" fill="url(#g)"/>
-<rect x="64" y="56" width="338" height="110" fill="${CREAM}" rx="16"/>
-<image x="88" y="75" width="290" height="73.6" preserveAspectRatio="xMinYMin meet" href="data:image/png;base64,${LOGO64}"/>
-${T(64, 1092 - rowsH, 26, GOLD, "MEET THE TEAM · USA WO35", { f: AB, ls: 6 })}
-${headline(1188 - rowsH, pl.name.toUpperCase(), nameSize)}
-${detailRows(1226 - rowsH, rows)}
-<rect x="64" y="1256" width="952" height="4" fill="${RED}"/>
-${T(64, 1308, 24, "#ffffff", "USAMASTERSFH.COM", { f: AB, ls: 4, op: 0.75 })}
-${T(1016, 1308, 24, "#ffffff", "@USAMASTERSFH", { f: AB, ls: 4, a: "end", op: 0.75 })}
-</svg>`;
-}
-
-const capPlayer = (pl) => {
-  const lines = [`MEET THE TEAM 🇺🇸`, ""];
-  lines.push(`${pl.number ? `#${pl.number} ` : ""}${pl.name}${pl.position ? ` — ${pl.position}` : ""}`);
-  if (pl.college) lines.push(`🎓 ${pl.college}${pl.collegeYear ? ` '${pl.collegeYear}` : ""}${pl.collegeTeam ? ` (${pl.collegeTeam})` : ""}`);
-  if (pl.hometown) lines.push(`📍 ${pl.hometown}`);
-  if (pl.fact) lines.push("", pl.fact);
-  lines.push("", `Follow the road to Schiedam: usamastersfh.com`, "", `${TAGS} #MeetTheTeam`);
-  return lines.join("\n");
-};
-
-function slideEvent(ev) {
-  const title = ev.title.replace(/^[^\w]+\s*/, "");
-  return frame("World Masters Hockey World Cup · Schiedam",
-    headline(500, title.length > 18 ? title.split("—")[0].trim() : title,
-      title.length > 14 ? 96 : 150) +
-    detailRows(640, [
-      ["Date", prettyDate(ev.d)],
-      ["Time", `${ev.t} NL`],
-      ["Details", ev.note.length > 44 ? ev.note.slice(0, 42) + "…" : ev.note],
-    ]));
 }
 
 // ---------- captions ----------
@@ -400,26 +319,10 @@ ${line}
 ${TAGS}`;
 };
 
-const capCountdown = (days) => `${days} day${days === 1 ? "" : "s"}. 🇳🇱
-
-The World Masters Hockey World Cup kicks off July 22 in Schiedam, and USA WO35 opens July 23 vs Australia.
-
-Full schedule, standings & how to watch: usamastersfh.com
-
-${TAGS} @masterswc2026.schiedam`;
-
 const capRecap = (date, rows) =>
   `🇺🇸 TEAM USA IN SCHIEDAM — ${prettyDate(date)}\n\n` +
   rows.map((r) => `${DIVISIONS[r.div].short}: USA ${r.us}–${r.them} ${name(r.opp)} (${r.res})`).join("\n") +
   `\n\nAll scores & standings: usamastersfh.com\n\n${TAGS}`;
-
-const capEvent = (ev) => `${ev.title}
-
-${ev.note}
-
-${prettyDate(ev.d)} · ${ev.t} NL
-
-${TAGS} @masterswc2026.schiedam`;
 
 // ============================================================
 // Assemble posts
@@ -433,30 +336,7 @@ const add = (id, type, date, title, caption, slides) => {
   fresh.push({ id, type, date, title, caption, slides, created: NL_NOW });
 };
 
-// 1. countdown milestones (daily pre-tournament cron); intro post if first run
-const MILESTONES = [14, 10, 7, 5, 3, 2, 1];
-if (daysUntilOpening > 0) {
-  if (MILESTONES.includes(daysUntilOpening)) {
-    add(`countdown-${daysUntilOpening}`, "countdown", TODAY,
-      `${daysUntilOpening} days to go`, capCountdown(daysUntilOpening),
-      [slideCountdown(daysUntilOpening), slideRoad()]);
-  } else if (!existing.some((x) => x.type === "countdown") &&
-             !fresh.some((x) => x.type === "countdown")) {
-    add(`countdown-${daysUntilOpening}`, "countdown", TODAY,
-      `${daysUntilOpening} days to go`, capCountdown(daysUntilOpening),
-      [slideCountdown(daysUntilOpening), slideRoad()]);
-  }
-}
-
-// 2. event posts, morning of
-for (const ev of EVENTS) {
-  if (TODAY === ev.d) {
-    add(`event-${ev.d}-${ev.t.replace(":", "")}`, "event", ev.d,
-      ev.title, capEvent(ev), [slideEvent(ev)]);
-  }
-}
-
-// 3. gameday previews — from 18:00 NL the evening before
+// 1. gameday previews — from 18:00 NL the evening before
 for (const g of W35_USA_GAMES) {
   const [date, , , h, a] = g;
   const opp = h === "USA" ? a : h;
@@ -467,7 +347,7 @@ for (const g of W35_USA_GAMES) {
   }
 }
 
-// 4. pool result posts (score + standings + up next)
+// 2. pool result posts (score + standings + up next)
 for (const g of W35_USA_GAMES) {
   const [date, time, div, h, a] = g;
   const sc = usaScore(div, h, a);
@@ -480,7 +360,7 @@ for (const g of W35_USA_GAMES) {
     capResult(date, sc.opp, sc, null), slides);
 }
 
-// 5. knockout: preview when matchup is known, result when score lands
+// 3. knockout: preview when matchup is known, result when score lands
 for (const k of KNOCKOUT.filter((k) => k.div === "W35" && k.teams?.includes("USA"))) {
   const opp = k.teams.find((c) => c !== "USA");
   const round = k.label.split("·")[0].replace(/🏆/g, "").trim();
@@ -511,24 +391,7 @@ for (const k of KNOCKOUT.filter((k) => k.div === "W35" && k.teams?.includes("USA
   }
 }
 
-// 6. player intro posts — drop entries in social/players.json + headshots in
-// social/players/ and they post one per day (newest roster entry first un-posted)
-const playersPath = p("social/players.json");
-if (existsSync(playersPath)) {
-  const roster = JSON.parse(readFileSync(playersPath, "utf8"));
-  const queue = roster.filter((pl) =>
-    pl.photo && existsSync(p(pl.photo)) &&
-    !existing.some((x) => x.id === `player-${pl.slug}`) &&
-    !fresh.some((x) => x.id === `player-${pl.slug}`));
-  const alreadyToday = existing.some((x) => x.type === "player" && x.created.slice(0, 10) === TODAY);
-  if (queue.length && !alreadyToday) {
-    const pl = queue[0];
-    add(`player-${pl.slug}`, "player", TODAY, `Meet the team: ${pl.name}`,
-      capPlayer(pl), [slidePlayer(pl)]);
-  }
-}
-
-// 7. daily "Team USA in Schiedam" recap once every USA game that day has a score
+// 4. daily "Team USA in Schiedam" recap once every USA game that day has a score
 const usaDays = [...new Set(POOL.filter(([, , , h, a]) => h === "USA" || a === "USA").map((g) => g[0]))];
 for (const date of usaDays) {
   if (date > TODAY) continue;

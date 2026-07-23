@@ -39,7 +39,6 @@
     color: #fff; background: var(--navy); border-radius: 7px; padding: 4px 9px; }
   .badge.result { background: var(--red); }
   .badge.preview { background: var(--grad); }
-  .badge.countdown, .badge.event { background: var(--gold); color: var(--ink); }
   .badge.sample { background: repeating-linear-gradient(45deg, var(--gold), var(--gold) 8px, #ffc98a 8px, #ffc98a 16px); color: var(--ink); }
   .sample-note { margin: 8px 16px 0; font-size: 0.78rem; color: #8a6d3b; background: #fff7e8;
     border: 1.5px dashed var(--gold); border-radius: 10px; padding: 8px 12px; font-weight: 600; }
@@ -57,19 +56,6 @@
   .btn-done { background: #fff; color: var(--navy); border: 2px solid var(--navy); }
   .btn:active { transform: scale(0.97); }
   .empty { text-align: center; color: #5c6478; padding: 50px 20px; font-weight: 600; }
-  .roster { background: #fff; border-radius: 18px; box-shadow: 0 6px 24px rgba(14,31,66,0.10); padding: 18px 16px; margin: 30px 0 10px; }
-  .roster h2 { font-family: "Anton", sans-serif; text-transform: uppercase; color: var(--navy); font-size: 1.5rem; border-left: 8px solid var(--red); padding-left: 12px; margin-bottom: 4px; }
-  .roster > p { font-size: 0.82rem; color: #5c6478; margin: 6px 0 14px; }
-  .r-row { display: flex; align-items: baseline; gap: 8px; padding: 8px 4px; border-bottom: 1px solid #eee9df; font-size: 0.88rem; flex-wrap: wrap; }
-  .r-row:last-child { border-bottom: none; }
-  .r-row b { color: var(--navy); min-width: 150px; }
-  .r-row .col { color: #384254; }
-  .need { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.05em;
-    border-radius: 999px; padding: 3px 9px; }
-  .need-photo { background: #eef3ff; color: var(--navy); border: 1.5px solid var(--navy); }
-  .need-info { background: #ffe9ec; color: var(--red); border: 1.5px solid var(--red); }
-  .need-check { background: #e8f6ee; color: #2e8b57; border: 1.5px solid #2e8b57; }
-  .r-ok { color: #2e8b57; font-weight: 900; }
   .toast { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
     background: var(--navy-deep); color: #fff; padding: 10px 22px; border-radius: 999px;
     font-weight: 700; font-size: 0.85rem; opacity: 0; transition: opacity 0.25s; pointer-events: none; z-index: 99; }
@@ -93,17 +79,11 @@
   </div>
   <div class="filter-bar" id="filters"></div>
   <div id="feed"><div class="empty">Loading…</div></div>
-  <section class="roster" id="roster" hidden>
-    <h2>Meet-the-team tracker</h2>
-    <p>Every player gets her own intro post (one releases per day once her photo is in).
-       Here's where each one stands — corrections &amp; photos welcome!</p>
-    <div id="rosterList"></div>
-  </section>
 </main>
 <div class="toast" id="toast"></div>
 <footer>USA Masters WC2026 · <a href="./">← back to the hub</a></footer>
 <script>
-const TYPE_LABEL = { preview: "Game day", result: "Result", recap: "Recap", countdown: "Countdown", event: "Event", player: "Meet the team" };
+const TYPE_LABEL = { preview: "Game day", result: "Result", recap: "Recap" };
 let POSTS = [], FILTER = "all";
 const postedSet = () => new Set(JSON.parse(localStorage.getItem("postedIds") || "[]"));
 const setPosted = (id, on) => {
@@ -186,30 +166,6 @@ function renderFilters() {
     bar.appendChild(b);
   }
 }
-
-fetch("social/players.json", { cache: "no-store" })
-  .then((r) => (r.ok ? r.json() : []))
-  .then((roster) => {
-    if (!roster.length) return;
-    const list = document.getElementById("rosterList");
-    for (const pl of roster) {
-      const row = document.createElement("div");
-      row.className = "r-row";
-      const tags = [];
-      if (!pl.college) tags.push('<span class="need need-info">need her college!</span>');
-      else if (pl.confidence !== "high") tags.push('<span class="need need-check">college — confirm?</span>');
-      if (!pl.photo) tags.push('<span class="need need-photo">📷 need photo</span>');
-      if (!tags.length) tags.push('<span class="r-ok">✓ ready</span>');
-      row.innerHTML = `<b></b><span class="col"></span>${tags.join(" ")}`;
-      row.querySelector("b").textContent = pl.name;
-      row.querySelector(".col").textContent = pl.college
-        ? pl.college + (pl.maidenName ? ` (née ${pl.maidenName})` : "")
-        : (pl.hometown || "");
-      list.appendChild(row);
-    }
-    document.getElementById("roster").hidden = false;
-  })
-  .catch(() => {});
 
 fetch("social/posts.json", { cache: "no-store" })
   .then((r) => (r.ok ? r.json() : []))
