@@ -21,6 +21,9 @@ permissions:
 jobs:
   update:
     runs-on: ubuntu-latest
+    env:
+      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+      MAIL_APP_PASSWORD: ${{ secrets.MAIL_APP_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
 
@@ -37,6 +40,10 @@ jobs:
       - name: Generate social posts & carousel slides
         run: node scripts/generate-social.mjs
 
+      - name: Check for new posts
+        id: newposts
+        run: echo "count=$(node -p "JSON.parse(require('fs').readFileSync('social-new.json','utf8')).length")" >> "$GITHUB_OUTPUT"
+
       - name: Commit & push if anything changed
         run: |
           git add js/results.js js/results-aug.js social/
@@ -48,3 +55,27 @@ jobs:
             git commit -m "Auto-update: results + social content"
             git push
           fi
+
+      # Email Christine + Melissa when new posts land. Needs two repo
+      # secrets: MAIL_USERNAME (the Gmail address to send from) and
+      # MAIL_APP_PASSWORD (a Google "app password" for that account).
+      # Skips quietly if the secrets aren't set.
+      - name: Build notification email
+        if: steps.newposts.outputs.count != '0' && env.MAIL_APP_PASSWORD != ''
+        id: email
+        run: |
+          node scripts/build-email.mjs
+          echo "subject=$(cat email-subject.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: Email the social team
+        if: steps.newposts.outputs.count != '0' && env.MAIL_APP_PASSWORD != ''
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ env.MAIL_USERNAME }}
+          password: ${{ env.MAIL_APP_PASSWORD }}
+          subject: ${{ steps.email.outputs.subject }}
+          to: cmwatts02@gmail.com,mkatzdesigns@gmail.com
+          from: USA Masters Social Kit <${{ env.MAIL_USERNAME }}>
+          html_body: file://email.html

@@ -11,32 +11,5 @@
       "social/img/preview-2026-07-23-AUS-2.png",
       "social/img/preview-2026-07-23-AUS-3.png"
     ]
-  },
-  {
-    "id": "sample-result",
-    "type": "result",
-    "date": "2026-07-23",
-    "title": "SAMPLE \u2014 Full time: USA 2\u20131 AUS",
-    "caption": "USA WIN \ud83c\uddfa\ud83c\uddf8\n\nUSA 2\u20131 Australia \ud83c\udde6\ud83c\uddfa\n\nWhat a way to spend a Thursday in Schiedam. \ud83c\uddfa\ud83c\uddf8\n\n\ud83d\udcca Standings & what's next: usamastersfh.com\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #WO35",
-    "created": "2026-07-04T09:00",
-    "images": [
-      "social/img/sample-result-1.png",
-      "social/img/sample-result-2.png",
-      "social/img/sample-result-3.png"
-    ],
-    "sample": true
-  },
-  {
-    "id": "sample-recap",
-    "type": "recap",
-    "date": "2026-07-23",
-    "title": "SAMPLE \u2014 Team USA recap \u2014 Thursday, July 23",
-    "caption": "\ud83c\uddfa\ud83c\uddf8 TEAM USA IN SCHIEDAM \u2014 Thursday, July 23\n\nWO35: USA 2\u20131 Australia (W)\nMO35: USA 1\u20132 New Zealand (L)\nMO40: USA 2\u20132 South Africa (D)\n\nAll scores & standings: usamastersfh.com\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #WO35",
-    "created": "2026-07-04T09:00",
-    "images": [
-      "social/img/sample-recap-1.png",
-      "social/img/sample-recap-2.png"
-    ],
-    "sample": true
   }
 ]

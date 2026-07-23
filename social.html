@@ -40,9 +40,6 @@
   .badge.result { background: var(--red); }
   .badge.preview { background: var(--grad); }
   .badge.event { background: var(--gold); color: var(--ink); }
-  .badge.sample { background: repeating-linear-gradient(45deg, var(--gold), var(--gold) 8px, #ffc98a 8px, #ffc98a 16px); color: var(--ink); }
-  .sample-note { margin: 8px 16px 0; font-size: 0.78rem; color: #8a6d3b; background: #fff7e8;
-    border: 1.5px dashed var(--gold); border-radius: 10px; padding: 8px 12px; font-weight: 600; }
   .card-head small { color: #5c6478; font-weight: 600; }
   .card-head .posted-tag { margin-left: auto; color: #2e8b57; font-weight: 900; font-size: 0.75rem; text-transform: uppercase; }
   .strip { display: flex; gap: 10px; overflow-x: auto; padding: 12px 16px; scroll-snap-type: x mandatory; }
@@ -135,11 +132,10 @@ function render() {
     card.className = "card" + (isPosted ? " posted" : "");
     card.innerHTML = `
       <div class="card-head">
-        <span class="badge ${post.sample ? "sample" : post.type}">${post.sample ? "SAMPLE" : (TYPE_LABEL[post.type] || post.type)}</span>
+        <span class="badge ${post.type}">${TYPE_LABEL[post.type] || post.type}</span>
         <small>${post.date}</small>
         ${isPosted ? '<span class="posted-tag">✓ posted</span>' : ""}
       </div>
-      ${post.sample ? `<div class="sample-note">👀 Example only — the scores here are made up. Posts like this generate automatically (~20 min after full time) once the tournament starts. This one shows a “${TYPE_LABEL[post.type].toLowerCase()}” post.</div>` : ""}
       <div class="strip">${post.images.map((s) => `<img src="${s}" alt="slide" loading="lazy">`).join("")}</div>
       <div class="caption"></div>
       <div class="actions">

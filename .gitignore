@@ -1,2 +1,7 @@
 node_modules/
 .DS_Store
+
+# workflow scratch output (generated each CI run, never committed)
+social-new.json
+email.html
+email-subject.txt

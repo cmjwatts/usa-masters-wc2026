@@ -2,10 +2,13 @@
 // Social content generator — runs after scrape-results.mjs.
 //
 // Reads js/data.js + js/results.js, figures out what's newsworthy
-// for the USA WO35 team right now (gameday previews, final scores,
-// standings, daily all-USA recaps, event days), then:
+// for USA teams right now (WO35 gameday previews, after-game result
+// posts for WO35 & MO35, standings, daily all-USA recaps, event
+// days), then:
 //   1. renders branded 1080x1350 carousel slides -> social/img/*.png
 //   2. appends post suggestions (caption + slides) -> social/posts.json
+//   3. writes the posts added this run -> social-new.json (untracked;
+//      the workflow emails them to the social team)
 // social.html serves them phone-friendly at usamastersfh.com/social.html
 //
 // Posts are additive: once generated they're never removed or
@@ -82,15 +85,18 @@ function usaScore(div, home, away) {
 }
 const outcome = ({ us, them }) => (us > them ? "W" : us < them ? "L" : "D");
 
-const W35_USA_GAMES = POOL.filter(([, , div, h, a]) => div === "W35" && (h === "USA" || a === "USA"));
+const usaGames = (d) => POOL.filter(([, , div, h, a]) => div === d && (h === "USA" || a === "USA"));
+const W35_USA_GAMES = usaGames("W35");
+// after-game result posts cover these divisions; gameday previews stay WO35-only
+const RESULT_DIVS = ["W35", "M35"];
 
-// W35 pool standings from whatever results exist
-function standings() {
+// single-pool standings for a division from whatever results exist
+function standings(div) {
   const table = {};
   const row = (c) => (table[c] ??= { code: c, P: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0 });
-  for (const [, , div, h, a] of POOL) if (div === "W35") { row(h); row(a); }
-  for (const [, , div, h, a] of POOL) {
-    if (div !== "W35") continue;
+  for (const [, , d, h, a] of POOL) if (d === div) { row(h); row(a); }
+  for (const [, , d, h, a] of POOL) {
+    if (d !== div) continue;
     const s = scoreFor(div, h, a);
     if (!s) continue;
     const H = row(h), A = row(a);
@@ -102,14 +108,14 @@ function standings() {
     .sort((x, y) => y.Pts - x.Pts || y.GD - x.GD || y.GF - x.GF || x.code.localeCompare(y.code));
 }
 
-// next W35 USA game strictly after a given "date|time"
-function nextGame(afterDateTime) {
-  for (const [d, t, , h, a, pitch] of W35_USA_GAMES) {
+// next USA game in a division strictly after a given "date|time"
+function nextGame(div, afterDateTime) {
+  for (const [d, t, , h, a, pitch] of usaGames(div)) {
     if (`${d}|${t}` > afterDateTime) {
       return { date: d, time: t, opp: h === "USA" ? a : h, pitch, label: null };
     }
   }
-  const ko = KNOCKOUT.filter((k) => k.div === "W35" && `${k.d}|${k.t}` > afterDateTime)
+  const ko = KNOCKOUT.filter((k) => k.div === div && `${k.d}|${k.t}` > afterDateTime)
     .sort((x, y) => `${x.d}|${x.t}`.localeCompare(`${y.d}|${y.t}`));
   const mine = ko.find((k) => k.teams?.includes("USA"));
   if (mine) {
@@ -211,10 +217,10 @@ function slideWatch() {
     T(64, 1150, 60, GOLD, "LET'S GO USA!"));
 }
 
-function slideScore(date, opp, sc, label) {
+function slideScore(div, date, opp, sc, label) {
   const head = { W: "USA WIN", L: "FULL TIME", D: "ALL SQUARE" }[outcome(sc)];
   const oppName = TEAMS[opp]?.name?.toUpperCase() || opp;
-  return frame(`${label || "Pool A"} · ${prettyDate(date)}`,
+  return frame(`USA ${DIVISIONS[div].short} · ${label || "Pool A"} · ${prettyDate(date)}`,
     headline(500, head, 170) +
     `<rect x="64" y="640" width="952" height="300" fill="${NAVY}" rx="24"/>` +
     T(114, 750, 64, "#fff", "USA") +
@@ -229,15 +235,15 @@ function slideScore(date, opp, sc, label) {
         : T(64, 1070, 56, GOLD, "HEADS HIGH. ON TO THE NEXT ONE")));
 }
 
-function slideStandings(highlightDate) {
-  const tbl = standings().filter((t) => t.P > 0 || true);
+function slideStandings(div, highlightDate) {
+  const tbl = standings(div).filter((t) => t.P > 0 || true);
   const usaIdx = tbl.findIndex((t) => t.code === "USA");
   const shown = tbl.slice(0, 8);
   const extra = usaIdx >= 8 ? [{ ...tbl[usaIdx], rank: usaIdx + 1 }] : [];
   const rows = shown.map((t, i) => ({ ...t, rank: i + 1 })).concat(extra);
   let y = 560;
   let out = headline(430, "POOL A", 130) +
-    T(64, 510, 26, GOLD, `WOMEN O35 · AFTER ${prettyDate(highlightDate).toUpperCase()}`, { f: AB, ls: 3 }) +
+    T(64, 510, 26, GOLD, `${DIVISIONS[div].label.toUpperCase()} · AFTER ${prettyDate(highlightDate).toUpperCase()}`, { f: AB, ls: 3 }) +
     T(770, 545, 24, CREAM, "P", { f: AB, a: "middle", op: 0.6 }) +
     T(870, 545, 24, CREAM, "GD", { f: AB, a: "middle", op: 0.6 }) +
     T(975, 545, 24, CREAM, "PTS", { f: AB, a: "middle", op: 0.6 });
@@ -255,14 +261,14 @@ function slideStandings(highlightDate) {
   return frame("Live standings · usamastersfh.com", out);
 }
 
-function slideUpNext(next) {
+function slideUpNext(div, next) {
   const rows = [];
   if (next.opp) rows.push(["Opponent", TEAMS[next.opp]?.name || next.opp]);
   if (next.label) rows.push(["Round", next.label]);
   rows.push(["Date", prettyDate(next.date)]);
   if (next.time) rows.push(["Push back", `${nlTime(next.time)} NL · ${etTime(next.time)} ET`]);
   if (next.pitch) rows.push(["Where", `Pitch ${next.pitch} · HC Schiedam`]);
-  return frame("USA WO35",
+  return frame(`USA ${DIVISIONS[div].short}`,
     headline(430, "UP NEXT", 150) + detailRows(540, rows) +
     T(64, 1150, 56, GOLD, "SEE YOU THERE"));
 }
@@ -294,7 +300,7 @@ function slideEvent(ev) {
 }
 
 // ---------- captions ----------
-const TAGS = "#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #WO35";
+const TAGS = "#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA";
 const flag = (c) => TEAMS[c]?.flag || "";
 const name = (c) => TEAMS[c]?.name || c;
 
@@ -312,23 +318,23 @@ USA WO35 takes on ${name(opp)} ${flag(opp)} — ${prettyDate(date)}.
 
 Let's go USA!
 
-${TAGS} @masterswc2026.schiedam`;
+${TAGS} #WO35 @masterswc2026.schiedam`;
 };
 
-const capResult = (date, opp, sc, label) => {
+const capResult = (div, date, opp, sc, label) => {
   const line = { W: `What a way to spend a ${WEEKDAYS[new Date(date).getUTCDay()]} in Schiedam. 🇺🇸`,
                  L: `Proud fight from our group — heads high, eyes forward.`,
                  D: `The pool stays tight. Every point matters.` }[outcome(sc)];
   const head = { W: "USA WIN 🇺🇸", L: "FULL TIME", D: "ALL SQUARE" }[outcome(sc)];
   return `${head}${label ? ` — ${label.toUpperCase()}` : ""}
 
-USA ${sc.us}–${sc.them} ${name(opp)} ${flag(opp)}
+USA ${DIVISIONS[div].short} ${sc.us}–${sc.them} ${name(opp)} ${flag(opp)}
 
 ${line}
 
 📊 Standings & what's next: usamastersfh.com
 
-${TAGS}`;
+${TAGS} #${DIVISIONS[div].short}`;
 };
 
 const capRecap = (date, rows) =>
@@ -375,47 +381,52 @@ for (const g of W35_USA_GAMES) {
   }
 }
 
-// 3. pool result posts (score + standings + up next)
-for (const g of W35_USA_GAMES) {
-  const [date, time, div, h, a] = g;
-  const sc = usaScore(div, h, a);
-  if (!sc || !gameOver(date, time)) continue;
-  const slides = [slideScore(date, sc.opp, sc, null), slideStandings(date)];
-  const next = nextGame(`${date}|${time}`);
-  if (next) slides.push(slideUpNext(next));
-  add(`result-${date}-${sc.opp}`, "result", date,
-    `Full time: USA ${sc.us}–${sc.them} ${sc.opp}`,
-    capResult(date, sc.opp, sc, null), slides);
+// 3. pool result posts for WO35 & MO35 (score + standings + up next)
+for (const div of RESULT_DIVS) {
+  for (const g of usaGames(div)) {
+    const [date, time, , h, a] = g;
+    const sc = usaScore(div, h, a);
+    if (!sc || !gameOver(date, time)) continue;
+    const slides = [slideScore(div, date, sc.opp, sc, null), slideStandings(div, date)];
+    const next = nextGame(div, `${date}|${time}`);
+    if (next) slides.push(slideUpNext(div, next));
+    add(`result-${div}-${date}-${sc.opp}`, "result", date,
+      `${DIVISIONS[div].short} full time: USA ${sc.us}–${sc.them} ${sc.opp}`,
+      capResult(div, date, sc.opp, sc, null), slides);
+  }
 }
 
-// 4. knockout: preview when matchup is known, result when score lands
-for (const k of KNOCKOUT.filter((k) => k.div === "W35" && k.teams?.includes("USA"))) {
-  const opp = k.teams.find((c) => c !== "USA");
-  const round = k.label.split("·")[0].replace(/🏆/g, "").trim();
-  if (NL_NOW >= `${prevDay(k.d)}T18:00`) {
-    add(`ko-preview-${k.d}-${opp}`, "preview", k.d,
-      `${round}: USA vs ${name(opp)}`,
-      capGameday([k.d, k.t, "W35", "USA", opp, k.p]).replace("GAME DAY", round.toUpperCase()),
-      [slideGameday([k.d, k.t, "W35", "USA", opp, k.p]), slideWatch()]);
-  }
-  const sc = usaScore("W35", "USA", opp);
-  if (sc && gameOver(k.d, k.t)) {
-    const isFinal = /FINAL$/i.test(round);
-    const isBronze = /bronze/i.test(round);
-    let title = `${round}: USA ${sc.us}–${sc.them} ${opp}`;
-    let slides = [slideScore(k.d, opp, sc, round)];
-    let caption = capResult(k.d, opp, sc, round);
-    if (isFinal && outcome(sc) === "W") {
-      caption = `WORLD CHAMPIONS. 🥇🇺🇸\n\nUSA ${sc.us}–${sc.them} ${name(opp)} in the World Cup final.\n\n${TAGS} @masterswc2026.schiedam`;
-      title = "WORLD CHAMPIONS 🥇";
-    } else if (isFinal) {
-      caption = `SILVER MEDALISTS. 🥈🇺🇸\n\nA World Cup final. USA ${sc.us}–${sc.them} ${name(opp)}. So proud of this team.\n\n${TAGS}`;
-    } else if (isBronze && outcome(sc) === "W") {
-      caption = `BRONZE. 🥉🇺🇸\n\nUSA ${sc.us}–${sc.them} ${name(opp)} — we're bringing home a World Cup medal.\n\n${TAGS}`;
+// 4. knockout: WO35 preview when matchup is known; WO35 & MO35 results
+for (const div of RESULT_DIVS) {
+  for (const k of KNOCKOUT.filter((k) => k.div === div && k.teams?.includes("USA"))) {
+    const opp = k.teams.find((c) => c !== "USA");
+    const round = k.label.split("·")[0].replace(/🏆/g, "").trim();
+    if (div === "W35" && NL_NOW >= `${prevDay(k.d)}T18:00`) {
+      add(`ko-preview-${k.d}-${opp}`, "preview", k.d,
+        `${round}: USA vs ${name(opp)}`,
+        capGameday([k.d, k.t, div, "USA", opp, k.p]).replace("GAME DAY", round.toUpperCase()),
+        [slideGameday([k.d, k.t, div, "USA", opp, k.p]), slideWatch()]);
     }
-    const next = nextGame(`${k.d}|${k.t}`);
-    if (next && !isFinal) slides.push(slideUpNext(next));
-    add(`ko-result-${k.d}-${opp}`, "result", k.d, title, caption, slides);
+    const sc = usaScore(div, "USA", opp);
+    if (sc && gameOver(k.d, k.t)) {
+      const isFinal = /FINAL$/i.test(round);
+      const isBronze = /bronze/i.test(round);
+      const short = DIVISIONS[div].short;
+      let title = `${short} ${round}: USA ${sc.us}–${sc.them} ${opp}`;
+      let slides = [slideScore(div, k.d, opp, sc, round)];
+      let caption = capResult(div, k.d, opp, sc, round);
+      if (isFinal && outcome(sc) === "W") {
+        caption = `WORLD CHAMPIONS. 🥇🇺🇸\n\nUSA ${short} ${sc.us}–${sc.them} ${name(opp)} in the World Cup final.\n\n${TAGS} #${short} @masterswc2026.schiedam`;
+        title = `${short} WORLD CHAMPIONS 🥇`;
+      } else if (isFinal) {
+        caption = `SILVER MEDALISTS. 🥈🇺🇸\n\nA World Cup final. USA ${short} ${sc.us}–${sc.them} ${name(opp)}. So proud of this team.\n\n${TAGS} #${short}`;
+      } else if (isBronze && outcome(sc) === "W") {
+        caption = `BRONZE. 🥉🇺🇸\n\nUSA ${short} ${sc.us}–${sc.them} ${name(opp)} — we're bringing home a World Cup medal.\n\n${TAGS} #${short}`;
+      }
+      const next = nextGame(div, `${k.d}|${k.t}`);
+      if (next && !isFinal) slides.push(slideUpNext(div, next));
+      add(`ko-result-${div}-${k.d}-${opp}`, "result", k.d, title, caption, slides);
+    }
   }
 }
 
@@ -431,7 +442,7 @@ for (const date of usaDays) {
   if (rows.length && rows.every(Boolean)) {
     rows.sort((x, y) => (x.div === "W35" ? -1 : 0) - (y.div === "W35" ? -1 : 0));
     add(`recap-${date}`, "recap", date, `Team USA recap — ${prettyDate(date)}`,
-      capRecap(date, rows), [slideRecap(date, rows), slideStandings(date)]);
+      capRecap(date, rows), [slideRecap(date, rows), slideStandings("W35", date)]);
   }
 }
 
@@ -470,4 +481,5 @@ if (newPosts.length) {
 } else {
   console.log("No new social posts this run.");
 }
+writeFileSync(p("social-new.json"), JSON.stringify(newPosts, null, 2) + "\n");
 console.log(`Rendered ${rendered} slide image(s). ${existing.length + newPosts.length} total posts.`);
