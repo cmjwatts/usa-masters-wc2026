@@ -67,7 +67,9 @@ const TEAM_NAMES = {
   ARGB40: ["argentina b o40", "argentina b 40"],
   AUSB35: ["australia b o35", "australia b 35"],
   NED: ["netherlands"], NZL: ["new zealand"], PAR: ["paraguay"],
-  RSA: ["south africa"], RSAB: ["south africa b", "rsa b"], SCO: ["scotland"],
+  RSA: ["south africa"],
+  RSAB: ["south africa b", "rsa b", "rsa imc 35", "rsa imc 40", "rsa imc"],
+  SCO: ["scotland"],
   SGP: ["singapore"], SRI: ["sri lanka"], URU: ["uruguay"],
   USA: ["united states", "usa"], WAL: ["wales"], ZIM: ["zimbabwe"],
 };
@@ -104,7 +106,8 @@ async function scrapeDivision(div, id) {
     const scoreCell = cells.find((c) => /^\d{1,2}\s*-\s*\d{1,2}(\s*\(.*\))?$/.test(c));
     if (!scoreCell) continue; // unplayed ("-")
     // Only final scores: skip live games ("Half Time 30'+", "3rd Quarter", …).
-    if (!cells.some((c) => /^(complete|full ?time)/i.test(c))) continue;
+    // Finished games show "Complete", then move to "Official" once confirmed.
+    if (!cells.some((c) => /^(complete|full ?time|official)/i.test(c))) continue;
     const [home, away] = teamsCell.split(/\sv\s/);
     const codes = [toCode(home), toCode(away)];
     if (!codes[0] || !codes[1]) continue; // placeholder slots like "Winner 148"

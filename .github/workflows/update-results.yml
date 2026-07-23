@@ -1,33 +1,50 @@
 name: Update results & social content
 
-# TEMPORARILY a status-probe on this branch: prints every match row's
-# status cell from the live AltiusRT pages so we can see what statuses
-# finished games move to. Will be restored before merge.
-
 on:
-  workflow_dispatch: {}
+  workflow_dispatch: {}        # manual "Run workflow" button
+  schedule:
+    # Pre-tournament: once a day for countdown posts (UTC).
+    - cron: "0 7 5-21 7 *"          # July 5-21, 07:00 UTC (09:00 NL)
+    # Window 1 (Schiedam/Rotterdam, July 22-Aug 1): every 20 min during
+    # the tournament (UTC; games run 6:00-19:00 UTC).
+    - cron: "*/20 6-20 22-31 7 *"   # July 22-31
+    - cron: "*/20 6-20 1-2 8 *"     # August 1
+    # Gap between windows: back to a daily countdown cron.
+    - cron: "0 7 2-5 8 *"           # August 2-5, 07:00 UTC (09:00 NL)
+    # Window 2 (Brasschaat/Breda, Aug 6-16): every 20 min during the
+    # tournament (UTC; games run 6:00-19:00 UTC, same as window 1).
+    - cron: "*/20 6-20 6-16 8 *"    # August 6-16
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - name: Probe match row statuses
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Scrape AltiusRT results
+        run: node scripts/scrape-results.mjs
+
+      - name: Install deps (slide renderer)
+        run: npm ci
+
+      - name: Generate social posts & carousel slides
+        run: node scripts/generate-social.mjs
+
+      - name: Commit & push if anything changed
         run: |
-          for id in 478 480 481; do
-            echo "=== competition $id ==="
-            curl -sS -L -A "Mozilla/5.0 (usa-masters-wc2026 fan hub)" \
-              "https://masters.altiusrt.com/competitions/$id/matches" \
-            | python3 -c '
-          import re, sys
-          html = sys.stdin.read()
-          strip = lambda h: re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", h)).strip()
-          for row in re.split(r"<tr[\s>]", html)[1:]:
-              cells = [strip(m.group(1)) for m in re.finditer(r"<td[^>]*>([\s\S]*?)</td>", row)]
-              if len(cells) < 6 or " v " not in cells[2]:
-                  continue
-              print(" | ".join(cells[1:5]))
-          '
-          done
+          git add js/results.js js/results-aug.js social/
+          if git diff --cached --quiet; then
+            echo "No new results or social posts."
+          else
+            git config user.name "results-bot"
+            git config user.email "actions@github.com"
+            git commit -m "Auto-update: results + social content"
+            git push
+          fi
