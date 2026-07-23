@@ -504,8 +504,11 @@ a.team-card .t-cta { color: var(--red); }
   .tz-toggle { margin-left: auto; }
   .section { padding: 56px 5vw; }
   .section-head { grid-template-columns: 1fr; gap: 12px; }
-  .match-row { grid-template-columns: 74px 1fr 64px; }
+  /* right column sizes to its content (FINAL score / pitch) so team
+     names get the leftover width instead of wrapping early */
+  .match-row { grid-template-columns: 64px 1fr auto; gap: 10px; }
   .match-row .m-div { display: none; }
+  .m-result .m-score { font-size: 1.2rem; }
   .watch-card { grid-template-columns: 1fr; }
   .photo-strip { grid-template-columns: 1fr; }
   .photo-strip img { height: 200px; }
