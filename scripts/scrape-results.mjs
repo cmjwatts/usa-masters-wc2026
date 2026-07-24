@@ -57,6 +57,7 @@ const TEAM_NAMES = {
   ARG: ["argentina"], AUS: ["australia"], AUSB: ["australia b", "aus b"],
   BAN: ["bangladesh"],
   BEL: ["belgium"], CAN: ["canada"], CHI: ["chile"], CZE: ["czech republic", "czechia"],
+  EGY: ["egypt"],
   ENG: ["england"], ESP: ["spain"], FRA: ["france"], GER: ["germany"],
   GHA: ["ghana"], HKG: ["hong kong", "hong-kong", "hong kong china"], IND: ["india"],
   IRL: ["ireland"], ITA: ["italy"], JPN: ["japan"], KEN: ["kenya"], MAS: ["malaysia"],
