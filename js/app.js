@@ -315,7 +315,6 @@ function renderTeams() {
     <div class="team-card static ${t.star ? "star" : ""}">
       <h3>🇺🇸 ${t.name}</h3>
       <p class="t-venue">${t.venue}</p>
-      <p class="t-cta">Player cards coming soon</p>
     </div>`;
   }).join("");
 }

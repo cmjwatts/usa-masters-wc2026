@@ -300,16 +300,24 @@ function initCountdown() {
 }
 
 // ---- USA team cards ----
-// Plain schedule-filter cards only: Belgium teams get no roster pages or
-// roster copy on this page (per the locked Brasschaat plan, decision 5).
+// Teams with a filled-in roster (js/roster.js) link to their player-card
+// page; the rest stay schedule-filter cards.
 function renderTeams() {
   const grid = $("#teamGrid");
-  grid.innerHTML = USA_TEAMS_AUG.map((t) => `
+  grid.innerHTML = USA_TEAMS_AUG.map((t) => {
+    const hasRoster = typeof ROSTERS !== "undefined" && ROSTERS[t.code]?.players?.length;
+    return hasRoster ? `
+    <a class="team-card" href="team?div=${t.code}">
+      <h3>🇺🇸 ${t.name}</h3>
+      <p class="t-venue">${t.venue}</p>
+      <p class="t-cta">Meet the team →</p>
+    </a>` : `
     <div class="team-card static" data-div="${t.code}">
       <h3>🇺🇸 ${t.name}</h3>
       <p class="t-venue">${t.venue}</p>
       <p class="t-cta">Tap to see their schedule ↑</p>
-    </div>`).join("");
+    </div>`;
+  }).join("");
   grid.querySelectorAll(".team-card[data-div]").forEach((card) =>
     card.addEventListener("click", () => {
       state.team = "USA"; state.divs = new Set([card.dataset.div]);

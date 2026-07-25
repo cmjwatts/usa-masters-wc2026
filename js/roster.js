@@ -13,7 +13,12 @@
 //     fact: "One-line fun fact / career highlight for the card back.",
 //     photo: "assets/players/first-last.jpg",  // "" until headshot arrives
 //     quote: "Favorite quote here.", // null until collected
+//     captain: true,                 // only on captains — shows on the card
 //   },
+//
+// A team can also carry `alternates: ["Name", …]` and
+// `staff: [{ role: "Head Coach", name: "…" }, …]` — both render
+// below the player grid on team.html.
 //
 // Headshots: drop image files in assets/players/ (portrait 4:5 works best)
 // and set each player's `photo` to that path.
@@ -57,7 +62,36 @@ const ROSTERS = {
   M50: { label: "Men O50", short: "MO50", venue: "HC Rotterdam / Victoria, Netherlands", dates: "July 22 – August 1", inJuly: true, players: [] },
 
   // ---- Belgium · Brasschaat & Antwerp · Aug 6 – 16 ----
-  W55: { label: "Women O55", short: "WO55", venue: "KHC Dragons / HC Olympia, Belgium", dates: "August 6 – 16", inJuly: false, players: [] },
+  W55: {
+    label: "Women O55", short: "WO55", venue: "KHC Dragons / HC Olympia, Belgium", dates: "August 6 – 16", inJuly: false,
+    // Travel roster via Elle Race, July 2026. Headshots land in assets/players/
+    // as they're processed — set each player's `photo` when the file exists.
+    players: [
+      { name: "Ana Berra", number: 3, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Flo Manero", number: 5, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Margaret Kelly", number: 6, position: null, captain: true, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Elisa Bell", number: 7, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Ainslee Lamb", number: 8, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Sue Elliott", number: 9, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Gaby Cappanera", number: 10, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Cathy Marston", number: 11, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Elle Race", number: 12, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Alison Smith", number: 13, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Pam Stuper", number: 19, position: null, captain: true, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Nori McCargo", number: 21, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Clara Ambrose", number: 25, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Jen Anderson", number: 27, position: "Goalkeeper", college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Lori Miller", number: 28, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Beth Montagano", number: 29, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Maca Diaz Varela", number: 31, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+      { name: "Mercedes Miodownik", number: 67, position: null, college: null, hometown: null, fact: null, photo: "", quote: null },
+    ],
+    alternates: ["Kari Galu", "Nonna Mamedova", "Lori Dellicato", "Sandy Binder", "Beth Denmead", "Lorena Loritz"],
+    staff: [
+      { role: "Head Coach", name: "Caroline Nelson-Nichols" },
+      { role: "Manager / Asst. Coach", name: "Jess Weiss" },
+    ],
+  },
   W60: { label: "Women O60", short: "WO60", venue: "KHC Dragons / HC Olympia, Belgium", dates: "August 6 – 16", inJuly: false, players: [] },
   W65: { label: "Women O65", short: "WO65", venue: "KHC Dragons / HC Olympia, Belgium", dates: "August 6 – 16", inJuly: false, players: [] },
   M55: { label: "Men O55", short: "MO55", venue: "KHC Dragons / HC Olympia, Belgium", dates: "August 6 – 16", inJuly: false, players: [] },
