@@ -85,14 +85,21 @@
         `The USA ${team.label} squad taking the pitch at ${team.venue}, ${team.dates}. ` +
         (total ? "Tap any card to flip it over for the scouting report. 🇺🇸🏑" : "🇺🇸🏑");
 
+      // Where this team's schedule lives: july (Schiedam/Rotterdam),
+      // brasschaat (Belgium), breda (O65s) — all support ?div= deep links.
+      const schedPage = team.inJuly ? "july" : (code === "M65" ? "breda" : "brasschaat");
       const sched = document.getElementById("schedLink");
-      if (team.inJuly) { sched.textContent = `${team.short} Schedule`; sched.href = `july?div=${code}#schedule`; }
-      else { sched.style.display = "none"; } // Belgium/O65 schedules aren't published yet
+      sched.textContent = `${team.short} Schedule`;
+      sched.href = `${schedPage}?div=${code}#schedule`;
 
       const note = document.getElementById("rosterNote");
       if (total) {
-        note.innerHTML = `📸 Player headshots &amp; favorite quotes are being collected — cards update as they come in.` +
-          (team.inJuly ? ` Catch every ${esc(team.short)} game on the <a href="july?div=${code}#schedule">schedule</a>.` : "");
+        const staffLine = (team.staff || []).map((s) => `<b>${esc(s.role)}:</b> ${esc(s.name)}`).join(" · ");
+        const altLine = team.alternates?.length ? `<b>Alternates:</b> ${team.alternates.map(esc).join(", ")}` : "";
+        const extras = [staffLine, altLine].filter(Boolean).join("<br>");
+        note.innerHTML = (extras ? `${extras}<br><br>` : "") +
+          `📸 Player headshots &amp; favorite quotes are being collected — cards update as they come in.` +
+          ` Catch every ${esc(team.short)} game on the <a href="${schedPage}?div=${code}#schedule">schedule</a>.`;
       } else {
         note.innerHTML = `🏑 The ${esc(team.short)} player cards are being put together — headshots, hometowns, colleges &amp; favorite quotes are on their way. Check back soon!`;
       }
@@ -119,7 +126,7 @@
               <span class="pc-hint">Flip ↻</span>
               <div class="${photoClass}">${photoInner}</div>
               <h3 class="pc-name">${esc(p.name)}<i>.</i></h3>
-              <p class="pc-pos">${esc(p.position || "USA Masters")}</p>
+              <p class="pc-pos">${esc([p.position, p.captain ? "Captain" : null].filter(Boolean).join(" · ") || "USA Masters")}</p>
               <div class="pc-meta">${meta}</div>
               ${quote}
             </div>
