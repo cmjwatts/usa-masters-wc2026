@@ -218,7 +218,7 @@ function slideWatch() {
 }
 
 function slideScore(div, date, opp, sc, label) {
-  const head = { W: "USA WIN", L: "FULL TIME", D: "ALL SQUARE" }[outcome(sc)];
+  const head = { W: "USA WIN", L: "FINAL", D: "ALL SQUARE" }[outcome(sc)];
   const oppName = TEAMS[opp]?.name?.toUpperCase() || opp;
   return frame(`USA ${DIVISIONS[div].short} · ${label || "Pool A"} · ${prettyDate(date)}`,
     headline(500, head, 170) +
@@ -266,7 +266,7 @@ function slideUpNext(div, next) {
   if (next.opp) rows.push(["Opponent", TEAMS[next.opp]?.name || next.opp]);
   if (next.label) rows.push(["Round", next.label]);
   rows.push(["Date", prettyDate(next.date)]);
-  if (next.time) rows.push(["Push back", `${nlTime(next.time)} NL · ${etTime(next.time)} ET`]);
+  if (next.time) rows.push(["Start", `${nlTime(next.time)} NL · ${etTime(next.time)} ET`]);
   if (next.pitch) rows.push(["Where", `Pitch ${next.pitch} · HC Schiedam`]);
   return frame(`USA ${DIVISIONS[div].short}`,
     headline(430, "UP NEXT", 150) + detailRows(540, rows) +
@@ -327,7 +327,7 @@ const capResult = (div, date, opp, sc, label) => {
   const line = { W: `What a way to spend a ${WEEKDAYS[new Date(date).getUTCDay()]} in Schiedam. 🇺🇸`,
                  L: `Proud fight from our group — heads high, eyes forward.`,
                  D: `The pool stays tight. Every point matters.` }[outcome(sc)];
-  const head = { W: "USA WIN 🇺🇸", L: "FULL TIME", D: "ALL SQUARE" }[outcome(sc)];
+  const head = { W: "USA WIN 🇺🇸", L: "FINAL", D: "ALL SQUARE" }[outcome(sc)];
   return `${head}${label ? ` — ${label.toUpperCase()}` : ""}
 
 USA ${DIVISIONS[div].short} ${sc.us}–${sc.them} ${name(opp)} ${flag(opp)}
