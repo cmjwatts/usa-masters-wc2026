@@ -306,8 +306,11 @@ function renderTeams() {
   const grid = $("#teamGrid");
   grid.innerHTML = USA_TEAMS_AUG.map((t) => {
     const hasRoster = typeof ROSTERS !== "undefined" && ROSTERS[t.code]?.players?.length;
+    // roster.js can set `page` on a team that has a dedicated URL with its
+    // own social-share meta; default is the shared team page.
+    const href = ROSTERS[t.code]?.page || `team?div=${t.code}`;
     return hasRoster ? `
-    <a class="team-card" href="team?div=${t.code}">
+    <a class="team-card" href="${href}">
       <h3>🇺🇸 ${t.name}</h3>
       <p class="t-venue">${t.venue}</p>
       <p class="t-cta">Meet the team →</p>
