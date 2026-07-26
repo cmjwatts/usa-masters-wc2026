@@ -67,6 +67,22 @@
   force = true
 
 [[redirects]]
+  from = "/team-w55.html"
+  to = "/team-w55"
+  status = 301
+  force = true
+
+# Social crawlers don't run JS, so /team?div=W55 would show the WO35 share
+# card. team-w55.html carries W55-specific meta; send the query-param URL
+# there so old links unfurl correctly too.
+[[redirects]]
+  from = "/team"
+  to = "/team-w55"
+  status = 301
+  force = true
+  query = { div = "W55" }
+
+[[redirects]]
   from = "/social.html"
   to = "/social"
   status = 301

@@ -64,6 +64,7 @@ const ROSTERS = {
   // ---- Belgium · Brasschaat & Antwerp · Aug 6 – 16 ----
   W55: {
     label: "Women O55", short: "WO55", venue: "KHC Dragons / HC Olympia, Belgium", dates: "August 6 – 16", inJuly: false,
+    page: "team-w55", // dedicated page → W55-specific social-share card
     // Travel roster via Elle Race, July 2026. Headshots land in assets/players/
     // as they're processed — set each player's `photo` when the file exists.
     players: [
