@@ -175,7 +175,7 @@ img { display: block; max-width: 100%; }
 .m-div.d-W65 { background: #c0392b; }
 .m-div.d-M60 { background: #5a7bc0; }
 .m-match { font-weight: 700; font-size: 1.02rem; }
-.m-match .vs { color: #99a0b2; font-weight: 400; padding: 0 6px; }
+.m-match .vs, .m-label .vs { color: #99a0b2; font-weight: 400; padding: 0 6px; }
 .m-match .usa-name { color: var(--red); }
 .m-label { font-weight: 700; font-size: 0.98rem; }
 .m-note { font-weight: 400; color: #5c6478; font-size: 0.85rem; display: block; }

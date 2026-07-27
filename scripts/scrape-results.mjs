@@ -122,8 +122,24 @@ async function scrapeDivision(div, id) {
       continue;
     }
     const [hs, as] = scoreCell.match(/\d{1,2}/g).map((n) => parseInt(n, 10));
-    // key format consumed by app.js: div|HOME|AWAY
-    results[`${div}|${codes[0]}|${codes[1]}`] = [hs, as];
+    // Knockout/classification games get their own key space — a QF between
+    // teams that already met in pool play must not overwrite the pool score.
+    // Stage comes from the teams cell's parenthetical: "(Pool A)" / "(WIMC35)"
+    // are round-robin; "Q/F", "Semi", "Final", "X/O", "Class", "(B)" are KO.
+    const stage = (teamsCell.match(/\((.*)\)\s*$/) || [])[1] || "";
+    const isKO = /q\/f|quarter|semi|final|x\/o|cross|class|\(b\)|bronze|gold/i.test(stage);
+    if (isKO) {
+      // KO pairs can rematch (two-leg classification), so the date keeps
+      // keys distinct: div|KO|YYYY-MM-DD|HOME|AWAY (read by the ko renderer).
+      const dm = cells.map((c) => c.match(/^(\d{1,2}) (\w{3}) (\d{4})/)).find(Boolean);
+      const MONTHS = { Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
+                       Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12" };
+      const iso = dm ? `${dm[3]}-${MONTHS[dm[2]] || "00"}-${dm[1].padStart(2, "0")}` : "unknown";
+      results[`${div}|KO|${iso}|${codes[0]}|${codes[1]}`] = [hs, as];
+    } else {
+      // key format consumed by app.js pool rows: div|HOME|AWAY
+      results[`${div}|${codes[0]}|${codes[1]}`] = [hs, as];
+    }
   }
   return results;
 }
