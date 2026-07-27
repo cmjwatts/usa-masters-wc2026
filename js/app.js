@@ -131,7 +131,16 @@ function renderSchedule() {
           ? `${teamNameIn(r.teams[0], r.div)}<span class="vs">vs</span>${teamNameIn(r.teams[1], r.div)} <span class="m-note">${r.label}</span>`
           : `${r.label}${state.team !== "ALL" ? `<span class="m-note">Bracket game — opponents decided by standings</span>` : ""}`;
         const usa = named && r.teams.includes("USA");
-        html += `<div class="match-row is-ko ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-label">${title}</div><div class="m-pitch">${pitchLabel(r.p)}</div></div>`;
+        // knockout scores auto-fill from js/results.js (div|KO|date|A|B keys)
+        let ko = null;
+        if (named && typeof RESULTS !== "undefined") {
+          ko = RESULTS[`${r.div}|KO|${r.d}|${r.teams[0]}|${r.teams[1]}`] ||
+               RESULTS[`${r.div}|KO|${r.d}|${r.teams[1]}|${r.teams[0]}`]?.slice().reverse();
+        }
+        const koRight = ko
+          ? `<div class="m-pitch m-result"><span class="final-tag">Final</span><b class="m-score">${ko[0]}–${ko[1]}</b></div>`
+          : `<div class="m-pitch">${pitchLabel(r.p)}</div>`;
+        html += `<div class="match-row is-ko ${usa ? "is-usa" : ""}">${timeCell}<div class="m-div d-${r.div}">${DIVISIONS[r.div].short}</div><div class="m-label">${title}</div>${koRight}</div>`;
       } else {
         const usa = r.h === "USA" || r.a === "USA";
         const name = (c) => `<span class="${c === "USA" ? "usa-name" : ""}">${teamNameIn(c, r.div)}</span>`;
