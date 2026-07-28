@@ -417,7 +417,7 @@ const KNOCKOUT = [
   { d:"2026-07-29", t:"11:00", div:"M40", label:"Quarterfinal 2 · 3rd vs 6th of Pool A", p:1, ranks:[3,6] },
   { d:"2026-07-29", t:"13:00", div:"M40", label:"Quarterfinal 3 · 2nd vs 7th of Pool A", p:1, ranks:[2,7] },
   { d:"2026-07-29", t:"15:00", div:"M40", label:"Quarterfinal 4 · 1st vs 8th of Pool A", p:1, ranks:[1,8] },
-  { d:"2026-07-29", t:"09:00", div:"M35", label:"Quarterfinal 1 · 4th vs 5th of Pool A", p:2, ranks:[4,5] },
+  { d:"2026-07-29", t:"09:00", div:"M35", label:"Quarterfinal 1 · 4th vs 5th of Pool A", p:2, ranks:[4,5], teams:["USA","WAL"] },
   { d:"2026-07-29", t:"11:00", div:"M35", label:"Quarterfinal 2 · 3rd vs 6th of Pool A", p:2, ranks:[3,6] },
   { d:"2026-07-29", t:"13:00", div:"M35", label:"Quarterfinal 3 · 2nd vs 7th of Pool A", p:2, ranks:[2,7] },
   { d:"2026-07-29", t:"15:00", div:"M35", label:"Quarterfinal 4 · 1st vs 8th of Pool A", p:2, ranks:[1,8] },
@@ -427,7 +427,7 @@ const KNOCKOUT = [
   { d:"2026-07-29", t:"15:00", div:"W40", label:"Quarterfinal 4 · 1st vs 8th of Pool A", p:3, ranks:[1,8] },
   { d:"2026-07-29", t:"09:00", div:"W35", label:"Quarterfinal 1 · 4th vs 5th of Pool A", p:5, ranks:[4,5] },
   { d:"2026-07-29", t:"11:00", div:"W35", label:"Quarterfinal 2 · 3rd vs 6th of Pool A", p:5, ranks:[3,6] },
-  { d:"2026-07-29", t:"13:00", div:"W35", label:"Quarterfinal 3 · 2nd vs 7th of Pool A", p:5, ranks:[2,7] },
+  { d:"2026-07-29", t:"13:00", div:"W35", label:"Quarterfinal 3 · 2nd vs 7th of Pool A", p:5, ranks:[2,7], teams:["NZL","USA"] },
   { d:"2026-07-29", t:"15:00", div:"W35", label:"Quarterfinal 4 · 1st vs 8th of Pool A", p:5, ranks:[1,8] },
   // ---- Thursday 30 July: Crossovers & classification ----
   { d:"2026-07-30", t:"10:00", div:"M40", label:"Crossover · 9th vs 12th of Pool A", p:1, ranks:[9,12] },

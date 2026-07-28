@@ -85,6 +85,15 @@ function usaScore(div, home, away) {
 }
 const outcome = ({ us, them }) => (us > them ? "W" : us < them ? "L" : "D");
 
+// knockout scores are keyed div|KO|date|HOME|AWAY by the scraper (a KO
+// rematch must not collide with the pool score for the same pairing)
+function koScore(div, d, opp) {
+  const a = RESULTS[`${div}|KO|${d}|USA|${opp}`];
+  if (a) return { us: a[0], them: a[1], opp };
+  const b = RESULTS[`${div}|KO|${d}|${opp}|USA`];
+  return b ? { us: b[1], them: b[0], opp } : null;
+}
+
 const usaGames = (d) => POOL.filter(([, , div, h, a]) => div === d && (h === "USA" || a === "USA"));
 const W35_USA_GAMES = usaGames("W35");
 // after-game result posts cover these divisions; gameday previews stay WO35-only
@@ -409,7 +418,7 @@ for (const div of RESULT_DIVS) {
         capGameday([k.d, k.t, div, "USA", opp, k.p]).replace("GAME DAY", round.toUpperCase()),
         [slideGameday([k.d, k.t, div, "USA", opp, k.p]), slideWatch()]);
     }
-    const sc = usaScore(div, "USA", opp);
+    const sc = koScore(div, k.d, opp);
     if (sc && gameOver(k.d, k.t)) {
       const isFinal = /FINAL$/i.test(round);
       const isBronze = /bronze/i.test(round);
@@ -432,8 +441,13 @@ for (const div of RESULT_DIVS) {
   }
 }
 
-// 5. daily "Team USA in Schiedam" recap once every USA game that day has a score
-const usaDays = [...new Set(POOL.filter(([, , , h, a]) => h === "USA" || a === "USA").map((g) => g[0]))];
+// 5. daily "Team USA in Schiedam" recap once every USA game that day has a
+// score — pool games plus any knockout games whose matchup is known
+const USA_KO = KNOCKOUT.filter((k) => k.teams?.includes("USA"));
+const usaDays = [...new Set([
+  ...POOL.filter(([, , , h, a]) => h === "USA" || a === "USA").map((g) => g[0]),
+  ...USA_KO.map((k) => k.d),
+])];
 for (const date of usaDays) {
   if (date > TODAY) continue;
   const games = POOL.filter(([d, , , h, a]) => d === date && (h === "USA" || a === "USA"));
@@ -441,6 +455,11 @@ for (const date of usaDays) {
     const sc = gameOver(d, t) && usaScore(div, h, a);
     return sc && { div, ...sc, res: outcome(sc) };
   });
+  for (const k of USA_KO.filter((k) => k.d === date)) {
+    const opp = k.teams.find((c) => c !== "USA");
+    const sc = gameOver(k.d, k.t) && koScore(k.div, k.d, opp);
+    rows.push(sc && { div: k.div, ...sc, res: outcome(sc) });
+  }
   if (rows.length && rows.every(Boolean)) {
     rows.sort((x, y) => (x.div === "W35" ? -1 : 0) - (y.div === "W35" ? -1 : 0));
     add(`recap-${date}`, "recap", date, `Team USA recap — ${prettyDate(date)}`,
