@@ -1,23 +1,11 @@
 [
   {
-    "id": "recap-2026-07-29",
-    "type": "recap",
-    "date": "2026-07-29",
-    "title": "Team USA recap — Wednesday, July 29",
-    "caption": "🇺🇸 TEAM USA IN SCHIEDAM & ROTTERDAM — Wednesday, July 29\n\nWO35: USA 1–3 New Zealand (Loss)\nMO35: USA 1–1 Wales (Draw)\nWO40: USA 1–4 Uruguay (Loss)\nMO45: USA 1–5 England (Loss)\nMO50: USA 3–0 Malaysia (Win)\n\nAll scores & standings: usamastersfh.com\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA",
-    "created": "2026-07-30T09:22",
-    "images": [
-      "social/img/recap-2026-07-29-1.png",
-      "social/img/recap-2026-07-29-2.png"
-    ]
-  },
-  {
     "id": "ko-result-W35-2026-07-29-NZL",
     "type": "result",
     "date": "2026-07-29",
     "title": "WO35 Quarterfinal 3: USA 1–3 NZL",
     "caption": "FINAL — QUARTERFINAL 3\n\nUSA WO35 1–3 New Zealand 🇳🇿\n\nProud fight from our group — heads high, eyes forward.\n\n📊 Standings & what's next: usamastersfh.com\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #WO35",
-    "created": "2026-07-29T15:09",
+    "created": "2026-07-30T17:38",
     "images": [
       "social/img/ko-result-W35-2026-07-29-NZL-1.png",
       "social/img/ko-result-W35-2026-07-29-NZL-2.png"
@@ -27,12 +15,24 @@
     "id": "ko-result-M35-2026-07-29-WAL",
     "type": "result",
     "date": "2026-07-29",
-    "title": "MO35 Quarterfinal 1: USA 1–1 WAL",
-    "caption": "ALL SQUARE — QUARTERFINAL 1\n\nUSA MO35 1–1 Wales 🏴󠁧󠁢󠁷󠁬󠁳󠁿\n\nThe pool stays tight. Every point matters.\n\n📊 Standings & what's next: usamastersfh.com\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #MO35",
-    "created": "2026-07-29T13:06",
+    "title": "MO35 Quarterfinal 1: USA 1–1 WAL (SO)",
+    "caption": "FINAL — QUARTERFINAL 1\n\nUSA MO35 1–1 Wales 🏴󠁧󠁢󠁷󠁬󠁳󠁿 (Wales win the shootout)\n\nA 1–1 battle decided on shootouts — Wales advance. So proud of this group's fight.\n\n📊 Standings & what's next: usamastersfh.com\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #MO35",
+    "created": "2026-07-30T17:38",
     "images": [
       "social/img/ko-result-M35-2026-07-29-WAL-1.png",
       "social/img/ko-result-M35-2026-07-29-WAL-2.png"
+    ]
+  },
+  {
+    "id": "recap-2026-07-29",
+    "type": "recap",
+    "date": "2026-07-29",
+    "title": "Team USA recap — Wednesday, July 29",
+    "caption": "🇺🇸 TEAM USA IN SCHIEDAM & ROTTERDAM — Wednesday, July 29\n\nWO35: USA 1–3 New Zealand (Loss)\nMO35: USA 1–1 Wales (SO Loss)\nWO40: USA 1–4 Uruguay (Loss)\nMO45: USA 1–5 England (Loss)\nMO50: USA 3–0 Malaysia (Win)\n\nAll scores & standings: usamastersfh.com\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA",
+    "created": "2026-07-30T17:37",
+    "images": [
+      "social/img/recap-2026-07-29-1.png",
+      "social/img/recap-2026-07-29-2.png"
     ]
   },
   {
