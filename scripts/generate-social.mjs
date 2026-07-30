@@ -53,6 +53,8 @@ const WEEKDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","S
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const prettyDate = (d) =>
   `${WEEKDAYS[new Date(d).getUTCDay()]}, ${MONTHS[+d.slice(5,7)-1]} ${+d.slice(8,10)}`;
+const shortDate = (d) =>
+  `${WEEKDAYS[new Date(d).getUTCDay()].slice(0,3)} ${MONTHS[+d.slice(5,7)-1].slice(0,3)} ${+d.slice(8,10)}`;
 const etTime = (hhmm) => { // NL (CEST) -> US Eastern = -6h, 12-hour clock
   let [h, m] = hhmm.split(":").map(Number);
   h = (h - 6 + 24) % 24;
@@ -85,13 +87,18 @@ function usaScore(div, home, away) {
 }
 const outcome = ({ us, them }) => (us > them ? "W" : us < them ? "L" : "D");
 
-// knockout scores are keyed div|KO|date|HOME|AWAY by the scraper (a KO
-// rematch must not collide with the pool score for the same pairing)
+// knockout scores are keyed div|KO|date|HH:MM|HOME|AWAY by the scraper (a
+// KO rematch must not collide with the pool score for the same pairing;
+// the time distinguishes two-leg classification rematches). Scan by prefix
+// so older time-less keys still resolve.
 function koScore(div, d, opp) {
-  const a = RESULTS[`${div}|KO|${d}|USA|${opp}`];
-  if (a) return { us: a[0], them: a[1], opp };
-  const b = RESULTS[`${div}|KO|${d}|${opp}|USA`];
-  return b ? { us: b[1], them: b[0], opp } : null;
+  for (const [key, s] of Object.entries(RESULTS)) {
+    if (!key.startsWith(`${div}|KO|${d}|`)) continue;
+    const [h, a] = key.split("|").slice(-2);
+    if (h === "USA" && a === opp) return { us: s[0], them: s[1], opp };
+    if (h === opp && a === "USA") return { us: s[1], them: s[0], opp };
+  }
+  return null;
 }
 
 const usaGames = (d) => POOL.filter(([, , div, h, a]) => div === d && (h === "USA" || a === "USA"));
@@ -226,10 +233,12 @@ function slideWatch() {
     T(64, 1150, 60, GOLD, "LET'S GO USA!"));
 }
 
-function slideScore(div, date, opp, sc, label) {
-  const head = { W: "USA WIN", L: "FINAL", D: "ALL SQUARE" }[outcome(sc)];
+// so: shootout winner code for a KO game decided on shootouts (else null)
+function slideScore(div, date, opp, sc, label, so) {
+  const res = so ? (so === "USA" ? "W" : "L") : outcome(sc);
+  const head = { W: "USA WIN", L: "FINAL", D: "ALL SQUARE" }[res];
   const oppName = TEAMS[opp]?.name?.toUpperCase() || opp;
-  return frame(`USA ${DIVISIONS[div].short} · ${label || "Pool A"} · ${prettyDate(date)}`,
+  return frame(`USA ${DIVISIONS[div].short} · ${label || "Pool A"} · ${shortDate(date)}`,
     headline(500, head, 170) +
     `<rect x="64" y="640" width="952" height="300" fill="${NAVY}" rx="24"/>` +
     T(114, 750, 64, "#fff", "USA") +
@@ -237,11 +246,15 @@ function slideScore(div, date, opp, sc, label) {
     T(966, 750, 64, "#fff", opp, { a: "end" }) +
     T(966, 880, 40, CREAM, oppName, { a: "end", op: 0.7 }) +
     T(540, 830, 150, GOLD, `${sc.us} - ${sc.them}`, { a: "middle" }) +
-    (outcome(sc) === "W"
-      ? T(64, 1070, 56, GOLD, "ANOTHER ONE FOR THE STARS AND STRIPES")
-      : outcome(sc) === "D"
-        ? T(64, 1070, 56, GOLD, "EVERY POINT COUNTS IN POOL A")
-        : T(64, 1070, 56, GOLD, "HEADS HIGH. ON TO THE NEXT ONE")));
+    (so
+      ? T(64, 1070, 56, GOLD, res === "W"
+          ? "USA ADVANCE ON SHOOTOUTS"
+          : `${oppName} ADVANCE ON SHOOTOUTS`)
+      : res === "W"
+        ? T(64, 1070, 56, GOLD, "ANOTHER ONE FOR THE STARS AND STRIPES")
+        : res === "D"
+          ? T(64, 1070, 56, GOLD, "EVERY POINT COUNTS IN POOL A")
+          : T(64, 1070, 56, GOLD, "HEADS HIGH. ON TO THE NEXT ONE")));
 }
 
 function slideStandings(div, highlightDate) {
@@ -282,17 +295,18 @@ function slideUpNext(div, next) {
     T(64, 1150, 56, GOLD, "SEE YOU THERE"));
 }
 
-const RES_WORD = { W: "Win", D: "Draw", L: "Loss" };
+const RES_WORD = { W: "Win", D: "Draw", L: "Loss", SW: "SO Win", SL: "SO Loss" };
 
 function slideRecap(date, rows) {
   let y = 600;
   let out = headline(430, "USA TODAY", 140) +
     T(64, 500, 30, GOLD, prettyDate(date).toUpperCase(), { f: AB, ls: 3 });
   for (const r of rows) {
-    out += `<rect x="64" y="${y - 44}" width="150" height="60" fill="${r.res === "W" ? RED : NAVY}" rx="10"/>` +
+    const won = r.res === "W" || r.res === "SW";
+    out += `<rect x="64" y="${y - 44}" width="150" height="60" fill="${won ? RED : NAVY}" rx="10"/>` +
       T(139, y, 34, "#fff", DIVISIONS[r.div].short, { a: "middle" }) +
       T(250, y, 48, "#fff", `USA ${r.us} - ${r.them} ${r.opp}`) +
-      T(1000, y, 48, r.res === "W" ? GOLD : CREAM, RES_WORD[r.res].toUpperCase(), { a: "end" });
+      T(1000, y, 48, won ? GOLD : CREAM, RES_WORD[r.res].toUpperCase(), { a: "end" });
     y += 100;
   }
   return frame("Team USA in Schiedam & Rotterdam", out);
@@ -332,14 +346,19 @@ Let's go USA!
 ${TAGS} #WO35 @masterswc2026.schiedam`;
 };
 
-const capResult = (div, date, opp, sc, label) => {
-  const line = { W: `What a way to spend a ${WEEKDAYS[new Date(date).getUTCDay()]} in Schiedam. 🇺🇸`,
-                 L: `Proud fight from our group — heads high, eyes forward.`,
-                 D: `The pool stays tight. Every point matters.` }[outcome(sc)];
-  const head = { W: "USA WIN 🇺🇸", L: "FINAL", D: "ALL SQUARE" }[outcome(sc)];
+const capResult = (div, date, opp, sc, label, so) => {
+  const res = so ? (so === "USA" ? "W" : "L") : outcome(sc);
+  const line = so
+    ? (res === "W"
+        ? `Shootout drama — USA advance after a ${sc.us}–${sc.them} battle. 🇺🇸`
+        : `A ${sc.us}–${sc.them} battle decided on shootouts — ${name(opp)} advance. So proud of this group's fight.`)
+    : { W: `What a way to spend a ${WEEKDAYS[new Date(date).getUTCDay()]} in Schiedam. 🇺🇸`,
+        L: `Proud fight from our group — heads high, eyes forward.`,
+        D: `The pool stays tight. Every point matters.` }[res];
+  const head = { W: "USA WIN 🇺🇸", L: "FINAL", D: "ALL SQUARE" }[res];
   return `${head}${label ? ` — ${label.toUpperCase()}` : ""}
 
-USA ${DIVISIONS[div].short} ${sc.us}–${sc.them} ${name(opp)} ${flag(opp)}
+USA ${DIVISIONS[div].short} ${sc.us}–${sc.them} ${name(opp)} ${flag(opp)}${so ? ` (${so === "USA" ? "USA" : name(opp)} win the shootout)` : ""}
 
 ${line}
 
@@ -420,18 +439,20 @@ for (const div of RESULT_DIVS) {
     }
     const sc = koScore(div, k.d, opp);
     if (sc && gameOver(k.d, k.t)) {
+      const so = k.soWinner || null;
+      const res = so ? (so === "USA" ? "W" : "L") : outcome(sc);
       const isFinal = /FINAL$/i.test(round);
       const isBronze = /bronze/i.test(round);
       const short = DIVISIONS[div].short;
-      let title = `${short} ${round}: USA ${sc.us}–${sc.them} ${opp}`;
-      let slides = [slideScore(div, k.d, opp, sc, round)];
-      let caption = capResult(div, k.d, opp, sc, round);
-      if (isFinal && outcome(sc) === "W") {
+      let title = `${short} ${round}: USA ${sc.us}–${sc.them} ${opp}${so ? " (SO)" : ""}`;
+      let slides = [slideScore(div, k.d, opp, sc, round, so)];
+      let caption = capResult(div, k.d, opp, sc, round, so);
+      if (isFinal && res === "W") {
         caption = `WORLD CHAMPIONS. 🥇🇺🇸\n\nUSA ${short} ${sc.us}–${sc.them} ${name(opp)} in the World Cup final.\n\n${TAGS} #${short} @masterswc2026.schiedam`;
         title = `${short} WORLD CHAMPIONS 🥇`;
       } else if (isFinal) {
         caption = `SILVER MEDALISTS. 🥈🇺🇸\n\nA World Cup final. USA ${short} ${sc.us}–${sc.them} ${name(opp)}. So proud of this team.\n\n${TAGS} #${short}`;
-      } else if (isBronze && outcome(sc) === "W") {
+      } else if (isBronze && res === "W") {
         caption = `BRONZE. 🥉🇺🇸\n\nUSA ${short} ${sc.us}–${sc.them} ${name(opp)} — we're bringing home a World Cup medal.\n\n${TAGS} #${short}`;
       }
       const next = nextGame(div, `${k.d}|${k.t}`);
@@ -447,14 +468,17 @@ const USA_KO = KNOCKOUT.filter((k) => k.teams?.includes("USA"));
 // scraped KO results (div|KO|date|HOME|AWAY) cover divisions whose bracket
 // matchups were never stamped into data.js — a scraped score means the
 // game finished, so these can join the recap directly
-const KO_KEY = /^(\w+)\|KO\|(\d{4}-\d{2}-\d{2})\|(\w+)\|(\w+)$/;
-const scrapedUsaKo = Object.keys(RESULTS)
-  .map((k) => k.match(KO_KEY))
-  .filter((m) => m && (m[3] === "USA" || m[4] === "USA"));
+const KO_KEY = /^(\w+)\|KO\|(\d{4}-\d{2}-\d{2})\|(?:\d{2}:\d{2}\|)?(\w+)\|(\w+)$/;
+const scrapedUsaKo = Object.entries(RESULTS)
+  .map(([key, s]) => {
+    const m = key.match(KO_KEY);
+    return m && { s, div: m[1], d: m[2], h: m[3], a: m[4] };
+  })
+  .filter((e) => e && (e.h === "USA" || e.a === "USA"));
 const usaDays = [...new Set([
   ...POOL.filter(([, , , h, a]) => h === "USA" || a === "USA").map((g) => g[0]),
   ...USA_KO.map((k) => k.d),
-  ...scrapedUsaKo.map((m) => m[2]),
+  ...scrapedUsaKo.map((e) => e.d),
 ])];
 for (const date of usaDays) {
   if (date > TODAY) continue;
@@ -466,16 +490,21 @@ for (const date of usaDays) {
   for (const k of USA_KO.filter((k) => k.d === date)) {
     const opp = k.teams.find((c) => c !== "USA");
     const sc = gameOver(k.d, k.t) && koScore(k.div, k.d, opp);
-    rows.push(sc && { div: k.div, ...sc, res: outcome(sc) });
+    const res = sc && (k.soWinner ? (k.soWinner === "USA" ? "SW" : "SL") : outcome(sc));
+    rows.push(sc && { div: k.div, ...sc, res });
   }
-  for (const [, div, d, h, a] of scrapedUsaKo) {
-    if (d !== date) continue;
-    if (USA_KO.some((k) => k.d === date && k.div === div)) continue; // counted above
-    const s = RESULTS[`${div}|KO|${d}|${h}|${a}`];
-    const sc = h === "USA" ? { us: s[0], them: s[1], opp: a } : { us: s[1], them: s[0], opp: h };
-    rows.push({ div, ...sc, res: outcome(sc) });
+  for (const e of scrapedUsaKo) {
+    if (e.d !== date) continue;
+    if (USA_KO.some((k) => k.d === date && k.div === e.div)) continue; // counted above
+    const sc = e.h === "USA" ? { us: e.s[0], them: e.s[1], opp: e.a }
+                             : { us: e.s[1], them: e.s[0], opp: e.h };
+    rows.push({ div: e.div, ...sc, res: outcome(sc) });
   }
-  if (rows.length && rows.every(Boolean)) {
+  // On knockout days USA's slots often aren't known in advance (bracket
+  // teams unstamped), so scraped results trickle in — hold the recap until
+  // every KO slot that day has finished, or it publishes half a day early.
+  const dayDone = KNOCKOUT.filter((k) => k.d === date).every((k) => gameOver(k.d, k.t));
+  if (rows.length && rows.every(Boolean) && dayDone) {
     rows.sort((x, y) => (x.div === "W35" ? -1 : 0) - (y.div === "W35" ? -1 : 0));
     add(`recap-${date}`, "recap", date, `Team USA recap — ${prettyDate(date)}`,
       capRecap(date, rows), [slideRecap(date, rows), slideStandings("W35", date)]);
