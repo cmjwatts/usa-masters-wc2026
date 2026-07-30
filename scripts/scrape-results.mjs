@@ -129,13 +129,16 @@ async function scrapeDivision(div, id) {
     const stage = (teamsCell.match(/\((.*)\)\s*$/) || [])[1] || "";
     const isKO = /q\/f|quarter|semi|final|x\/o|cross|class|\(b\)|bronze|gold/i.test(stage);
     if (isKO) {
-      // KO pairs can rematch (two-leg classification), so the date keeps
-      // keys distinct: div|KO|YYYY-MM-DD|HOME|AWAY (read by the ko renderer).
-      const dm = cells.map((c) => c.match(/^(\d{1,2}) (\w{3}) (\d{4})/)).find(Boolean);
+      // KO pairs can rematch (two-leg classification), so date + time keep
+      // keys distinct: div|KO|YYYY-MM-DD|HH:MM|HOME|AWAY. The time also lets
+      // the site attribute a result to an unnamed bracket row when that
+      // div/date/time slot is unambiguous (see the ko renderer in js/app*.js).
+      const dm = cells.map((c) => c.match(/^(\d{1,2}) (\w{3}) (\d{4})(?:\s+(\d{1,2}:\d{2}))?/)).find(Boolean);
       const MONTHS = { Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
                        Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12" };
       const iso = dm ? `${dm[3]}-${MONTHS[dm[2]] || "00"}-${dm[1].padStart(2, "0")}` : "unknown";
-      results[`${div}|KO|${iso}|${codes[0]}|${codes[1]}`] = [hs, as];
+      const time = (dm && dm[4] ? dm[4] : "00:00").padStart(5, "0");
+      results[`${div}|KO|${iso}|${time}|${codes[0]}|${codes[1]}`] = [hs, as];
     } else {
       // key format consumed by app.js pool rows: div|HOME|AWAY
       results[`${div}|${codes[0]}|${codes[1]}`] = [hs, as];

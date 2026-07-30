@@ -78,6 +78,27 @@ function poolRow(r) {
   return { d, t, div, h, a, p, hs, as, type: "pool" };
 }
 
+// ---- knockout results (js/results-aug.js keys: div|KO|date|time|HOME|AWAY) ----
+function koFind(div, d, a, b) {
+  if (typeof RESULTS_AUG === "undefined") return null;
+  for (const k of Object.keys(RESULTS_AUG)) {
+    if (!k.startsWith(`${div}|KO|${d}|`)) continue;
+    const p = k.split("|");
+    if (p[4] === a && p[5] === b) return RESULTS_AUG[k];
+    if (p[4] === b && p[5] === a) return RESULTS_AUG[k].slice().reverse();
+  }
+  return null;
+}
+function koSlotTeams(r) {
+  if (typeof RESULTS_AUG === "undefined") return null;
+  if (KNOCKOUT_BRE.filter((k) => k.div === r.div && k.d === r.d && k.t === r.t).length !== 1) return null;
+  const prefix = `${r.div}|KO|${r.d}|${r.t}|`;
+  const hits = Object.keys(RESULTS_AUG).filter((k) => k.startsWith(prefix));
+  if (hits.length !== 1) return null;
+  const p = hits[0].split("|");
+  return [p[4], p[5]];
+}
+
 function koVisible(row) {
   if (state.team === "ALL") return true;
   // matchup already known → only show for those teams
@@ -99,8 +120,14 @@ function matchesFiltered() {
   if (state.showKO) {
     for (const k of KNOCKOUT_BRE) {
       if (!state.divs.has(k.div)) continue;
-      if (!koVisible(k)) continue;
-      rows.push({ ...k, type: "ko" });
+      const kr = { ...k, type: "ko" };
+      // auto-name the matchup from scraped results when unambiguous
+      if (!kr.teams || !kr.teams.length) {
+        const auto = koSlotTeams(kr);
+        if (auto) kr.teams = auto;
+      }
+      if (!koVisible(kr)) continue;
+      rows.push(kr);
     }
     for (const ev of EVENTS_BRE) {
       rows.push({ d: ev.d, t: ev.t, title: ev.title, note: ev.note, type: "event" });
@@ -134,12 +161,7 @@ function renderSchedule() {
           ? `${teamNameIn(r.teams[0], r.div)}<span class="vs">vs</span>${teamNameIn(r.teams[1], r.div)} <span class="m-note">${r.label}</span>`
           : `${r.label}${state.team !== "ALL" ? `<span class="m-note">Bracket game — opponents decided by standings</span>` : ""}`;
         const usa = named && r.teams.includes("USA");
-        // knockout scores auto-fill from js/results-aug.js (div|KO|date|A|B keys)
-        let ko = null;
-        if (named && typeof RESULTS_AUG !== "undefined") {
-          ko = RESULTS_AUG[`${r.div}|KO|${r.d}|${r.teams[0]}|${r.teams[1]}`] ||
-               RESULTS_AUG[`${r.div}|KO|${r.d}|${r.teams[1]}|${r.teams[0]}`]?.slice().reverse();
-        }
+        const ko = named ? koFind(r.div, r.d, r.teams[0], r.teams[1]) : null;
         const koRight = ko
           ? `<div class="m-pitch m-result"><span class="final-tag">Final</span><b class="m-score">${ko[0]}–${ko[1]}</b></div>`
           : `<div class="m-pitch">${pitchLabel(r.p)}</div>`;

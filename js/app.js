@@ -74,6 +74,31 @@ function poolRow(r) {
   return { d, t, div, h, a, p, hs, as, type: "pool" };
 }
 
+// ---- knockout results (js/results.js keys: div|KO|date|time|HOME|AWAY) ----
+// Named matchup -> its result (reversed if stored away-first), any time that day.
+function koFind(div, d, a, b) {
+  if (typeof RESULTS === "undefined") return null;
+  for (const k of Object.keys(RESULTS)) {
+    if (!k.startsWith(`${div}|KO|${d}|`)) continue;
+    const p = k.split("|"); // div, KO, date, time, HOME, AWAY
+    if (p[4] === a && p[5] === b) return RESULTS[k];
+    if (p[4] === b && p[5] === a) return RESULTS[k].slice().reverse();
+  }
+  return null;
+}
+// Unnamed bracket row -> auto-resolve its teams from the scraped result, but
+// only when the div/date/time slot is unambiguous on both sides (exactly one
+// bracket row and exactly one result in that slot).
+function koSlotTeams(r) {
+  if (typeof RESULTS === "undefined") return null;
+  if (KNOCKOUT.filter((k) => k.div === r.div && k.d === r.d && k.t === r.t).length !== 1) return null;
+  const prefix = `${r.div}|KO|${r.d}|${r.t}|`;
+  const hits = Object.keys(RESULTS).filter((k) => k.startsWith(prefix));
+  if (hits.length !== 1) return null;
+  const p = hits[0].split("|");
+  return [p[4], p[5]];
+}
+
 function koVisible(row) {
   if (state.team === "ALL") return true;
   // matchup already known → only show for those teams
@@ -96,8 +121,15 @@ function matchesFiltered() {
   if (state.showKO) {
     for (const k of KNOCKOUT) {
       if (!state.divs.has(k.div)) continue;
-      if (!koVisible(k)) continue;
-      rows.push({ ...k, type: "ko" });
+      const kr = { ...k, type: "ko" };
+      // auto-name the matchup from scraped results when unambiguous, so
+      // team filters and score display work without hand-editing data.js
+      if (!kr.teams || !kr.teams.length) {
+        const auto = koSlotTeams(kr);
+        if (auto) kr.teams = auto;
+      }
+      if (!koVisible(kr)) continue;
+      rows.push(kr);
     }
     for (const ev of EVENTS) {
       rows.push({ d: ev.d, t: ev.t, title: ev.title, note: ev.note, type: "event" });
@@ -131,12 +163,7 @@ function renderSchedule() {
           ? `${teamNameIn(r.teams[0], r.div)}<span class="vs">vs</span>${teamNameIn(r.teams[1], r.div)} <span class="m-note">${r.label}</span>`
           : `${r.label}${state.team !== "ALL" ? `<span class="m-note">Bracket game — opponents decided by standings</span>` : ""}`;
         const usa = named && r.teams.includes("USA");
-        // knockout scores auto-fill from js/results.js (div|KO|date|A|B keys)
-        let ko = null;
-        if (named && typeof RESULTS !== "undefined") {
-          ko = RESULTS[`${r.div}|KO|${r.d}|${r.teams[0]}|${r.teams[1]}`] ||
-               RESULTS[`${r.div}|KO|${r.d}|${r.teams[1]}|${r.teams[0]}`]?.slice().reverse();
-        }
+        const ko = named ? koFind(r.div, r.d, r.teams[0], r.teams[1]) : null;
         const koRight = ko
           ? `<div class="m-pitch m-result"><span class="final-tag">Final</span><b class="m-score">${ko[0]}–${ko[1]}</b></div>`
           : `<div class="m-pitch">${pitchLabel(r.p)}</div>`;
