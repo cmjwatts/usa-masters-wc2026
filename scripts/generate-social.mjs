@@ -444,9 +444,17 @@ for (const div of RESULT_DIVS) {
 // 5. daily "Team USA in Schiedam" recap once every USA game that day has a
 // score — pool games plus any knockout games whose matchup is known
 const USA_KO = KNOCKOUT.filter((k) => k.teams?.includes("USA"));
+// scraped KO results (div|KO|date|HOME|AWAY) cover divisions whose bracket
+// matchups were never stamped into data.js — a scraped score means the
+// game finished, so these can join the recap directly
+const KO_KEY = /^(\w+)\|KO\|(\d{4}-\d{2}-\d{2})\|(\w+)\|(\w+)$/;
+const scrapedUsaKo = Object.keys(RESULTS)
+  .map((k) => k.match(KO_KEY))
+  .filter((m) => m && (m[3] === "USA" || m[4] === "USA"));
 const usaDays = [...new Set([
   ...POOL.filter(([, , , h, a]) => h === "USA" || a === "USA").map((g) => g[0]),
   ...USA_KO.map((k) => k.d),
+  ...scrapedUsaKo.map((m) => m[2]),
 ])];
 for (const date of usaDays) {
   if (date > TODAY) continue;
@@ -459,6 +467,13 @@ for (const date of usaDays) {
     const opp = k.teams.find((c) => c !== "USA");
     const sc = gameOver(k.d, k.t) && koScore(k.div, k.d, opp);
     rows.push(sc && { div: k.div, ...sc, res: outcome(sc) });
+  }
+  for (const [, div, d, h, a] of scrapedUsaKo) {
+    if (d !== date) continue;
+    if (USA_KO.some((k) => k.d === date && k.div === div)) continue; // counted above
+    const s = RESULTS[`${div}|KO|${d}|${h}|${a}`];
+    const sc = h === "USA" ? { us: s[0], them: s[1], opp: a } : { us: s[1], them: s[0], opp: h };
+    rows.push({ div, ...sc, res: outcome(sc) });
   }
   if (rows.length && rows.every(Boolean)) {
     rows.sort((x, y) => (x.div === "W35" ? -1 : 0) - (y.div === "W35" ? -1 : 0));
