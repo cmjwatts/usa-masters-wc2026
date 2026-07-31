@@ -57,6 +57,7 @@ const ROSTERS = {
   // ---- Netherlands · Rotterdam / Victoria · July 22 – Aug 1 ----
   W35I: {
     label: "Women O35 IMC", short: "W35 IMC", venue: "HC Rotterdam / Victoria, Netherlands", dates: "July 22 – August 1", inJuly: true,
+    page: "team-w35imc", // dedicated page → IMC-specific social-share card
     // Roster from the team's official player cards — more arriving.
     players: [
       { name: "Patricia Zini", number: 1, position: "Forward", college: null, hometown: "Wrentham, MA", fact: null, photo: "assets/players/patricia-zini.jpg", quote: null },
