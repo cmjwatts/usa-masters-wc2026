@@ -488,7 +488,7 @@ const KNOCKOUT = [
   { d:"2026-08-01", t:"09:00", div:"W40", label:"Class 5/6 · QF runners-up 1 vs 2", p:3, ranks:R(1,8) },
   { d:"2026-08-01", t:"11:00", div:"M40", label:"Class 5/6 · QF runners-up 1 vs 2", p:3, ranks:R(1,8) },
   { d:"2026-08-01", t:"13:00", div:"W35", label:"Class 5/6 · QF runners-up 1 vs 2", p:3, ranks:R(1,8) },
-  { d:"2026-08-01", t:"15:00", div:"M35", label:"Class 5/6 · QF runners-up 1 vs 2", p:3, ranks:R(1,8) },
+  { d:"2026-08-01", t:"15:00", div:"M35", label:"Class 5/6 · QF runners-up 1 vs 2", p:3, ranks:R(1,8), teams:["USA","GER"] },
   { d:"2026-08-01", t:"09:00", div:"M35", label:"Pool B · 13th vs 14th of Pool A", p:5, ranks:[13,14] },
   { d:"2026-08-01", t:"11:00", div:"M40", label:"Pool B · 17th vs 18th of Pool A", p:5, ranks:[17,18] },
   { d:"2026-08-01", t:"13:00", div:"W35", label:"Pool B · 15th vs 16th of Pool A", p:5, ranks:[15,16] },
