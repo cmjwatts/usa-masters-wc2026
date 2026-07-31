@@ -59,11 +59,16 @@ const ROSTERS = {
     label: "Women O35 IMC", short: "W35 IMC", venue: "HC Rotterdam / Victoria, Netherlands", dates: "July 22 – August 1", inJuly: true,
     // Roster from the team's official player cards — more arriving.
     players: [
+      { name: "Patricia Zini", number: 1, position: "Forward", college: null, hometown: "Wrentham, MA", fact: null, photo: "assets/players/patricia-zini.jpg", quote: null },
       { name: "Colleen Cassada", number: 4, position: "Forward", college: null, hometown: "Clayton, NC", fact: null, photo: "assets/players/colleen-cassada.jpg", quote: null },
+      { name: "Rebecca Newcomer", number: 9, position: "Defense/Midfield", college: null, hometown: "Hawley, PA", fact: null, photo: "assets/players/rebecca-newcomer.jpg", quote: null },
       { name: "Heather Kenney", number: 12, position: "Forward", college: null, hometown: "Rockville, MD", fact: null, photo: "assets/players/heather-kenney.jpg", quote: null },
+      { name: "Cathy Callahan", number: 20, position: "Forward", college: null, hometown: "West Hartford, CT", fact: null, photo: "assets/players/cathy-callahan.jpg", quote: null },
       { name: "Mandy Mowry", number: 33, position: "Forward", college: null, hometown: "Souderton, PA", fact: null, photo: "assets/players/mandy-mowry.jpg", quote: null },
     ],
     staff: [
+      { role: "Head Coach", name: "Nina Klein" },
+      { role: "Assistant Coach", name: "Abby Lucas" },
       { role: "Athletic Trainer", name: "Kurt Kessler (DPT, ATC, SCS)" },
     ],
   },
