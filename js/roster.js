@@ -72,9 +72,9 @@ const ROSTERS = {
       { name: "Kristi Tracey", number: 97, position: "Goalkeeper", college: null, hometown: "Lehighton, PA", fact: null, photo: "assets/players/kristi-tracey.jpg", quote: null },
     ],
     staff: [
-      { role: "Head Coach", name: "Nina Klein" },
-      { role: "Assistant Coach", name: "Abby Lucas" },
-      { role: "Athletic Trainer", name: "Kurt Kessler (DPT, ATC, SCS)" },
+      { role: "Head Coach", name: "Nina Klein", hometown: "Unionville, CT", fact: null, photo: "assets/players/nina-klein.jpg" },
+      { role: "Assistant Coach", name: "Abby Lucas", hometown: "Hamden, CT", fact: null, photo: "assets/players/abby-lucas.jpg" },
+      { role: "Athletic Trainer", name: "Kurt Kessler", hometown: "Manheim, PA", fact: null, photo: "assets/players/kurt-kessler.jpg" },
     ],
   },
   W45: { label: "Women O45", short: "WO45", venue: "HC Rotterdam / Victoria, Netherlands", dates: "July 22 – August 1", inJuly: true, players: [] },
