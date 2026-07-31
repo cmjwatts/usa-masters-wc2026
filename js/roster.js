@@ -55,7 +55,18 @@ const ROSTERS = {
   M40: { label: "Men O40", short: "MO40", venue: "HC Schiedam, Netherlands", dates: "July 22 – August 1", inJuly: true, players: [] },
 
   // ---- Netherlands · Rotterdam / Victoria · July 22 – Aug 1 ----
-  W35I: { label: "Women O35 IMC", short: "W35 IMC", venue: "HC Rotterdam / Victoria, Netherlands", dates: "July 22 – August 1", inJuly: true, players: [] },
+  W35I: {
+    label: "Women O35 IMC", short: "W35 IMC", venue: "HC Rotterdam / Victoria, Netherlands", dates: "July 22 – August 1", inJuly: true,
+    // Roster from the team's official player cards — more arriving.
+    players: [
+      { name: "Colleen Cassada", number: 4, position: "Forward", college: null, hometown: "Clayton, NC", fact: null, photo: "assets/players/colleen-cassada.jpg", quote: null },
+      { name: "Heather Kenney", number: 12, position: "Forward", college: null, hometown: "Rockville, MD", fact: null, photo: "assets/players/heather-kenney.jpg", quote: null },
+      { name: "Mandy Mowry", number: 33, position: "Forward", college: null, hometown: "Souderton, PA", fact: null, photo: "assets/players/mandy-mowry.jpg", quote: null },
+    ],
+    staff: [
+      { role: "Athletic Trainer", name: "Kurt Kessler (DPT, ATC, SCS)" },
+    ],
+  },
   W45: { label: "Women O45", short: "WO45", venue: "HC Rotterdam / Victoria, Netherlands", dates: "July 22 – August 1", inJuly: true, players: [] },
   W50: { label: "Women O50", short: "WO50", venue: "HC Rotterdam / Victoria, Netherlands", dates: "July 22 – August 1", inJuly: true, players: [] },
   M45: { label: "Men O45", short: "MO45", venue: "HC Rotterdam / Victoria, Netherlands", dates: "July 22 – August 1", inJuly: true, players: [] },
