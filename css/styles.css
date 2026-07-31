@@ -519,3 +519,9 @@ a.team-card .t-cta { color: var(--red); }
   .nav-hub .nav-links { order: 0; width: auto; margin-left: auto; justify-content: flex-end; }
   .nav-hub .nav-links a { padding: 7px 11px; font-size: 0.8rem; }
 }
+
+/* Staff card row on team pages (rendered only when staff have photos) */
+.staff-head {
+  font-family: "Anton", sans-serif; font-size: 1.7rem; letter-spacing: 0.02em;
+  text-transform: uppercase; color: var(--navy); margin: 40px 0 4px;
+}

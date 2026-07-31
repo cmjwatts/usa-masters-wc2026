@@ -94,7 +94,7 @@
 
       const note = document.getElementById("rosterNote");
       if (total) {
-        const staffLine = (team.staff || []).map((s) => `<b>${esc(s.role)}:</b> ${esc(s.name)}`).join(" · ");
+        const staffLine = (team.staff || []).filter((s) => !s.photo).map((s) => `<b>${esc(s.role)}:</b> ${esc(s.name)}`).join(" · ");
         const altLine = team.alternates?.length ? `<b>Alternates:</b> ${team.alternates.map(esc).join(", ")}` : "";
         const extras = [staffLine, altLine].filter(Boolean).join("<br>");
         note.innerHTML = (extras ? `${extras}<br><br>` : "") +
@@ -138,6 +138,34 @@
           </div>
         </div>`;
       }).join("");
+
+      // Staff cards — team.staff entries that carry a photo render as
+      // flip cards under their own heading; the rest stay in the note.
+      const staffCards = (team.staff || []).filter((s) => s.photo);
+      if (staffCards.length) {
+        document.getElementById("rosterGrid").insertAdjacentHTML("afterend",
+          `<h3 class="staff-head">Team Staff</h3><div class="roster-grid">` +
+          staffCards.map((s) => `
+        <div class="pcard" role="button" tabindex="0" aria-label="${esc(s.name)} — tap to flip card">
+          <div class="pcard-inner">
+            <div class="pcard-face pcard-front">
+              <div class="pc-strip"><span>USA · ${esc(team.short)}</span><span class="pc-no"></span></div>
+              <span class="pc-hint">Flip ↻</span>
+              <div class="pc-photo"><img src="${esc(s.photo)}" alt="${esc(s.name)}" loading="lazy" decoding="async"></div>
+              <h3 class="pc-name">${esc(s.name)}<i>.</i></h3>
+              <p class="pc-pos">${esc(s.role)}</p>
+              <div class="pc-meta">${s.hometown ? `<span>📍 ${esc(s.hometown)}</span>` : ""}</div>
+            </div>
+            <div class="pcard-face pcard-back">
+              <span class="pc-back-kicker">Scouting Report</span>
+              <h3 class="pc-back-name">${esc(s.name)}</h3>
+              <div class="pc-back-bar"></div>
+              <p class="pc-fact">${esc(s.fact || "Bio coming soon.")}</p>
+              <div class="pc-back-foot"><span>${esc(s.role)}</span><span>usamastersfh.com</span></div>
+            </div>
+          </div>
+        </div>`).join("") + `</div>`);
+      }
 
       document.querySelectorAll(".pcard").forEach((card) => {
         // .anim keeps the 3D context (and back face) alive only for the
