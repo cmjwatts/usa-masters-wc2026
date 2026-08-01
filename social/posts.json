@@ -1,5 +1,16 @@
 [
   {
+    "id": "event-2026-08-01-1800",
+    "type": "event",
+    "date": "2026-08-01",
+    "title": "🏅 Closing Ceremonies",
+    "caption": "🏅 Closing Ceremonies\n\nMedals, memories, and goodbyes — Schiedam & Rotterdam\n\nSaturday, August 1 · 18:00 NL\n\n#USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA @masterswc2026.schiedam",
+    "created": "2026-08-01T10:10",
+    "images": [
+      "social/img/event-2026-08-01-1800-1.png"
+    ]
+  },
+  {
     "id": "recap-2026-07-31",
     "type": "recap",
     "date": "2026-07-31",
