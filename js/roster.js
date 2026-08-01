@@ -74,6 +74,7 @@ const ROSTERS = {
       { name: "Maisa Badawy", number: 31, position: "Midfield", college: "Harvard University", hometown: "Westwood, MA", fact: "First Team All-Ivy co-captain at Harvard who led the Crimson to the 2000 NCAA tournament — with a famous solo game-winner against Boston College along the way.", photo: "assets/players/maisa-badawy.jpg", quote: null },
       { name: "Mandy Mowry", number: 33, position: "Forward", college: null, hometown: "Souderton, PA", fact: "Suited up for the USA O-35s at the inaugural 2023 Pan Am Continental Cup in Buenos Aires and the 2024 World Cup in South Africa \u2014 now back for more in Rotterdam.", photo: "assets/players/mandy-mowry.jpg", quote: null },
       { name: "Christine Neville", number: 55, position: "Midfield", college: null, hometown: "Swansea, MA", fact: "Already on the World Cup scoresheet — she buried the third goal in the IMC's 3-0 shutout of Alliance Purple in Rotterdam.", photo: "assets/players/christine-neville.jpg", quote: null },
+      { name: "Elizabeth Delorme", number: 66, position: "Midfield", college: null, hometown: "Bellingham, MA", fact: null, photo: "assets/players/elizabeth-delorme.jpg", quote: null },
       { name: "Kristi Tracey", number: 97, position: "Goalkeeper", college: "University at Albany", hometown: "Lehighton, PA", fact: "As Kristi Troch, back-to-back America East Goalkeeper of the Year at UAlbany — now a Doctor of Physical Therapy stacking clean sheets for the IMC squad in Rotterdam.", photo: "assets/players/kristi-tracey.jpg", quote: null },
     ],
     staff: [
