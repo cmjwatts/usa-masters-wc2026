@@ -108,6 +108,12 @@ async function scrapeDivision(div, id) {
     if (cells.length < 5) continue; // header/nav rows
     const teamsCell = cells.find((c) => /\sv\s/.test(c));
     if (!teamsCell) continue;
+    // Exhibition games aren't tournament results — never record them. (A
+    // friendly between two mapped teams would otherwise be keyed like a pool
+    // game and could overwrite a real pool score. Seen live 2026-08-01:
+    // "RSA v ESPB (Friendly 50W)".)
+    const stage = (teamsCell.match(/\((.*)\)\s*$/) || [])[1] || "";
+    if (/friendly|exhibition|practice/i.test(stage)) continue;
     const scoreCell = cells.find((c) => /^\d{1,2}\s*-\s*\d{1,2}(\s*\(.*\))?$/.test(c));
     if (!scoreCell) continue; // unplayed ("-")
     // Only final scores: skip live games ("Half Time 30'+", "3rd Quarter", …).
@@ -126,7 +132,6 @@ async function scrapeDivision(div, id) {
     // teams that already met in pool play must not overwrite the pool score.
     // Stage comes from the teams cell's parenthetical: "(Pool A)" / "(WIMC35)"
     // are round-robin; "Q/F", "Semi", "Final", "X/O", "Class", "(B)" are KO.
-    const stage = (teamsCell.match(/\((.*)\)\s*$/) || [])[1] || "";
     const isKO = /q\/f|quarter|semi|final|x\/o|cross|class|\(b\)|bronze|gold/i.test(stage);
     if (isKO) {
       // KO pairs can rematch (two-leg classification), so date + time keep
