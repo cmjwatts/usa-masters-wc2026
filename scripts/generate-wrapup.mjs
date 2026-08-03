@@ -21,26 +21,17 @@ import { Resvg } from "@resvg/resvg-js";
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const p = (...s) => path.join(ROOT, ...s);
 
-// ---------- final placings (best finish first) ----------
+// ---------- final standings (best finish first) ----------
 const WRAP = [
-  { div: "W35 IMC", place: "2ND",       note: "SILVER — IMC FINAL VS AUS B",  medal: true,
-    cap: "🥈 W35 IMC — IMC Final silver (1–3 vs Australia B O35)" },
-  { div: "MO35",    place: "5TH OF 17", note: "UNBEATEN IN REGULATION",
-    cap: "MO35 — 5th of 17 · unbeaten in regulation all tournament" },
-  { div: "WO35",    place: "7TH OF 17", note: "WON CLASS 7/8 3-2 VS SCO",
-    cap: "WO35 — 7th of 17 · closed with a 3–2 win over Scotland" },
-  { div: "WO40",    place: "7TH OF 18", note: "SO WIN VS ESP AFTER 0-0",
-    cap: "WO40 — 7th of 18 · beat Spain in a shootout to finish" },
-  { div: "MO45",    place: "8TH OF 20", note: "CLASS 7/8 VS ESP",
-    cap: "MO45 — 8th of 20" },
-  { div: "WO45",    place: "12TH OF 14", note: "CLASS 11/12 VS ESP",
-    cap: "WO45 — 12th of 14" },
-  { div: "MO40",    place: "13TH OF 20", note: "WON CLASS 13/14 3-0 VS WAL",
-    cap: "MO40 — 13th of 20 · back-to-back shutouts to close" },
-  { div: "WO50",    place: "15TH OF 15", note: "HEADS HIGH EVERY GAME",
-    cap: "WO50 — 15th of 15" },
-  { div: "MO50",    place: "17TH OF 22", note: "SWEPT MAS OVER TWO LEGS",
-    cap: "MO50 — 17th of 22 · swept Malaysia to finish" },
+  { div: "W35 IMC", place: "SILVER MEDALISTS", medal: true, cap: "🥈 W35 IMC — Silver medalists" },
+  { div: "MO35",    place: "5TH PLACE",  cap: "MO35 — 5th place" },
+  { div: "WO35",    place: "7TH PLACE",  cap: "WO35 — 7th place" },
+  { div: "WO40",    place: "7TH PLACE",  cap: "WO40 — 7th place" },
+  { div: "MO45",    place: "8TH PLACE",  cap: "MO45 — 8th place" },
+  { div: "WO45",    place: "12TH PLACE", cap: "WO45 — 12th place" },
+  { div: "MO40",    place: "13TH PLACE", cap: "MO40 — 13th place" },
+  { div: "WO50",    place: "15TH PLACE", cap: "WO50 — 15th place" },
+  { div: "MO50",    place: "17TH PLACE", cap: "MO50 — 17th place" },
 ];
 
 // USA games actually played: pool rows with a score + scraped USA KO keys
@@ -104,21 +95,20 @@ const slideWrap = () =>
     detailRows(760, [
       ["USA teams", "9"],
       ["Games played", String(GAMES)],
-      ["Hardware", "IMC O35 silver"],
+      ["W35 IMC", "Silver medalists"],
     ]) +
     T(64, 1180, 60, GOLD, "PROUD OF EVERY SHIELD"));
 
-// ② the final tally — one row per team, USA medal row highlighted red
+// ② final standings — one row per team, the medal row highlighted red
 function slideTally() {
-  let y = 570;
-  let out = headline(430, "THE FINAL TALLY", 110) +
-    T(64, 500, 26, GOLD, "ALL NINE USA TEAMS · FINAL PLACINGS", { f: AB, ls: 3 });
+  let y = 578;
+  let out = headline(430, "FINAL STANDINGS", 110) +
+    T(64, 500, 26, GOLD, "ALL NINE USA TEAMS", { f: AB, ls: 3 });
   for (const r of WRAP) {
-    out += `<rect x="64" y="${y - 40}" width="160" height="56" fill="${r.medal ? RED : NAVY}" rx="10"/>` +
-      T(144, y, 26, "#fff", r.div, { a: "middle" }) +
-      T(260, y, 42, GOLD, r.place) +
-      T(560, y, 28, CREAM, r.note, { op: 0.85 });
-    y += 76;
+    out += `<rect x="64" y="${y - 42}" width="170" height="60" fill="${r.medal ? RED : NAVY}" rx="10"/>` +
+      T(149, y, 28, "#fff", r.div, { a: "middle" }) +
+      T(290, y, 48, GOLD, r.place);
+    y += 78;
   }
   return frame("Tournament wrap · usamastersfh.com", out);
 }
@@ -138,15 +128,15 @@ const slideLeg2 = () =>
 // ---------- caption ----------
 const caption = `🇺🇸 THAT'S A WRAP — 2026 WMH WORLD CUP, SCHIEDAM & ROTTERDAM
 
-Nine USA teams. Ten days. ${GAMES} games. Here's where everyone finished:
+Nine USA teams. Ten days. ${GAMES} games.
 
 ${WRAP.map((r) => r.cap).join("\n")}
 
 So proud of every athlete who wore the shield. 🇺🇸
 
-And we're not done — six more USA teams take the pitch in Brasschaat & Breda starting August 7.
+Six more USA teams take the pitch in Brasschaat & Breda starting August 7.
 
-All results & standings: usamastersfh.com
+All scores & standings: usamastersfh.com
 
 #USAMastersFH #FieldHockey #WMHWorldCup2026 #TeamUSA #MastersWC2026 @masterswc2026.schiedam`;
 
