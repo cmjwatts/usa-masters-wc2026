@@ -102,8 +102,8 @@ const slideWrap = () =>
 // ② final standings — one row per team, the medal row highlighted red
 function slideTally() {
   let y = 578;
-  let out = headline(430, "FINAL STANDINGS", 110) +
-    T(64, 500, 26, GOLD, "ALL NINE USA TEAMS", { f: AB, ls: 3 });
+  let out = headline(430, "PART 1 FINAL STANDINGS", 84) +
+    T(64, 500, 26, GOLD, "ALL NINE USA TEAMS · PART 2 STARTS AUGUST 7", { f: AB, ls: 3 });
   for (const r of WRAP) {
     out += `<rect x="64" y="${y - 42}" width="170" height="60" fill="${r.medal ? RED : NAVY}" rx="10"/>` +
       T(149, y, 28, "#fff", r.div, { a: "middle" }) +
@@ -119,7 +119,7 @@ const slideLeg2 = () =>
   frame("The World Cup isn't over yet",
     headline(430, "UP NEXT", 150) +
     detailRows(540, [
-      ["Leg 2", "Brasschaat & Breda"],
+      ["Part 2", "Brasschaat & Breda"],
       ["Dates", "August 7-16"],
       ["USA teams", "W55 · W60 · W65 · M55 · M60 · M65"],
       ["Follow along", "usamastersfh.com"],
@@ -127,15 +127,15 @@ const slideLeg2 = () =>
     T(64, 1150, 56, GOLD, "SEE YOU IN BELGIUM"));
 
 // ---------- caption ----------
-const caption = `🇺🇸 THAT'S A WRAP — 2026 WMH WORLD CUP, SCHIEDAM & ROTTERDAM
+const caption = `🇺🇸 THAT'S A WRAP ON PART 1 — 2026 WMH WORLD CUP, SCHIEDAM & ROTTERDAM
 
-Nine USA teams. Ten days. ${GAMES} games.
+Nine USA teams. Ten days. ${GAMES} games. Part 1 final standings:
 
 ${WRAP.map((r) => r.cap).join("\n")}
 
 So proud of every athlete who wore the shield. 🇺🇸
 
-Six more USA teams take the pitch in Brasschaat & Breda starting August 7.
+Part 2 is coming — six more USA teams take the pitch in Brasschaat & Breda starting August 7.
 
 All scores & standings: usamastersfh.com
 
@@ -146,7 +146,7 @@ const post = {
   id: "wrap-2026-08-01",
   type: "recap",
   date: "2026-08-03",
-  title: "Tournament wrap — every USA team's final place",
+  title: "Part 1 wrap — every USA team's final place",
   caption,
   created: new Intl.DateTimeFormat("sv-SE", {
     timeZone: "Europe/Amsterdam", dateStyle: "short", timeStyle: "short",
