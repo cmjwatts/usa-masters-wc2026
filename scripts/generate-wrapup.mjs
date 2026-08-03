@@ -24,14 +24,14 @@ const p = (...s) => path.join(ROOT, ...s);
 // ---------- final standings (best finish first) ----------
 const WRAP = [
   { div: "W35 IMC", place: "SILVER MEDALISTS", medal: true, cap: "🥈 W35 IMC — Silver medalists" },
-  { div: "MO35",    place: "5TH PLACE",  cap: "MO35 — 5th place" },
-  { div: "WO35",    place: "7TH PLACE",  cap: "WO35 — 7th place" },
-  { div: "WO40",    place: "7TH PLACE",  cap: "WO40 — 7th place" },
-  { div: "MO45",    place: "8TH PLACE",  cap: "MO45 — 8th place" },
-  { div: "WO45",    place: "12TH PLACE", cap: "WO45 — 12th place" },
-  { div: "MO40",    place: "13TH PLACE", cap: "MO40 — 13th place" },
-  { div: "WO50",    place: "15TH PLACE", cap: "WO50 — 15th place" },
-  { div: "MO50",    place: "17TH PLACE", cap: "MO50 — 17th place" },
+  { div: "MO35",    place: "5TH PLACE",  of: 17, cap: "MO35 — 5th of 17 teams" },
+  { div: "WO35",    place: "7TH PLACE",  of: 17, cap: "WO35 — 7th of 17 teams" },
+  { div: "WO40",    place: "7TH PLACE",  of: 18, cap: "WO40 — 7th of 18 teams" },
+  { div: "MO45",    place: "8TH PLACE",  of: 20, cap: "MO45 — 8th of 20 teams" },
+  { div: "WO45",    place: "12TH PLACE", of: 14, cap: "WO45 — 12th of 14 teams" },
+  { div: "MO40",    place: "13TH PLACE", of: 20, cap: "MO40 — 13th of 20 teams" },
+  { div: "WO50",    place: "15TH PLACE", of: 15, cap: "WO50 — 15th of 15 teams" },
+  { div: "MO50",    place: "17TH PLACE", of: 22, cap: "MO50 — 17th of 22 teams" },
 ];
 
 // USA games actually played: pool rows with a score + scraped USA KO keys
@@ -107,7 +107,8 @@ function slideTally() {
   for (const r of WRAP) {
     out += `<rect x="64" y="${y - 42}" width="170" height="60" fill="${r.medal ? RED : NAVY}" rx="10"/>` +
       T(149, y, 28, "#fff", r.div, { a: "middle" }) +
-      T(290, y, 48, GOLD, r.place);
+      T(290, y, 48, GOLD, r.place) +
+      (r.of ? T(680, y, 34, CREAM, `OF ${r.of} TEAMS`, { op: 0.75 }) : "");
     y += 78;
   }
   return frame("Tournament wrap · usamastersfh.com", out);
