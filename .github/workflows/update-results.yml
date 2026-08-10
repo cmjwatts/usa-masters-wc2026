@@ -40,6 +40,11 @@ jobs:
       - name: Generate social posts & carousel slides
         run: node scripts/generate-social.mjs
 
+      # Daily all-teams board for Belgium & Breda — publishes once per
+      # day, on the first run after every USA game has a final score.
+      - name: Generate daily all-teams board
+        run: node scripts/social-day-aug.mjs
+
       - name: Check for new posts
         id: newposts
         run: echo "count=$(node -p "JSON.parse(require('fs').readFileSync('social-new.json','utf8')).length")" >> "$GITHUB_OUTPUT"

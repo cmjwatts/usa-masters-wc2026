@@ -112,6 +112,17 @@ const rows = DIV_ORDER.map((div) => {
   return { div, kind: "rest", next };
 });
 
+// Publish once per day, after every USA game has a final score — the
+// 20-min workflow cron calls this all day, and the first tick where
+// nothing is pending renders + posts the board. Games missing a score
+// (still running, or scraper lag) show as "fixture" rows until final.
+// SOCIAL_PUBLISH_PENDING=1 overrides for a manual midday board.
+const unfinished = rows.filter((r) => r.kind === "fixture");
+if (unfinished.length && !process.env.SOCIAL_PUBLISH_PENDING) {
+  console.log(`Waiting on ${unfinished.length} unfinished USA game(s) for ${TODAY} — no board yet.`);
+  process.exit(0);
+}
+
 const played = rows.filter((r) => r.kind === "result");
 const wins = played.filter((r) => r.res === "W").length;
 const draws = played.filter((r) => r.res === "D").length;
@@ -225,11 +236,17 @@ if (!existsSync(p(img)) || process.env.FORCE_RENDER) {
 }
 
 if (!posts.some((x) => x.id === id)) {
-  posts.unshift({ id, type: "recap", date: TODAY,
+  const post = { id, type: "recap", date: TODAY,
     title: `Team USA daily — ${prettyDate(TODAY)}`,
-    caption, created: NOW, images: [img] });
+    caption, created: NOW, images: [img] };
+  posts.unshift(post);
   writeFileSync(postsPath, JSON.stringify(posts, null, 2) + "\n");
   console.log(`Added post ${id}`);
+  // join the workflow's notification email: generate-social.mjs rewrites
+  // social-new.json earlier in the same run, so append rather than replace
+  const newPath = p("social-new.json");
+  const fresh = existsSync(newPath) ? JSON.parse(readFileSync(newPath, "utf8")) : [];
+  writeFileSync(newPath, JSON.stringify([...fresh, post], null, 2) + "\n");
 } else {
   console.log(`Post ${id} already exists — image ${existsSync(p(img)) ? "kept" : "missing"}.`);
 }
