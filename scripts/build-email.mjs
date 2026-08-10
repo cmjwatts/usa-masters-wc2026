@@ -1,7 +1,8 @@
 // ============================================================
 // Builds the "new posts are ready" notification email from
 // social-new.json (written by generate-social.mjs each run).
-// Outputs: email.html (body) + email-subject.txt (subject line).
+// Outputs: email.html (body) + email-subject.txt (subject line) +
+// email-attachments.txt (comma-separated slide PNGs to attach).
 // The workflow sends it via Gmail SMTP after pushing, so the
 // image URLs below resolve once Netlify deploys (~1 min).
 // ============================================================
@@ -46,11 +47,12 @@ const html = `
     ${posts.map(card).join("")}
     <div style="text-align:center;margin:26px 0;">
       <a href="${SITE}/social" style="background:${RED};color:#fff;font-weight:800;text-decoration:none;border-radius:999px;padding:13px 26px;display:inline-block;">Open the Social Kit →</a>
-      <div style="color:#5c6478;font-size:12px;margin-top:10px;">Open on your phone → Share slides → Instagram. The caption copies automatically.</div>
+      <div style="color:#5c6478;font-size:12px;margin-top:10px;">Open on your phone → Share slides → Instagram. The caption copies automatically.<br>The slide images are also attached to this email — save straight to your camera roll.</div>
     </div>
   </div>
 </div>`;
 
 writeFileSync("email.html", html);
 writeFileSync("email-subject.txt", subject + "\n");
+writeFileSync("email-attachments.txt", posts.flatMap((p) => p.images).join(",") + "\n");
 console.log(`Email built: ${subject}`);
