@@ -82,6 +82,7 @@ jobs:
         run: |
           node scripts/build-email.mjs
           echo "subject=$(cat email-subject.txt)" >> "$GITHUB_OUTPUT"
+          echo "attachments=$(cat email-attachments.txt)" >> "$GITHUB_OUTPUT"
 
       - name: Email the social team
         if: steps.newposts.outputs.count != '0' && env.MAIL_APP_PASSWORD != ''
@@ -95,3 +96,4 @@ jobs:
           to: cmwatts02@gmail.com,mkatzdesigns@gmail.com
           from: USA Masters Social Kit <${{ env.MAIL_USERNAME }}>
           html_body: file://email.html
+          attachments: ${{ steps.email.outputs.attachments }}
