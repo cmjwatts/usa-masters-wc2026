@@ -132,7 +132,11 @@ async function scrapeDivision(div, id) {
     // teams that already met in pool play must not overwrite the pool score.
     // Stage comes from the teams cell's parenthetical: "(Pool A)" / "(WIMC35)"
     // are round-robin; "Q/F", "Semi", "Final", "X/O", "Class", "(B)" are KO.
-    const isKO = /q\/f|quarter|semi|final|x\/o|cross|class|\(b\)|bronze|gold/i.test(stage);
+    // "Elim" = elimination/placement games (seen Aug 13: "60W Elim 1").
+    // "M65 B" is Breda's bottom-3 classification round-robin — scoped to the
+    // M65 division only, because "M45 B" was a POOL label in the July window.
+    const isKO = /q\/f|quarter|semi|final|x\/o|cross|class|\(b\)|bronze|gold|elim/i.test(stage) ||
+      (div === "M65" && /^m65 b$/i.test(stage));
     if (isKO) {
       // KO pairs can rematch (two-leg classification), so date + time keep
       // keys distinct: div|KO|YYYY-MM-DD|HH:MM|HOME|AWAY. The time also lets

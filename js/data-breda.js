@@ -102,6 +102,8 @@ const KNOCKOUT_BRE = [
   { d:"2026-08-15", t:"11:30", div:"M65", label:"Class 13/14 · Crossover losers", p:"Pitch 2" },
   { d:"2026-08-15", t:"11:45", div:"M65", label:"Class 13–17 crossover · 17th vs 16th of Pool A", p:"Pitch 7" },
   // ---- Sunday 16 August ----
+  // Class 13-17 round-robin game confirmed on AltiusRT (missing from V1 schedule)
+  { d:"2026-08-15", t:"17:45", div:"M65", label:"Class 13–17 crossover", p:"", teams:["JPN","USA"] },
   { d:"2026-08-16", t:"14:45", div:"M65", label:"Class 13–17 crossover · 16th vs 15th of Pool A", p:"Pitch 7" },
   { d:"2026-08-16", t:"16:15", div:"M65", label:"Class 7/8 · Class 5–8 semi losers", p:"Pitch 5" },
   { d:"2026-08-16", t:"16:45", div:"M65", label:"Class 11/12 · Class 9–12 losers", p:"Pitch 7" },
