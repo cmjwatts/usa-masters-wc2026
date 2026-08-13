@@ -96,7 +96,7 @@ function koFind(div, d, a, b) {
 // otherwise both stay unnamed rather than risk naming the wrong one.
 function koStageMatches(label, stage) {
   if (!stage) return true; // no stage info -> can't rule the candidate out
-  const pair = (s) => { const m = s.match(/(\d{1,2})\s*[\/–-]\s*(\d{1,2})/); return m ? `${+m[1]}/${+m[2]}` : ""; };
+  const pair = (s) => { const m = s.match(/(\d{1,2})\s*[\/&–-]\s*(\d{1,2})/); return m ? `${+m[1]}/${+m[2]}` : ""; };
   const lp = pair(label), sp = pair(stage);
   if (lp && sp) return lp === sp; // "Class 11/12" vs "55W Cl 11/12"
   const kind = (s) =>

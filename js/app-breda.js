@@ -97,7 +97,7 @@ function koFind(div, d, a, b) {
 // unnamed rather than risk naming the wrong one. (Same logic as app-aug.js.)
 function koStageMatches(label, stage) {
   if (!stage) return true; // no stage info -> can't rule the candidate out
-  const pair = (s) => { const m = s.match(/(\d{1,2})\s*[\/–-]\s*(\d{1,2})/); return m ? `${+m[1]}/${+m[2]}` : ""; };
+  const pair = (s) => { const m = s.match(/(\d{1,2})\s*[\/&–-]\s*(\d{1,2})/); return m ? `${+m[1]}/${+m[2]}` : ""; };
   const lp = pair(label), sp = pair(stage);
   if (lp && sp) return lp === sp;
   const kind = (s) =>
