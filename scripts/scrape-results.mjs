@@ -16,7 +16,8 @@ const resultsAugPath = new URL("../js/results-aug.js", import.meta.url);
 
 // Load whatever a results file currently has (if anything) so a division
 // that fails to scrape this run keeps its last-known scores instead of
-// disappearing from the output.
+// disappearing from the output. Works for both the RESULTS* and FIXTURES*
+// consts (an older file without a FIXTURES const just yields {}).
 function loadExistingResults(path, constName) {
   if (!existsSync(path)) return {};
   try {
@@ -99,6 +100,7 @@ async function scrapeDivision(div, id) {
   const html = await res.text();
 
   const results = {};
+  const fixtures = {};
   // Each match is a <tr> like:
   //   003 | 23 Jul 2026 09:00 | RSA v IRL (Pool A) | 0 - 1 | Complete | Pitch 3 | ...
   // Both teams live in ONE cell ("HOME v AWAY (Pool X)"), scores are "N - N",
@@ -114,20 +116,6 @@ async function scrapeDivision(div, id) {
     // "RSA v ESPB (Friendly 50W)".)
     const stage = (teamsCell.match(/\((.*)\)\s*$/) || [])[1] || "";
     if (/friendly|exhibition|practice/i.test(stage)) continue;
-    const scoreCell = cells.find((c) => /^\d{1,2}\s*-\s*\d{1,2}(\s*\(.*\))?$/.test(c));
-    if (!scoreCell) continue; // unplayed ("-")
-    // Only final scores: skip live games ("Half Time 30'+", "3rd Quarter", …).
-    // Finished games show "Complete", then move to "Official" once confirmed.
-    if (!cells.some((c) => /^(complete|full ?time|official)/i.test(c))) continue;
-    const [home, away] = teamsCell.split(/\sv\s/);
-    const codes = [toCode(home), toCode(away)];
-    if (!codes[0] || !codes[1]) {
-      // A finished game we can't attribute means TEAM_NAMES is missing the
-      // display name AltiusRT uses — log it so the mapping can be fixed.
-      console.log(`${div}: dropping completed match — unmatched team name(s) in "${teamsCell}"`);
-      continue;
-    }
-    const [hs, as] = scoreCell.match(/\d{1,2}/g).map((n) => parseInt(n, 10));
     // Knockout/classification games get their own key space — a QF between
     // teams that already met in pool play must not overwrite the pool score.
     // Stage comes from the teams cell's parenthetical: "(Pool A)" / "(WIMC35)"
@@ -137,23 +125,49 @@ async function scrapeDivision(div, id) {
     // M65 division only, because "M45 B" was a POOL label in the July window.
     const isKO = /q\/f|quarter|semi|final|x\/o|cross|class|\(b\)|bronze|gold|elim/i.test(stage) ||
       (div === "M65" && /^m65 b$/i.test(stage));
+    const dm = cells.map((c) => c.match(/^(\d{1,2}) (\w{3}) (\d{4})(?:\s+(\d{1,2}:\d{2}))?/)).find(Boolean);
+    const MONTHS = { Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
+                     Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12" };
+    const iso = dm ? `${dm[3]}-${MONTHS[dm[2]] || "00"}-${dm[1].padStart(2, "0")}` : "unknown";
+    const time = (dm && dm[4] ? dm[4] : "00:00").padStart(5, "0");
+    const [home, away] = teamsCell.split(/\sv\s/);
+    const codes = [toCode(home), toCode(away)];
+
+    const scoreCell = cells.find((c) => /^\d{1,2}\s*-\s*\d{1,2}(\s*\(.*\))?$/.test(c));
+    // Only final scores count as results: skip live games ("Half Time 30'+",
+    // "3rd Quarter", …). Finished games show "Complete", then "Official".
+    const isFinal = scoreCell && cells.some((c) => /^(complete|full ?time|official)/i.test(c));
+
+    if (!isFinal) {
+      // Upcoming bracket game whose matchup AltiusRT has already filled in
+      // (both names resolve — placeholder rows like "Winner QF1 v ..." don't).
+      // The site uses these to show WHO plays WHEN before the game is played:
+      // key div|KO|date|time|HOME|AWAY -> stage label (used to disambiguate
+      // same-division slots that share a date + time; see js/app*.js).
+      if (isKO && codes[0] && codes[1] && iso !== "unknown") {
+        fixtures[`${div}|KO|${iso}|${time}|${codes[0]}|${codes[1]}`] = stage;
+      }
+      continue;
+    }
+    if (!codes[0] || !codes[1]) {
+      // A finished game we can't attribute means TEAM_NAMES is missing the
+      // display name AltiusRT uses — log it so the mapping can be fixed.
+      console.log(`${div}: dropping completed match — unmatched team name(s) in "${teamsCell}"`);
+      continue;
+    }
+    const [hs, as] = scoreCell.match(/\d{1,2}/g).map((n) => parseInt(n, 10));
     if (isKO) {
       // KO pairs can rematch (two-leg classification), so date + time keep
       // keys distinct: div|KO|YYYY-MM-DD|HH:MM|HOME|AWAY. The time also lets
       // the site attribute a result to an unnamed bracket row when that
       // div/date/time slot is unambiguous (see the ko renderer in js/app*.js).
-      const dm = cells.map((c) => c.match(/^(\d{1,2}) (\w{3}) (\d{4})(?:\s+(\d{1,2}:\d{2}))?/)).find(Boolean);
-      const MONTHS = { Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
-                       Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12" };
-      const iso = dm ? `${dm[3]}-${MONTHS[dm[2]] || "00"}-${dm[1].padStart(2, "0")}` : "unknown";
-      const time = (dm && dm[4] ? dm[4] : "00:00").padStart(5, "0");
       results[`${div}|KO|${iso}|${time}|${codes[0]}|${codes[1]}`] = [hs, as];
     } else {
       // key format consumed by app.js pool rows: div|HOME|AWAY
       results[`${div}|${codes[0]}|${codes[1]}`] = [hs, as];
     }
   }
-  return results;
+  return { results, fixtures };
 }
 
 // Scrape one group of divisions into one results file. Returns
@@ -161,26 +175,33 @@ async function scrapeDivision(div, id) {
 // (a total failure leaves the previous file untouched).
 async function scrapeGroup(competitions, path, constName, updatedVar, label) {
   const all = loadExistingResults(path, constName);
+  const fixturesConst = constName.replace("RESULTS", "FIXTURES");
+  const allFixtures = loadExistingResults(path, fixturesConst);
   let configured = 0;
   let succeeded = 0;
   for (const [div, id] of Object.entries(competitions)) {
     if (!id) continue;
     configured++;
     try {
-      const divResults = await scrapeDivision(div, id);
+      const { results: divResults, fixtures: divFixtures } = await scrapeDivision(div, id);
       // Replace this division's slice of the existing data with the fresh
       // scrape (so corrected/removed matches don't linger), but only once
-      // we know the scrape actually succeeded.
+      // we know the scrape actually succeeded. Fixtures work the same way —
+      // a fixture disappears once its game completes (it becomes a result).
       for (const key of Object.keys(all)) {
         if (key.startsWith(`${div}|`)) delete all[key];
       }
+      for (const key of Object.keys(allFixtures)) {
+        if (key.startsWith(`${div}|`)) delete allFixtures[key];
+      }
       Object.assign(all, divResults);
+      Object.assign(allFixtures, divFixtures);
       succeeded++;
-      console.log(`${div}: ok`);
+      console.log(`${div}: ok (${Object.keys(divFixtures).length} upcoming fixture(s))`);
     } catch (e) {
       console.error(`${div}: ${e.message} (keeping previous results)`);
       // partial failure must not wipe/regress this division's existing
-      // entries in `all` — they were loaded above and are left untouched.
+      // entries in `all`/`allFixtures` — loaded above and left untouched.
     }
   }
   if (configured > 0 && succeeded > 0) {
@@ -190,9 +211,11 @@ async function scrapeGroup(competitions, path, constName, updatedVar, label) {
 `;
     writeFileSync(
       path,
-      `${banner}const ${constName} = ${JSON.stringify(all, null, 2)};\nwindow.${updatedVar} = "${updatedAt}";\n`
+      `${banner}const ${constName} = ${JSON.stringify(all, null, 2)};\nwindow.${updatedVar} = "${updatedAt}";\n` +
+        `// Upcoming knockout matchups (teams known, game not yet final):\n` +
+        `const ${fixturesConst} = ${JSON.stringify(allFixtures, null, 2)};\n`
     );
-    console.log(`Wrote ${Object.keys(all).length} results to ${label}`);
+    console.log(`Wrote ${Object.keys(all).length} results + ${Object.keys(allFixtures).length} fixtures to ${label}`);
   }
   return { configured, succeeded };
 }

@@ -89,13 +89,42 @@ function koFind(div, d, a, b) {
   }
   return null;
 }
+// A bracket row with no hand-entered `teams` gets its matchup from the
+// scrape: FIXTURES_AUG names upcoming games as soon as AltiusRT publishes
+// the pairing, RESULTS_AUG names games already played. Candidates match a
+// row by div + date + time; when two same-division games share that slot,
+// the scraped stage label must single out this row — otherwise both stay
+// unnamed rather than risk naming the wrong one. (Same logic as app-aug.js.)
+function koStageMatches(label, stage) {
+  if (!stage) return true; // no stage info -> can't rule the candidate out
+  const pair = (s) => { const m = s.match(/(\d{1,2})\s*[\/–-]\s*(\d{1,2})/); return m ? `${+m[1]}/${+m[2]}` : ""; };
+  const lp = pair(label), sp = pair(stage);
+  if (lp && sp) return lp === sp;
+  const kind = (s) =>
+    /q\/?f|quarter/i.test(s) ? "qf" :
+    /semi/i.test(s) ? "semi" :
+    /bronze/i.test(s) ? "bronze" :
+    /final|gold/i.test(s) ? "final" :
+    /x\/?o|cross/i.test(s) ? "xo" :
+    /class/i.test(s) ? "class" :
+    /elim/i.test(s) ? "elim" : "";
+  const lk = kind(label), sk = kind(stage);
+  if (lk && sk) return lk === sk;
+  return true;
+}
 function koSlotTeams(r) {
-  if (typeof RESULTS_AUG === "undefined") return null;
-  if (KNOCKOUT_BRE.filter((k) => k.div === r.div && k.d === r.d && k.t === r.t).length !== 1) return null;
   const prefix = `${r.div}|KO|${r.d}|${r.t}|`;
-  const hits = Object.keys(RESULTS_AUG).filter((k) => k.startsWith(prefix));
-  if (hits.length !== 1) return null;
-  const p = hits[0].split("|");
+  const cands = {};
+  if (typeof RESULTS_AUG !== "undefined")
+    for (const k of Object.keys(RESULTS_AUG)) if (k.startsWith(prefix)) cands[k] = "";
+  if (typeof FIXTURES_AUG !== "undefined")
+    for (const k of Object.keys(FIXTURES_AUG)) if (k.startsWith(prefix)) cands[k] = FIXTURES_AUG[k] || "";
+  const mine = Object.entries(cands).filter(([, stage]) => koStageMatches(r.label, stage));
+  if (mine.length !== 1) return null;
+  const [key, stage] = mine[0];
+  const slotRows = KNOCKOUT_BRE.filter((k) => k.div === r.div && k.d === r.d && k.t === r.t);
+  if (slotRows.filter((row) => koStageMatches(row.label, stage)).length !== 1) return null;
+  const p = key.split("|");
   return [p[4], p[5]];
 }
 
