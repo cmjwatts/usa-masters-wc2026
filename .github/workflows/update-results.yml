@@ -1,117 +1,33 @@
 name: Update results & social content
 
+# TEMPORARILY a probe on this branch: prints Aug 14 rows for comps
+# 494/496/498/499 to see stage labels. Restored before merge.
+
 on:
-  workflow_dispatch: {}        # manual "Run workflow" button
-  schedule:
-    # Pre-tournament: once a day for countdown posts (UTC).
-    - cron: "0 7 5-21 7 *"          # July 5-21, 07:00 UTC (09:00 NL)
-    # Window 1 (Schiedam/Rotterdam, July 22-Aug 1): every 20 min during
-    # the tournament (UTC; games run 6:00-19:00 UTC).
-    - cron: "*/20 6-20 22-31 7 *"   # July 22-31
-    - cron: "*/20 6-20 1-2 8 *"     # August 1
-    # Gap between windows: back to a daily countdown cron.
-    - cron: "0 7 2-5 8 *"           # August 2-5, 07:00 UTC (09:00 NL)
-    # Window 2 (Brasschaat/Breda, Aug 6-16): every 20 min during the
-    # tournament (UTC; games run 6:00-19:00 UTC, same as window 1).
-    - cron: "*/20 6-20 6-16 8 *"    # August 6-16
+  workflow_dispatch: {}
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   update:
     runs-on: ubuntu-latest
-    env:
-      MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
-      MAIL_APP_PASSWORD: ${{ secrets.MAIL_APP_PASSWORD }}
-      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Scrape AltiusRT results
-        run: node scripts/scrape-results.mjs
-
-      - name: Install deps (slide renderer)
-        run: npm ci
-
-      - name: Generate social posts & carousel slides
-        run: node scripts/generate-social.mjs
-
-      # Daily all-teams board for Belgium & Breda — publishes once per
-      # day, on the first run after every USA game has a final score.
-      - name: Generate daily all-teams board
-        run: node scripts/social-day-aug.mjs
-
-      - name: Check for new posts
-        id: newposts
-        run: echo "count=$(node -p "JSON.parse(require('fs').readFileSync('social-new.json','utf8')).length")" >> "$GITHUB_OUTPUT"
-
-      - name: Commit & push if anything changed
+      - name: Probe match rows
         run: |
-          git add js/results.js js/results-aug.js social/
-          if git diff --cached --quiet; then
-            echo "No new results or social posts."
-          else
-            git config user.name "results-bot"
-            git config user.email "actions@github.com"
-            git commit -m "Auto-update: results + social content"
-            # main may have moved while this job ran (e.g. a merged PR) —
-            # rebase our one commit onto it and retry instead of failing.
-            pushed=""
-            for attempt in 1 2 3; do
-              if git push; then
-                pushed=yes
-                break
-              fi
-              echo "Push rejected (attempt $attempt), rebasing onto latest main…"
-              git pull --rebase origin main
-            done
-            [ -n "$pushed" ] || { echo "Push still failing after 3 attempts"; exit 1; }
-          fi
-
-      # Fallback publish path: if Netlify's git-triggered builds are stopped
-      # (e.g. free-tier build minutes exhausted), a CLI deploy from here
-      # uploads the site directly and consumes NO Netlify build minutes.
-      # Activate by adding two repo secrets: NETLIFY_AUTH_TOKEN (Netlify
-      # dashboard → User settings → Applications → personal access token)
-      # and NETLIFY_SITE_ID (Site settings → General → Site ID). Skips
-      # quietly when they aren't set.
-      - name: Deploy to Netlify via CLI (fallback, needs secrets)
-        if: env.NETLIFY_AUTH_TOKEN != ''
-        run: |
-          mkdir -p /tmp/deploy
-          rsync -a --exclude .git --exclude .github --exclude node_modules \
-            --exclude scripts --exclude .claude ./ /tmp/deploy/
-          npx --yes netlify-cli@17 deploy --prod --dir /tmp/deploy \
-            --site "$NETLIFY_SITE_ID" --message "CI deploy $(git rev-parse --short HEAD)"
-
-      # Email Christine + Melissa when new posts land. Needs two repo
-      # secrets: MAIL_USERNAME (the Gmail address to send from) and
-      # MAIL_APP_PASSWORD (a Google "app password" for that account).
-      # Skips quietly if the secrets aren't set.
-      - name: Build notification email
-        if: steps.newposts.outputs.count != '0' && env.MAIL_APP_PASSWORD != ''
-        id: email
-        run: |
-          node scripts/build-email.mjs
-          echo "subject=$(cat email-subject.txt)" >> "$GITHUB_OUTPUT"
-          echo "attachments=$(cat email-attachments.txt)" >> "$GITHUB_OUTPUT"
-
-      - name: Email the social team
-        if: steps.newposts.outputs.count != '0' && env.MAIL_APP_PASSWORD != ''
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ env.MAIL_USERNAME }}
-          password: ${{ env.MAIL_APP_PASSWORD }}
-          subject: ${{ steps.email.outputs.subject }}
-          to: cmwatts02@gmail.com,mkatzdesigns@gmail.com
-          from: USA Masters Social Kit <${{ env.MAIL_USERNAME }}>
-          html_body: file://email.html
-          attachments: ${{ steps.email.outputs.attachments }}
+          for id in 494 496 498 499; do
+            echo "=== competition $id ==="
+            curl -sS -L -A "Mozilla/5.0 (usa-masters-wc2026 fan hub)" \
+              "https://masters.altiusrt.com/competitions/$id/matches" \
+            | python3 -c '
+          import re, sys
+          html = sys.stdin.read()
+          strip = lambda h: re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", h)).strip()
+          for row in re.split(r"<tr[\s>]", html)[1:]:
+              cells = [strip(m.group(1)) for m in re.finditer(r"<td[^>]*>([\s\S]*?)</td>", row)]
+              if len(cells) < 6 or " v " not in cells[2]:
+                  continue
+              if "14 Aug" in cells[1]:
+                  print(" | ".join(cells[1:5]))
+          '
+          done
