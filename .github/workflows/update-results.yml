@@ -24,6 +24,8 @@ jobs:
     env:
       MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
       MAIL_APP_PASSWORD: ${{ secrets.MAIL_APP_PASSWORD }}
+      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
     steps:
       - uses: actions/checkout@v4
 
@@ -71,6 +73,22 @@ jobs:
             done
             [ -n "$pushed" ] || { echo "Push still failing after 3 attempts"; exit 1; }
           fi
+
+      # Fallback publish path: if Netlify's git-triggered builds are stopped
+      # (e.g. free-tier build minutes exhausted), a CLI deploy from here
+      # uploads the site directly and consumes NO Netlify build minutes.
+      # Activate by adding two repo secrets: NETLIFY_AUTH_TOKEN (Netlify
+      # dashboard → User settings → Applications → personal access token)
+      # and NETLIFY_SITE_ID (Site settings → General → Site ID). Skips
+      # quietly when they aren't set.
+      - name: Deploy to Netlify via CLI (fallback, needs secrets)
+        if: env.NETLIFY_AUTH_TOKEN != ''
+        run: |
+          mkdir -p /tmp/deploy
+          rsync -a --exclude .git --exclude .github --exclude node_modules \
+            --exclude scripts --exclude .claude ./ /tmp/deploy/
+          npx --yes netlify-cli@17 deploy --prod --dir /tmp/deploy \
+            --site "$NETLIFY_SITE_ID" --message "CI deploy $(git rev-parse --short HEAD)"
 
       # Email Christine + Melissa when new posts land. Needs two repo
       # secrets: MAIL_USERNAME (the Gmail address to send from) and
