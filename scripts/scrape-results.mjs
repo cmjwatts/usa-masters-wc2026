@@ -123,13 +123,19 @@ async function scrapeDivision(div, id) {
     // "Elim" = elimination/placement games (seen Aug 13: "60W Elim 1").
     // "M65 B" is Breda's bottom-3 classification round-robin — scoped to the
     // M65 division only, because "M45 B" was a POOL label in the July window.
-    const isKO = /q\/f|quarter|semi|final|x\/o|cross|class|\(b\)|bronze|gold|elim/i.test(stage) ||
-      (div === "M65" && /^m65 b$/i.test(stage));
     const dm = cells.map((c) => c.match(/^(\d{1,2}) (\w{3}) (\d{4})(?:\s+(\d{1,2}:\d{2}))?/)).find(Boolean);
     const MONTHS = { Jan: "01", Feb: "02", Mar: "03", Apr: "04", May: "05", Jun: "06",
                      Jul: "07", Aug: "08", Sep: "09", Oct: "10", Nov: "11", Dec: "12" };
     const iso = dm ? `${dm[3]}-${MONTHS[dm[2]] || "00"}-${dm[1].padStart(2, "0")}` : "unknown";
     const time = (dm && dm[4] ? dm[4] : "00:00").padStart(5, "0");
+    // "S/F" = semifinal (seen Aug 14: "W55 S/F 1"); "9&10 Match 1"-style
+    // digit&digit pairs are numbered placement games (no pool label uses
+    // N&M). "M55 Pool B" from Aug 13 on is a second-phase classification
+    // round-robin, NOT the original pool phase — scoped to M55 + date so
+    // real pool labels (which only occur through Aug 12) are unaffected.
+    const isKO = /q\/f|quarter|s\/f|semi|final|x\/o|cross|class|\(b\)|bronze|gold|elim|\d\s*&\s*\d/i.test(stage) ||
+      (div === "M65" && /^m65 b$/i.test(stage)) ||
+      (div === "M55" && /^m55 pool/i.test(stage) && iso >= "2026-08-13");
     const [home, away] = teamsCell.split(/\sv\s/);
     const codes = [toCode(home), toCode(away)];
 
