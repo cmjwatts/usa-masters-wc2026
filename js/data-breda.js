@@ -93,17 +93,19 @@ const KNOCKOUT_BRE = [
   { d:"2026-08-13", t:"13:00", div:"M65", label:"Crossover · 11th vs 14th of Pool A", p:"Pitch 1" },
   { d:"2026-08-13", t:"13:15", div:"M65", label:"Crossover · 12th vs 13th of Pool A", p:"Pitch 5" },
   // ---- Saturday 15 August ----
-  { d:"2026-08-15", t:"09:00", div:"M65", label:"SEMIFINAL · Winners QF4 vs QF1", p:"Pitch 1" },
-  { d:"2026-08-15", t:"09:15", div:"M65", label:"SEMIFINAL · Winners QF3 vs QF2", p:"Pitch 5" },
-  { d:"2026-08-15", t:"09:30", div:"M65", label:"Class 5–8 semi · Losers QF3 vs QF2", p:"Pitch 2" },
-  { d:"2026-08-15", t:"09:45", div:"M65", label:"Class 5–8 semi · Losers QF4 vs QF1", p:"Pitch 7" },
-  { d:"2026-08-15", t:"11:00", div:"M65", label:"Class 9–12 · 9th of Pool A vs crossover winner", p:"Pitch 1" },
-  { d:"2026-08-15", t:"11:15", div:"M65", label:"Class 9–12 · 10th of Pool A vs crossover winner", p:"Pitch 5" },
-  { d:"2026-08-15", t:"11:30", div:"M65", label:"Class 13/14 · Crossover losers", p:"Pitch 2" },
-  { d:"2026-08-15", t:"11:45", div:"M65", label:"Class 13–17 crossover · 17th vs 16th of Pool A", p:"Pitch 7" },
-  // ---- Sunday 16 August ----
+  // Rescheduled per AltiusRT (2026-08-13): the whole Saturday block moved
+  // from the morning to 15:30–19:15, and the Class 5–8 pairings changed
+  // from the 15-Jul schedule. Times + matchups below are AltiusRT's.
+  { d:"2026-08-15", t:"15:30", div:"M65", label:"Class 5–8 semi · QF losers", p:"", teams:["SCO","IRL"] },
+  { d:"2026-08-15", t:"15:45", div:"M65", label:"Class 5–8 semi · QF losers", p:"", teams:["BEL","GER"] },
+  { d:"2026-08-15", t:"17:00", div:"M65", label:"Class 9–12 · 9th of Pool A vs crossover winner", p:"", teams:["NZL","ITA"] },
+  { d:"2026-08-15", t:"17:15", div:"M65", label:"Class 9–12 · 10th of Pool A vs crossover winner", p:"", teams:["MAS","WAL"] },
+  { d:"2026-08-15", t:"17:30", div:"M65", label:"Class 13/14 · Crossover losers", p:"", teams:["RSA","FRA"] },
   // Class 13-17 round-robin game confirmed on AltiusRT (missing from V1 schedule)
   { d:"2026-08-15", t:"17:45", div:"M65", label:"Class 13–17 crossover", p:"", teams:["JPN","USA"] },
+  { d:"2026-08-15", t:"19:00", div:"M65", label:"SEMIFINAL · Winners QF4 vs QF1", p:"", teams:["ENG","AUS"] },
+  { d:"2026-08-15", t:"19:15", div:"M65", label:"SEMIFINAL · Winners QF3 vs QF2", p:"", teams:["ARG","NED"] },
+  // ---- Sunday 16 August ----
   { d:"2026-08-16", t:"14:45", div:"M65", label:"Class 13–17 crossover · 16th vs 15th of Pool A", p:"Pitch 7" },
   { d:"2026-08-16", t:"16:15", div:"M65", label:"Class 7/8 · Class 5–8 semi losers", p:"Pitch 5" },
   { d:"2026-08-16", t:"16:45", div:"M65", label:"Class 11/12 · Class 9–12 losers", p:"Pitch 7" },

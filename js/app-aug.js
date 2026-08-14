@@ -159,6 +159,27 @@ function matchesFiltered() {
       if (!koVisible(kr)) continue;
       rows.push(kr);
     }
+    // Safety net for reschedules: a scraped bracket game (upcoming fixture
+    // or finished result) whose div/date/time matches NO schedule row above
+    // would otherwise be invisible — synthesize a row for it. Seen live
+    // 2026-08-13: Breda's Saturday block moved from morning to afternoon,
+    // orphaning 7 scraped games.
+    const covered = new Set(KNOCKOUT_AUG.map((k) => `${k.div}|${k.d}|${k.t}`));
+    const seen = new Set();
+    for (const src of [typeof FIXTURES_AUG !== "undefined" ? FIXTURES_AUG : {},
+                       typeof RESULTS_AUG !== "undefined" ? RESULTS_AUG : {}]) {
+      for (const key of Object.keys(src)) {
+        const parts = key.split("|");
+        if (parts[1] !== "KO" || seen.has(key)) continue;
+        seen.add(key);
+        const [div, , d, t, h, a] = parts;
+        if (!state.divs.has(div) || covered.has(`${div}|${d}|${t}`)) continue;
+        const label = typeof src[key] === "string" && src[key] ? src[key] : "Bracket game";
+        const kr = { d, t, div, label, p: "", teams: [h, a], type: "ko" };
+        if (!koVisible(kr)) continue;
+        rows.push(kr);
+      }
+    }
     for (const ev of EVENTS_AUG) {
       rows.push({ d: ev.d, t: ev.t, title: ev.title, note: ev.note, type: "event" });
     }
